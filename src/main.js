@@ -1,7 +1,11 @@
 import Vue from 'vue'
 import App from './App'
+import lodash from 'lodash'
 
 Vue.config.productionTip = false
+// 局部可以使用this._来调用
+Vue.prototype.$lodash = lodash
+
 App.mpType = 'app'
 
 const app = new Vue(App)
