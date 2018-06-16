@@ -21,7 +21,7 @@ export default {
       'pages/order-list/main', // 订单列表
       'pages/order-detail/main', // 订单详情
       'pages/goods-detail/main', // 商品详情
-      '^pages/bill-detail/main', // 账单详情
+      'pages/bill-detail/main', // 账单详情
       'pages/column-list/main', // 栏目列表
       'pages/buy/main', // 购买
       'pages/my/main', // 我的
@@ -30,7 +30,7 @@ export default {
       'pages/my-wallet/main', // 我的钱包
       'pages/my-address/main', // 收货地址
       'pages/my-favorite/main', // 我的收藏
-      'pages/my-notice/main' // 我的消息
+      '^pages/my-notice/main' // 我的消息
     ],
     window: {
       backgroundTextStyle: 'light',

@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <!-- <section class="container">
     <ul>
       <li class="item">
          <section class="header">
@@ -13,11 +13,20 @@
          </section>
       </li>
     </ul>
+  </section> -->
+  <section class="container">
+    <scroll-view>
+
+    </scroll-view>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
+import scrollView from '@/components/scrollView'
 export default {
+  components: {
+    scrollView
+  },
   data() {
     return {
     }
