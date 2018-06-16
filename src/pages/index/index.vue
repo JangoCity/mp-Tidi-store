@@ -97,13 +97,13 @@ export default {
           prefix-icon(40rpx, 40rpx)
           left -25rpx
       &:nth-of-type(1) .text::before
-        bg-image('work')
+        bg-image('icon-work')
       &:nth-of-type(2) .text::before
-        bg-image('life')
+        bg-image('icon-life')
       &:nth-of-type(1).active .text::before
-        bg-image('work-active')
+        bg-image('icon-work-active')
       &:nth-of-type(2).active .text::before
-        bg-image('life-active')
+        bg-image('icon-life-active')
       &.active
         color #fff
         background linear-gradient(to bottom, #e61b00, #ff5408)
