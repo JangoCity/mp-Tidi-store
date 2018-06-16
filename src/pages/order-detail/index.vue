@@ -12,7 +12,7 @@
     <section class="content">
       <section class="order-desc">
         <section class="img-wrapper">
-          <img src="" alt="">
+          <!-- <img src="" alt=""> -->
         </section>
         <section class="text-wrapper">
           <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 枣香枣脆 等你抢购</p>

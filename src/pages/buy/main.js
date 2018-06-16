@@ -6,6 +6,6 @@ app.$mount()
 
 export default {
   config: {
-    'navigationBarTitleText': '我的消息'
+    'navigationBarTitleText': '单独购买'
   }
 }

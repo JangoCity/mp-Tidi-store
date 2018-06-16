@@ -1,46 +1,61 @@
 <template>
-  <div class="counter-warp">
-    <p>Vuex counter：{{ count }}</p>
-    <p>
-      <button @click="increment">+</button>
-      <button @click="decrement">-</button>
-    </p>
-
-    <a href="/pages/index/main" class="home">去往首页</a>
+  <div class="container">
+    <span class="sub btn" @click="decrement"></span>
+    <span class="count">{{ count }}</span>
+    <span class="add btn" @click="increment"></span>
   </div>
 </template>
 
-<script>
-// Use Vuex
+<script type='text/ecmascript-6'>
 import store from './store'
 
 export default {
   computed: {
-    count () {
+    count() {
       return store.state.count
     }
   },
   methods: {
-    increment () {
+    increment() {
       store.commit('increment')
     },
-    decrement () {
+    decrement() {
       store.commit('decrement')
     }
   }
 }
 </script>
 
-<style>
-.counter-warp {
-  text-align: center;
-  margin-top: 100px;
-}
-.home {
-  display: inline-block;
-  margin: 100px auto;
-  padding: 5px 10px;
-  color: blue;
-  border: 1px solid blue;
-}
+<style lang="stylus" rel="stylesheet/stylus" scoped>
+@import '~common/stylus/mixin'
+@import '~common/stylus/variable'
+.container
+  text-align center
+  display flex
+  .count
+    background #f6f6f6
+    height 50rpx
+    width 100rpx
+    font-size 16px
+  .btn
+    position relative
+    width 50rpx
+    height 50rpx
+    line-height 50rpx
+    extend-click()
+    &::before
+      position absolute
+      top 50%
+      left 50%
+      transform translate(-50%,-50%)
+      background-size contain
+      background-repeat no-repeat
+      content:''
+      width 24rpx
+  .add::before
+    height  24rpx
+    bg-image('icon-add')
+  .sub::before
+    height  4rpx
+    bg-image('icon-sub')
 </style>

@@ -16,6 +16,7 @@ const store = new Vuex.Store({
     },
     decrement: (state) => {
       const obj = state
+      if (obj.count === 0) return
       obj.count -= 1
     }
   }

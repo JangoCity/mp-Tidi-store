@@ -18,7 +18,7 @@
       <!-- 商品相关信息 -->
       <section class="goods-total">
         <section class="img-wrapper">
-          <img src="" alt="">
+          <!-- <img src="" alt=""> -->
         </section>
         <section class="text-wrapper">
           <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 枣香枣脆 等你</p>
@@ -29,7 +29,7 @@
       <section>
         <span>购买数量</span>
         <span>
-          <!-- 插入组件 计数器-->
+          <counter></counter>
         </span>
       </section>
 
@@ -41,7 +41,11 @@
 </template>
 
 <script type='text/ecmascript-6'>
+import counter from '@/components/counter'
 export default {
+  components: {
+    counter
+  },
   data() {
     return {
     }
