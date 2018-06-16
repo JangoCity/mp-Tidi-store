@@ -1,11 +1,11 @@
 import Vue from 'vue'
-import App from './order'
+import App from './index'
 
 const app = new Vue(App)
 app.$mount()
 
 export default {
   config: {
-    'navigationBarTitleText': '订单'
+    'navigationBarTitleText': '栏目列表'
   }
 }

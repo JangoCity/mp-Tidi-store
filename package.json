@@ -11,8 +11,9 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "lodash": "^4.17.10",
     "flyio": "^0.5.9",
+    "lodash": "^4.17.10",
+    "minapp-api-promise": "^1.0.2",
     "mpvue": "^1.0.11",
     "vuex": "^3.0.1"
   },

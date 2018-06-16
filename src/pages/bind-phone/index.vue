@@ -1,6 +1,6 @@
 <template>
-  <section class=" ">
-      订单
+  <section class="container">
+
   </section>
 </template>
 

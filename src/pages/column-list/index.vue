@@ -1,12 +1,12 @@
 <template>
-   <section class=" ">
-     我的
-   </section>
+  <section class="container">
+
+  </section>
 </template>
 
 <script type='text/ecmascript-6'>
 export default {
-  data () {
+  data() {
     return {
     }
   }
