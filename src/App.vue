@@ -75,7 +75,29 @@ export default {
     transform scaleY(0.33333)
   .border-right::before, .border-left::before, .border-rightleft::before, .border-rightleft::after, .border-topleft::after, .border-rightbottom::before, .border-topright::after, .border-bottomleft::after
     transform scaleX(0.33333)
-// @import '~common/css/border.css'
+
+.container
+  background #fff
+  font-size 14px
+  color #333
+
+.max-img
+  max-width 100%
+  max-height 100%
+
+.btn-confirm
+  font-size 16px
+  background #e60012
+  color #fff
+
+.line-gradient-btn
+  color #fff
+  background linear-gradient(to bottom, #e61b00, #ff5408)
+  border none
+.money
+  &::before
+    content:"￥"
+    font-size 12px
 .list-text-between
   .item
     display flex

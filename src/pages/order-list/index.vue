@@ -50,6 +50,8 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
+@import '~common/stylus/mixin'
+@import '~common/stylus/variable'
 .container
   background-color #f6f6f6
 .slide-nav-wrapper

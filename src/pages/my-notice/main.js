@@ -6,6 +6,7 @@ app.$mount()
 
 export default {
   config: {
-    'navigationBarTitleText': '我的消息'
+    'navigationBarTitleText': '我的消息',
+    'enablePullDownRefresh': true
   }
 }

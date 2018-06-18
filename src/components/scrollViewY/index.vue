@@ -1,8 +1,11 @@
 <template>
   <section class="">
     <view class="section">
-      <view class="section__title">纵向</view>
-      <scroll-view scroll-y style="height: 200px;" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll" scroll-into-view="toView" scroll-top="scrollTop">
+      <scroll-view scroll-y style="height: 200px;"
+       bindscrolltoupper="upper"
+      bindscrolltolower="lower" bindscroll="scroll"
+       scroll-into-view="toView"
+        scroll-top="scrollTop">
         <view id="green" class="scroll-view-item bc_green"></view>
         <view id="red" class="scroll-view-item bc_red"></view>
         <view id="yellow" class="scroll-view-item bc_yellow"></view>

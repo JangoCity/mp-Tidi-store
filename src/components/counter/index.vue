@@ -7,9 +7,15 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import store from './store'
+import store from '@/store'
 
 export default {
+  props: {
+    num: {
+      type: Number,
+      default: 0
+    }
+  },
   computed: {
     count() {
       return store.state.count
@@ -18,9 +24,13 @@ export default {
   methods: {
     increment() {
       store.commit('increment')
+      if (!this.count) return
+      this.$emit('change', this.count)
     },
     decrement() {
       store.commit('decrement')
+      if (!this.count) return
+      this.$emit('change', this.count)
     }
   }
 }
@@ -47,15 +57,15 @@ export default {
       position absolute
       top 50%
       left 50%
-      transform translate(-50%,-50%)
+      transform translate(-50%, -50%)
       background-size contain
       background-repeat no-repeat
-      content:''
+      content ''
       width 24rpx
   .add::before
-    height  24rpx
+    height 24rpx
     bg-image('icon-add')
   .sub::before
-    height  4rpx
+    height 4rpx
     bg-image('icon-sub')
 </style>
