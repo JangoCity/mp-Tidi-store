@@ -66,12 +66,14 @@
 <script type='text/ecmascript-6'>
 import counter from '@/components/counter'
 import userInfo from '@/components/userInfo'
+import nav from '@/components/nav'
 import tip from '@/components/tip'
 import { mapMutations } from 'vuex'
 import store from '@/store'
 
 export default {
   components: {
+    nav,
     userInfo,
     counter,
     tip
@@ -101,6 +103,8 @@ export default {
     isWechat() {
       return parseInt(this.payWay, 10) === 1
     }
+  },
+  mounted() {
   }
 }
 </script>

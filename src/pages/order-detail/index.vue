@@ -65,8 +65,8 @@
 
     <!-- 底部按钮 -->
     <section class="bottom">
-      <button class="btn  cancel">取消订单</button>
-      <button class="btn pay ">去支付</button>
+      <button class="btn  cancel" @click="handleCancelClick">取消订单</button>
+      <button class="btn pay " @click="handlePayClick">去支付</button>
     </section>
   </section>
 </template>
@@ -76,6 +76,19 @@ import userInfo from '@/components/userInfo'
 export default {
   components: {
     userInfo
+  },
+  methods: {
+    // 取消支付
+    handleCancelClick() {
+      console.log('取消支付')
+    },
+
+    // 跳转支付
+    handlePayClick() {
+      wx.navigateTo({
+        url: '../buy/main'
+      })
+    }
   },
   data() {
     return {
@@ -189,7 +202,7 @@ export default {
     background #fff
     height 100rpx
     padding 20rpx 30rpx
-    text-align  right
+    text-align right
     .btn
       display inline-block
       height 60rpx
