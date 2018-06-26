@@ -151,7 +151,6 @@ export default {
         .item-diff
           font-size 18px
       .scroll-buyer-wrapper
-        margin-bottom 20rpx
         height 250rpx
         overflow hidden
     .slide-image
