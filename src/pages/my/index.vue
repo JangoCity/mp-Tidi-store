@@ -75,7 +75,6 @@ export default {
   .item
     position relative
     padding 20rpx 0
-    font-size 32rpx
     border-bottom 0.5rpx solid #d7d7d7
     extend-click()
     &::after,.text::before
@@ -88,6 +87,7 @@ export default {
        height 18rpx
     .text
       position relative
+      font-size 32rpx
       height 60rpx
       line-height 60rpx
       padding-left 60rpx
