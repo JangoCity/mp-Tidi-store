@@ -20,9 +20,9 @@ export default {
       'pages/index/main', // 首页
       'pages/order-list/main', // 订单列表
       'pages/order-detail/main', // 订单详情
-      'pages/goods-detail/main', // 商品详情
+      '^pages/goods-detail/main', // 商品详情
       'pages/bill-detail/main', // 账单详情
-      '^pages/column-list/main', // 栏目列表
+      'pages/column-list/main', // 栏目列表
       'pages/buy/main', // 购买
       'pages/my/main', // 我的
       'pages/my-profile/main', // 我的资料

@@ -4,7 +4,7 @@
     <section class="node-wrapper">
       <section class="node" v-for="(item, index) in activity.list" :key="item.id">
         <span class="dott"></span>
-        <span class="text">满{{item.final}}人返{{item.current}}</span>
+        <span class="text">满{{item.final}}人返{{item.current}}元</span>
       </section>
     </section>
 
@@ -74,4 +74,5 @@ export default {
       height 30rpx
     .text
       color #e60012
+      font-size 12px
 </style>
