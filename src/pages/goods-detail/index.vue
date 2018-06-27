@@ -90,13 +90,19 @@ export default {
         final: 200,
         current: 40,
         list: [{
-          text: '满50人返10'
+          id: 1001,
+          text: '满50人返10',
+          reached: 1 // 是否已完成 1 是，0否
         },
         {
-          text: '满100人返30'
+          id: 1002,
+          text: '满100人返30',
+          reached: 1
         },
         {
-          text: '满200人返50'
+          id: 1003,
+          text: '满200人返50',
+          reached: 0
         }]
       }
     }

@@ -13,6 +13,11 @@
           </section>
 
           <section class="content">
+            <!-- 展示更多返利优惠 -->
+            <section class="rebate-wrapper" >
+              <rebate :activity="activity"></rebate>
+            </section>
+
             <p class="tip">
               已有
               <span class="item-diff">{{item.sold}}</span>人购买, 还差
@@ -20,7 +25,7 @@
               <span class="item-diff money">{{item.rebate}}</span>
             </p>
 
-            <!-- 人数滚动组件 -->
+            <!-- 购买人数滚动组件 -->
             <section class="scroll-buyer-wrapper">
               <scroll-text :list='item.buyer'></scroll-text>
             </section>
@@ -46,10 +51,12 @@
 <script type='text/ecmascript-6'>
 import swiperGroup from '@/components/swiper'
 import scrollText from '@/components/scrollText'
+import rebate from '@/components/rebate'
 export default {
   components: {
     swiperGroup,
-    scrollText
+    scrollText,
+    rebate
   },
   data() {
     return {
@@ -86,7 +93,35 @@ export default {
         }],
         count: '16:24:22',
         imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529263999482&di=3ea3ffbc95250dda4423761791c61d22&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2%2F590ac2cddbd03.jpg'
-      }]
+      }],
+      activity: {
+        final: 200,
+        current: 40,
+        list: [{
+          id: 1001,
+          final: 50,
+          current: 10,
+          reached: 1 // 是否已完成 1 是，0否
+        },
+        {
+          id: 1002,
+          final: 100,
+          current: 30,
+          reached: 1
+        },
+        {
+          id: 1003,
+          reached: 0
+        },
+        {
+          id: 1004,
+          reached: 0
+        },
+        {
+          id: 1005,
+          reached: 0
+        }]
+      }
     }
   }
 }
@@ -159,6 +194,8 @@ export default {
       top 0
       height 100%
       z-index 1
+  .rebate-wrapper
+    margin-bottom 30rpx
   .bottom
     position absolute
     display flex
@@ -188,6 +225,8 @@ export default {
         border-radius 2px
     .btn
       width 290rpx
+      height 100rpx
+      line-height 100rpx
       flex 0 0 290rpx
       border-radius 0
 </style>

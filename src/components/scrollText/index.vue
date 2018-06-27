@@ -1,19 +1,20 @@
 <template>
   <section class='container' ref="box" data-tag="box">
-    <section class="list1">
-      <section v-for="(item, index) in list" :key="item.id" class="item">
-        <span class="name">{{item.name}}</span>刚购买了该商品
-      </section>
+    <section v-for="(item, index) in list" :key="item.id" class="item">
+      <span class="name" :style={color:item.color}>{{item.name}}</span>刚购买了该商品
     </section>
-    <section class="list2"></section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
+
+import { getArrRandomColor } from '@/utils'
+
 export default {
   data() {
     return {
-      animate: false
+      animate: false,
+      nameColor: getArrRandomColor(6)
     }
   },
   props: {
@@ -22,8 +23,7 @@ export default {
       default: []
     }
   },
-  created() {
-    setInterval(this._scroll, 500)
+  computed: {
   },
   methods: {
     _scroll(e) {
@@ -32,10 +32,17 @@ export default {
         this.list.shift()
         this.animate = false
       }, 500)
+    },
+    _randomCorlor() {
+      this.list.forEach((item, index) => {
+        const color = Math.floor(Math.random() * this.nameColor.length)
+        item.color = this.nameColor[color]
+      })
     }
   },
   mounted() {
-    // this._scroll()
+    setInterval(this._scroll, 500)
+    this._randomCorlor()
   }
 }
 </script>
@@ -46,7 +53,9 @@ export default {
   .item
     height 50rpx
     line-height 50rpx
+    color #fff
     .name
       display inline-block
-      padding-right:15rpx
+      padding-right 15rpx
+      font-weight 600
 </style>

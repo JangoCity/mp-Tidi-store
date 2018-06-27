@@ -2,9 +2,9 @@
   <section class="container">
     <!-- 节点 -->
     <section class="node-wrapper">
-      <section class="node" v-for="(item, index) in activity.list" :key="index">
+      <section class="node" v-for="(item, index) in activity.list" :key="item.id">
         <span class="dott"></span>
-        <span class="text">{{item.text}}</span>
+        <span class="text">满{{item.final}}人返{{item.current}}</span>
       </section>
     </section>
 

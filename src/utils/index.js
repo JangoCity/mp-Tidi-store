@@ -26,6 +26,20 @@ function request(url, method, data, header = {}) {
   })
 }
 
+// 生成单个随机颜色
+export function getRandomColor() {
+  return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6)
+}
+
+// 生成一组随机颜色
+export function getArrRandomColor(length) {
+  let arr = []
+  for (let i = 0; i < length; i++) {
+    arr.push(getRandomColor())
+  }
+  return arr
+}
+
 export function formatNumber(n) {
   const str = n.toString()
   return str[1] ? str : `0${str}`
