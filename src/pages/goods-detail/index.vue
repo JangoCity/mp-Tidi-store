@@ -37,19 +37,7 @@
 
       <!-- 活动 组件-->
       <section class="progress-wraper">
-        <!-- <progress-bar></progress-bar> -->
-        <!-- <flow> -->
-          <!-- <flow-state state="1" :title="'123123'" is-done></flow-state>
-          <flow-line is-done></flow-line>
-          <flow-state state="2" is-done>
-            <span slot="title">打发的说法</span>
-          </flow-state>
-          <flow-line :tip="'啊啊啊'"></flow-line>
-          <flow-state state="3" :title="'asdad'"></flow-state>
-          <flow-line></flow-line>
-          <flow-state state="4" :title="'阿斯蒂芬'"></flow-state>
-          -->
-        <!-- </flow> -->
+        <progress-bar :activity="activity"></progress-bar>
       </section>
     </section>
 
@@ -77,14 +65,10 @@
 <script type='text/ecmascript-6'>
 import progressBar from '@/components/progressBar'
 import swiperGroup from '@/components/swiper'
-// import { Flow, FlowState, FlowLine } from 'vux'
 export default {
   components: {
     progressBar,
     swiperGroup
-    // Flow,
-    // FlowState,
-    // FlowLine
   },
   data() {
     return {
@@ -101,7 +85,20 @@ export default {
           id: 1003,
           url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529264019432&di=e0144c64b92702eaf6b0e175a2385d46&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2017-10-10%2F59dc5ca75d021.jpg'
         }
-      ]
+      ],
+      activity: {
+        final: 200,
+        current: 40,
+        list: [{
+          text: '满50人返10'
+        },
+        {
+          text: '满100人返30'
+        },
+        {
+          text: '满200人返50'
+        }]
+      }
     }
   }
 }
@@ -157,6 +154,7 @@ export default {
     text-align center
     border 1px solid #eee
     line-height 70rpx
+    margin-bottom 30rpx
     .box
       width 50%
     .header
@@ -167,6 +165,8 @@ export default {
     .title
       font-size 16px
       margin-bottom 30rpx
+  .progress-wraper
+    margin-bottom 30rpx
   .bottom
     position fixed
     display flex
