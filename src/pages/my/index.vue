@@ -8,6 +8,9 @@
         <p class="nickname">无敌的被窝君</p>
         <p class="local">华中科技产业大厦</p>
       </section>
+      <section>
+        <button size="mini" @click="handleLoginClick">登陆</button>
+      </section>
       <section class="id">
         ID:19700001
       </section>
@@ -28,6 +31,35 @@ export default {
   data() {
     return {
       myList
+    }
+  },
+  methods: {
+    handleLoginClick() {
+      wx.getSetting({
+        success(res) {
+          if (!res.authSetting['scope.record']) {
+            wx.authorize({
+              scope: 'scope.record',
+              success() {
+                // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
+                wx.startRecord()
+              }
+            })
+          }
+        }
+      })
+      wx.login({
+        success(res) {
+          console.log(res)
+          if (res.code) {
+          } else {
+            console.log('登录失败！' + res.errMsg)
+          }
+        },
+        fail(err) {
+          console.log(err)
+        }
+      })
     }
   }
 }
@@ -75,19 +107,19 @@ export default {
   .item
     position relative
     padding 20rpx 0
+    font-size 32rpx
     border-bottom 0.5rpx solid #d7d7d7
     extend-click()
-    &::after,.text::before
+    &::after, .text::before
       prefix-icon()
     &::after
-       bg-image('icon-arrow-r')
-       left auto
-       right 0
-       width 11rpx
-       height 18rpx
+      bg-image('icon-arrow-r')
+      left auto
+      right 0
+      width 11rpx
+      height 18rpx
     .text
       position relative
-      font-size 32rpx
       height 60rpx
       line-height 60rpx
       padding-left 60rpx

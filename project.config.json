@@ -9,7 +9,7 @@
 	},
 	"miniprogramRoot": "./dist/",
 	"compileType": "miniprogram",
-	"appid": "touristappid",
+	"appid": "wx797e5799a9b309c5",
 	"projectname": "Tidi-Store",
 	"condition": {
 		"search": {

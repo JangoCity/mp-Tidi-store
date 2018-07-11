@@ -31,6 +31,7 @@
 <script type='text/ecmascript-6'>
 import Local from '@/components/local'
 import { indexInfo } from '@/common/js/staticData'
+import fly from '@/utils/fly'
 export default {
   components: {
     Local
@@ -46,12 +47,18 @@ export default {
     handleTabClick(id) {
       this.currentId = id
     },
-    getUserInfo() {
+    async _getInof() {
+      // const params = {uid: 1, shop_id: 8, category: 1}
+      const params = {uid: 1, lat: 22.5780288743, lng: 113.8773005192}
+      const res = await fly.get('index', params)
+      console.log(res.data)
+    },
+    _getUserInfo() {
       // 调用登录接口
       wx.login({
         success: () => {
           wx.getUserInfo({
-            success: (res) => {
+            success: res => {
               this.userInfo = res.userInfo
             }
           })
@@ -61,89 +68,129 @@ export default {
   },
   mounted() {
     // 调用应用实例的方法获取全局数据
-    this.getUserInfo()
+    // this._getUserInfo()
+    this._getInof()
   }
 }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
-@import '~common/stylus/mixin'
-@import '~common/stylus/variable'
-.container
-  padding 0 40rpx
-  color #999
-  .local-wraper
-    margin-bottom 30rpx
-  .tabs
-    display flex
-    justify-content space-between
-    margin-bottom 30rpx
-    .item
-      position relative
-      text-align center
-      box-sizing border-box
-      width 320rpx
-      height 120rpx
-      line-height 120rpx
-      font-size 16px
-      background #fff
-      border 1px solid #d9d9d9
-      border-radius 6px
-      text-indent 25rpx
-      .text
-        position relative
-        display inline-block
-        &::before
-          prefix-icon(40rpx, 40rpx)
-          left -25rpx
-      &:nth-of-type(1) .text::before
-        bg-image('icon-work')
-      &:nth-of-type(2) .text::before
-        bg-image('icon-life')
-      &:nth-of-type(1).active .text::before
-        bg-image('icon-work-active')
-      &:nth-of-type(2).active .text::before
-        bg-image('icon-life-active')
-      &.active
-        color #fff
-        background linear-gradient(to bottom, #e61b00, #ff5408)
-        border none
-  .content
-    .list
-      display flex
-      flex-direction column
-      flex-wrap nowrap
-      justify-content space-between
-      .item
-        position relative
-        height 240rpx
-        background #f4f4f4
-        padding 40rpx 20rpx
-        margin-bottom 40rpx
-        .text-wrapper
-          width 350rpx
-          font-size 18px
-          padding-right 20px
-          .title
-            position relative
-            color #333
-            font-weight 700
-            font-size 20px
-            margin-bottom 30rpx
-            padding-left 30rpx
-            &::before
-              prefix-icon(14rpx, 14rpx)
-              background-color $color-theme
-              border-radius 50%
-          .desc
-            line-height 1.6
-            font-size 16px
-        .img-wrapper
-          position absolute
-          width 340rpx
-          height 240rpx
-          right 0
-          bottom 0
-        .img
-          fix-image-size()
+@import '~common/stylus/mixin';
+@import '~common/stylus/variable';
+
+.container {
+  padding: 0 40rpx;
+  color: #999;
+
+  .local-wraper {
+    margin-bottom: 30rpx;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30rpx;
+
+    .item {
+      position: relative;
+      text-align: center;
+      box-sizing: border-box;
+      width: 320rpx;
+      height: 120rpx;
+      line-height: 120rpx;
+      font-size: 16px;
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      text-indent: 25rpx;
+
+      .text {
+        position: relative;
+        display: inline-block;
+
+        &::before {
+          prefix-icon(40rpx, 40rpx);
+          left: -25rpx;
+        }
+      }
+
+      &:nth-of-type(1) .text::before {
+        bg-image('icon-work');
+      }
+
+      &:nth-of-type(2) .text::before {
+        bg-image('icon-life');
+      }
+
+      &:nth-of-type(1).active .text::before {
+        bg-image('icon-work-active');
+      }
+
+      &:nth-of-type(2).active .text::before {
+        bg-image('icon-life-active');
+      }
+
+      &.active {
+        color: #fff;
+        background: linear-gradient(to bottom, #e61b00, #ff5408);
+        border: none;
+      }
+    }
+  }
+
+  .content {
+    .list {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+
+      .item {
+        position: relative;
+        height: 240rpx;
+        background: #f4f4f4;
+        padding: 40rpx 20rpx;
+        margin-bottom: 40rpx;
+
+        .text-wrapper {
+          width: 350rpx;
+          font-size: 18px;
+          padding-right: 20px;
+
+          .title {
+            position: relative;
+            color: #333;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 30rpx;
+            padding-left: 30rpx;
+
+            &::before {
+              prefix-icon(14rpx, 14rpx);
+              background-color: $color-theme;
+              border-radius: 50%;
+            }
+          }
+
+          .desc {
+            line-height: 1.6;
+            font-size: 16px;
+          }
+        }
+
+        .img-wrapper {
+          position: absolute;
+          width: 340rpx;
+          height: 240rpx;
+          right: 0;
+          bottom: 0;
+        }
+
+        .img {
+          fix-image-size();
+        }
+      }
+    }
+  }
+}
 </style>

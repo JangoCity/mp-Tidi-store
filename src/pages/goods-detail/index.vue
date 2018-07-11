@@ -91,20 +91,17 @@ export default {
         current: 40,
         list: [{
           id: 1001,
-          final: 50,
-          current: 10,
+          text: '满50人返10',
           reached: 1 // 是否已完成 1 是，0否
         },
         {
           id: 1002,
-          final: 100,
-          current: 30,
-          reached: 0
+          text: '满100人返30',
+          reached: 1
         },
         {
           id: 1003,
-          final: 200,
-          current: 50,
+          text: '满200人返50',
           reached: 0
         }]
       }
@@ -214,7 +211,6 @@ export default {
           bg-image('icon-share')
     .btn
       width 290rpx
-      line-height 100rpx
       flex 0 0 290rpx
       border-radius 0
 </style>
