@@ -1,20 +1,26 @@
 <template>
   <section class="container">
+    <!-- 用户信息 -->
     <section class="user-info">
       <section class="avatar-wrapper">
-
+        <img :src="userinfo.avatarUrl" class="avatar" mode="">
       </section>
       <section class="profile">
-        <p class="nickname">无敌的被窝君</p>
-        <p class="local">华中科技产业大厦</p>
-      </section>
-      <section>
-        <button size="mini" @click="handleLoginClick">登陆</button>
+        <button open-type="getUserInfo" class="nickname" size="mini" @getuserinfo="handleGetUserInfo" @click="handleCheckVersion">{{userinfo.nickName}}</button>
+        <p class="local" v-if="userinfo.city" v-text="userinfo.city"></p>
       </section>
       <section class="id">
         ID:19700001
       </section>
+
+      <!-- mask -->
+      <section class="bg-img">
+        <section class="mask"></section>
+        <img :src="userBgImg" class="img">
+      </section>
     </section>
+
+    <!-- panel -->
     <section class="list">
       <ul>
         <li v-for="(item, index) in myList" :key="item.id" class="item">
@@ -30,36 +36,48 @@ import { myList } from '@/common/js/staticData'
 export default {
   data() {
     return {
+      id: '',
+      userBgImg: 'http://image.zhangxinxu.com/image/blog/201208/2012-08-19_155221.jpg',
+      userinfo: {
+        avatarUrl: '../../../static/images/unlogin.png',
+        nickName: '点击登录',
+        city: ''
+      },
       myList
     }
   },
+  computed: {
+  },
   methods: {
-    handleLoginClick() {
-      wx.getSetting({
-        success(res) {
-          if (!res.authSetting['scope.record']) {
-            wx.authorize({
-              scope: 'scope.record',
-              success() {
-                // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
-                wx.startRecord()
-              }
-            })
-          }
+    // 检测用户微信版本
+    handleCheckVersion() {
+      if (!wx.canIUse('button.open-type.getUserInfo')) {
+        console.log('请升级微信版本')
+      }
+    },
+    handleGetUserInfo(e) {
+      let userinfo = wx.getStorageSync('userinfo')
+      // 首次登陆
+      if (!userinfo) {
+        const detail = e.mp.detail
+        if (detail.rawData) { // 用户按了允许授权按钮
+          const userInfo = detail.userInfo
+          wx.setStorageSync('userinfo', userInfo)
+          this.userinfo = userInfo
+          this.userBgImg = userInfo.avatarUrl
+        } else {
+          console.log('用户按了拒绝按钮')
         }
-      })
-      wx.login({
-        success(res) {
-          console.log(res)
-          if (res.code) {
-          } else {
-            console.log('登录失败！' + res.errMsg)
-          }
-        },
-        fail(err) {
-          console.log(err)
-        }
-      })
+      }
+    }
+  },
+  mounted() {
+  },
+  onShow() {
+    let userinfo = wx.getStorageSync('userinfo')
+    if (userinfo) {
+      this.userinfo = userinfo
+      this.userBgImg = userinfo.avatarUrl
     }
   }
 }
@@ -73,24 +91,45 @@ export default {
     position relative
     height 230rpx
     padding 60rpx 0 60rpx 30rpx
-    background red
+    background-size contain
     box-sizing border-box
     color #fff
     font-size 0
+    .bg-img
+      position absolute
+      width 100%
+      height 230rpx
+      overflow hidden
+      z-index -1
+      top 0
+      left 0
+      .img
+        position absolute
+        width 100%
+        filter blur(15px)
     .avatar-wrapper
       display inline-block
       width 112rpx
       height 112rpx
       vertical-align top
-      background #666
+      background #fff
       padding 2rpx
       border-radius 50%
       margin-right 30rpx
+      overflow hidden
+      .avatar
+        width 112rpx
+        height 112rpx
+        border-radius 50%
     .profile
       display inline-block
-      line-height 56rpx
       .nickname
+        color #fff
+        padding 0
+        position static
         font-size 32rpx
+        background transparent
+        border none
       .local
         font-size 24rpx
     .id

@@ -7,3 +7,34 @@ body, html
   -webkit-tap-highlight-color: transparent
   background: $color-background
   color: $color-text
+
+
+  // 定义全局border
+.container
+  background #fff
+  font-size 14px
+  color #333
+.max-img
+  max-width 100%
+  max-height 100%
+.btn-confirm
+  font-size 16px
+  background #e60012
+  color #fff
+.line-gradient-btn
+  color #fff
+  background linear-gradient(to bottom, #e61b00, #ff5408)
+  border none
+.money
+  &::before
+    content '￥'
+    font-size 12px
+.list-text-between
+  .item
+    display flex
+    flex-wrap nowrap
+    justify-content space-between
+    .label
+      color #666
+    .info
+      color #333

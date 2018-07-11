@@ -95,7 +95,7 @@ export default {
     left 0
     height 4rpx
     background red
-    top 42px
+    top 40px
     transition left 200
     z-index 99
 </style>

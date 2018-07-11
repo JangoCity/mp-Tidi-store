@@ -4,8 +4,8 @@
       <slide-nav :menuWidth="75" :currentTab.sync="currentTab" :tabList="tabList"></slide-nav>
     </section>
     <swiper :current="currentTab" :style="'height:'+contentHeight" class="swiper-box" duration="300" @change="swiperChange">
-      <swiper-item v-for="(item,index) in tabList" :key="index">
-        <order-list v-if="index==currentTab" :currentTab="item"></order-list>
+      <swiper-item v-for="(item,index) in tabList" :key="item.id">
+        <order-list v-if="index===currentTab" :currentTab="item"></order-list>
       </swiper-item>
     </swiper>
   </section>
@@ -30,6 +30,7 @@ export default {
     }
   },
   methods: {
+    // 切换swiper
     swiperChange(e) {
       let { current } = e.target
       this.currentTab = current
