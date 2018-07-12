@@ -23,7 +23,7 @@
     <!-- panel -->
     <section class="list">
       <ul>
-        <li v-for="(item, index) in myList" :key="item.id" class="item">
+        <li v-for="(item, index) in myList" :key="item.id" class="item" @click="handleLinkClick(item)">
           <section class="text">{{item.title}}</section>
         </li>
       </ul>
@@ -49,6 +49,32 @@ export default {
   computed: {
   },
   methods: {
+    // 跳转
+    handleLinkClick(item) {
+      console.log(item.id)
+      let url = ''
+      switch (item.id) {
+        case 101:
+          url = '../my-profile/main'
+          break
+        case 102:
+          url = '../my-wallet/main'
+          break
+        case 103:
+          url = '../my-address/main'
+          break
+        case 104:
+          url = '../my-favorite/main'
+          break
+        case 105:
+          url = '../my-notice/main'
+          break
+      }
+      console.log(url)
+      wx.navigateTo({
+        url
+      })
+    },
     // 检测用户微信版本
     handleCheckVersion() {
       if (!wx.canIUse('button.open-type.getUserInfo')) {
