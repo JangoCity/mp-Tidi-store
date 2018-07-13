@@ -2,29 +2,29 @@
   <section class="container">
     <!-- 用户信息 -->
     <section class="user-info">
-      <section class="avatar-wrapper">
-        <img :src="userinfo.avatarUrl" class="avatar" mode="">
+      <section class="avatar-wrapper content">
+        <img :src="userinfo.avatarUrl" class="avatar">
       </section>
-      <section class="profile">
+      <section class="profile content">
         <button open-type="getUserInfo" class="nickname" size="mini" @getuserinfo="handleGetUserInfo" @click="handleCheckVersion">{{userinfo.nickName}}</button>
         <p class="local" v-if="userinfo.city" v-text="userinfo.city"></p>
       </section>
-      <section class="id">
+      <section class="id content">
         ID:19700001
       </section>
 
       <!-- mask -->
       <section class="bg-img">
         <section class="mask"></section>
-        <img :src="userBgImg" class="img">
+        <img :src="userBgImg" class="img" mode="scaleToFill">
       </section>
     </section>
 
     <!-- panel -->
     <section class="list">
       <ul>
-        <li v-for="(item, index) in myList" :key="item.id" class="item" @click="handleLinkClick(item)">
-          <section class="text">{{item.title}}</section>
+        <li v-for="(item, index) in myList" :key="item.id" class="item">
+          <section class="text" @click="handleLinkClick(item)">{{item.title}}</section>
         </li>
       </ul>
     </section>
@@ -33,7 +33,9 @@
 
 <script type='text/ecmascript-6'>
 import { myList } from '@/common/js/staticData'
+import { share } from '@/common/js/mixins'
 export default {
+  mixins: [share],
   data() {
     return {
       id: '',
@@ -71,6 +73,7 @@ export default {
           break
       }
       console.log(url)
+      // 跳转
       wx.navigateTo({
         url
       })
@@ -81,6 +84,7 @@ export default {
         console.log('请升级微信版本')
       }
     },
+    //
     handleGetUserInfo(e) {
       let userinfo = wx.getStorageSync('userinfo')
       // 首次登陆
@@ -126,13 +130,25 @@ export default {
       width 100%
       height 230rpx
       overflow hidden
-      z-index -1
+      z-index 1
       top 0
       left 0
-      .img
+      .mask, .img
         position absolute
         width 100%
-        filter blur(15px)
+      .mask
+        height inherit
+        z-index 2
+        background-image linear-gradient(to bottom, #222, #000)
+        filter blur(5px)
+        opacity 0.55
+      .img
+        z-index 1
+        height 750rpx
+        filter blur(10px)
+    .content
+      position relative
+      z-index 9
     .avatar-wrapper
       display inline-block
       width 112rpx
@@ -150,12 +166,10 @@ export default {
     .profile
       display inline-block
       .nickname
+        btn-normal()
         color #fff
-        padding 0
         position static
         font-size 32rpx
-        background transparent
-        border none
       .local
         font-size 24rpx
     .id

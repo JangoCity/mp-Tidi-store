@@ -3,112 +3,17 @@
     <section class="list-wrapper">
 
       <scroll-view scroll-y scroll-top="scrollTop">
-        <section class="scroll-view-item  border-bottom">
+
+        <section v-for="(item, index) in noticeList" :key="item.id" class="scroll-view-item  border-bottom">
           <section class="header">
             <span class="title">
-              <em class="icon system new"></em>系统消息</span>
+              <em class="icon system new"></em>{{item.title}}</span>
             <span class="date">
-              9-08 12:26
+              {{item.created_at}}
             </span>
           </section>
           <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
-          </section>
-        </section>
-        <section class="scroll-view-item  border-bottom">
-          <section class="header">
-            <span class="title">
-              <em class="icon system new"></em>系统消息</span>
-            <span class="date">
-              9-08 12:26
-            </span>
-          </section>
-          <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
-          </section>
-        </section>
-        <section class="scroll-view-item  border-bottom">
-          <section class="header">
-            <span class="title">
-              <em class="icon system new"></em>系统消息</span>
-            <span class="date">
-              9-08 12:26
-            </span>
-          </section>
-          <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
-          </section>
-        </section>
-        <section class="scroll-view-item  border-bottom">
-          <section class="header">
-            <span class="title">
-              <em class="icon system new"></em>系统消息</span>
-            <span class="date">
-              9-08 12:26
-            </span>
-          </section>
-          <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
-          </section>
-        </section>
-        <section class="scroll-view-item  border-bottom">
-          <section class="header">
-            <span class="title">
-              <em class="icon system"></em>系统消息</span>
-            <span class="date">
-              9-08 12:26
-            </span>
-          </section>
-          <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
-          </section>
-        </section>
-        <section class="scroll-view-item  border-bottom">
-          <section class="header">
-            <span class="title">
-              <em class="icon system new"></em>系统消息</span>
-            <span class="date">
-              9-08 12:26
-            </span>
-          </section>
-          <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
-          </section>
-        </section>
-        <section class="scroll-view-item  border-bottom">
-          <section class="header">
-            <span class="title">
-              <em class="icon system"></em>系统消息</span>
-            <span class="date">
-              9-08 12:26
-            </span>
-          </section>
-          <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
-          </section>
-        </section>
-        <section class="scroll-view-item  border-bottom">
-          <section class="header">
-            <span class="title">
-              <em class="icon system"></em>系统消息</span>
-            <span class="date">
-              9-08 12:26
-            </span>
-          </section>
-          <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
-          </section>
-        </section>
-        <section class="scroll-view-item  border-bottom">
-          <section class="header">
-            <span class="title">
-              <em class="icon system"></em>系统消息</span>
-            <span class="date">
-              9-08 12:26
-            </span>
-          </section>
-          <section class="content">
-            <p>您好，恭喜您，您发起的火龙果4人拼团拼团成功，请等待派送员送货</p>
+            <p>{{item.content}}</p>
           </section>
         </section>
       </scroll-view>
@@ -118,42 +23,51 @@
 </template>
 
 <script type='text/ecmascript-6'>
-// import scrollView from '@/components/scrollView'
-export default {
-  components: {
 
+import fly from '@/utils/fly'
+import { share } from '@/common/js/mixins'
+export default {
+  mixins: [share],
+  components: {
   },
   data() {
     return {
-      scrollTop: 100
+      scrollTop: 100,
+      noticeList: []
     }
   },
   methods: {
-    upper: function (e) {
+    upper(e) {
       console.log(123)
     },
-    lower: function (e) {
+    lower(e) {
       console.log(456)
     },
-    scroll: function (e) {
+    scroll(e) {
       console.log(789)
     },
-    tapMove: function (e) {
+    tapMove(e) {
       this.setData({
         scrollTop: this.data.scrollTop + 10
       })
     },
-    onPullDownRefresh(e) {
-      // 开始下拉
-      wx.startPullDownRefresh({
-        success: () => {
-          console.log('刷新成功')
-        },
-        fail: () => {
-          console.log('刷新失败')
-        }
+    async _getNoticeList(init) {
+      wx.showNavigationBarLoading()
+      const params = { uid: 1, type: 3 }
+      const res = await fly.get('messageList', params)
+      this.noticeList = res.data.data.data
+      wx.stopPullDownRefresh()
+      wx.hideNavigationBarLoading()
+      this.noticeList.forEach(item => {
+        item.created_at = item.created_at.substring(5, 16)
       })
     }
+  },
+  async created() {
+    this._getNoticeList()
+  },
+  onPullDownRefresh() {
+    this._getNoticeList()
   }
 }
 </script>

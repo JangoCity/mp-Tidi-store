@@ -10,10 +10,7 @@
     <section class="form-group">
 
       <!-- 表单列表 -->
-      <section
-        v-for="(item, index) in list"
-        :key="item.id"
-         class="row  border-bottom" >
+      <section v-for="(item, index) in list" :key="item.id" class="row  border-bottom">
         <span class="label">{{item.label}}</span>
         <p class="input-wrapper">
           <input :placeholder="item.placehodleText" :maxlength="item.maxlength" type="number" class="input">
@@ -49,7 +46,7 @@ export default {
         id: 1002,
         label: '手机',
         placehodleText: '请输入手机号码',
-        maxlength: 6
+        maxlength: 11
       }, {
         id: 1002,
         label: '地区',

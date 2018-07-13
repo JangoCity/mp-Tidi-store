@@ -1,7 +1,7 @@
 <template>
   <section class="container">
     <section class="local-wraper">
-      <Local></Local>
+      <Local :address="address" :weather="weather"></Local>
     </section>
     <!-- 分类 -->
     <section class="tabs wrapper">
@@ -30,40 +30,88 @@
 
 <script type='text/ecmascript-6'>
 
-// import qcloud from 'wafer2-client-sdk'
 import fly from '@/utils/fly'
-// import { HOST } from '@/utils/config'
+import { indexInfo } from '@/common/js/staticData'
+import { share } from '@/common/js/mixins'
 
 import Local from '@/components/local'
 
-import { indexInfo } from '@/common/js/staticData'
-
 export default {
+  mixins: [share],
   components: {
     Local
   },
   data() {
     return {
+      address: '未知地点', // 地址
+      geo: { lat: '', lng: '' }, // 经纬度
+      weather: {}, // 天气
       userInfo: {},
       currentId: indexInfo[0].id,
       indexInfo: indexInfo
     }
   },
+  computed: {
+
+  },
   methods: {
+    // 切换
     handleTabClick(id) {
       this.currentId = id
     },
-    async _getInfo() {
-      const params = { uid: 1, lat: 22.5780288743, lng: 113.8773005192 }
-      const res = await fly.get('index', params)
-      console.log(res.data)
+    // 转换空气污染指数
+    _parseAir(index) {
+      let level = ''
+      index = parseInt(index, 10)
+      if (index > 0 && index < 50) {
+        level = '优'
+      } else if (index > 51 && index < 100) {
+        level = '良'
+      } else if (index > 101 && index < 150) {
+        level = '轻度'
+      } else if (index > 151 && index < 200) {
+        level = '中度'
+      } else if (index > 201 && index < 300) {
+        level = '重度'
+      }
+      return level
     },
-    _getUserInfo() {
+    // 转换平均温度
+    _parseAvgTemp(high, low) {
+      high = parseFloat(high.substring(2, 5), 10)
+      low = parseFloat(low.substring(2, 5), 10)
+      return (high + low) / 2 + '℃'
+    },
+    // 获取设备经纬度
+    _getGeo() {
+      let _this = this
+      let promise = new Promise((resolve, reject) => {
+        wx.getLocation({
+          success: geo => {
+            _this.geo = { lat: geo.latitude, lng: geo.longitude }
+            resolve(_this.geo)
+          },
+          fail: () => {
+            wx.hideLoading()
+          }
+        })
+      })
+      return promise
+    },
+    // 获取首页信息
+    async _getInfo() {
+      const geo = await this._getGeo() // 参数需要返回的经纬度
+      const params = { uid: 1, ...geo }
+      const res = await fly.get('index', params)
+      const data = res.data.data
+      this.address = data.address
+      this.weather = data.weather
+      this.weather.aqi = this._parseAir(data.aqi)
+      this.weather.avgTemperature = this._parseAvgTemp(this.weather.high, this.weather.low)
     }
   },
-  mounted() {
-    // 调用应用实例的方法获取全局数据
-    // this._getUserInfo()
+  async created() {
+    this._getInfo()
   }
 }
 </script>

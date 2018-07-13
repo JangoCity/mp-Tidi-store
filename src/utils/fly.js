@@ -20,11 +20,9 @@ fly.interceptors.request.use((config, promise) => {
 fly.interceptors.response.use(
   (response, promise) => {
     let data = response.data
-    console.log()
     if (typeof (data) === 'string' && data !== '') {
       data = JSON.parse(data)
     }
-
     if (data.code === ERR_OK) {
       data = data.data
     } else {

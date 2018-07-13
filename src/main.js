@@ -1,11 +1,8 @@
 import Vue from 'vue'
 import App from './App'
-// import lodash from 'lodash'
 
-// import './common/stylus/index.styl'
+import './common/stylus/index.styl'
 Vue.config.productionTip = false
-// 注入lodash 局部可以使用this.$lodash来调用
-// Vue.prototype.$lodash = lodash
 
 App.mpType = 'app'
 

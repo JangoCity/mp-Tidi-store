@@ -1,9 +1,11 @@
 <template>
   <section class="container">
+    <!-- <section class="balance-warapper" > -->
     <section class="balance-warapper">
-      <section class="balance-bar">
+      <section class="balance-bar" style="background-image: url('../../static/img/wallet-bg.png')">
         <p class="label">可用余额</p>
         <p class="balance-text">200,300.00</p>
+        <img src="">
       </section>
     </section>
 
@@ -44,99 +46,7 @@
             </section>
           </section>
         </section>
-           <!-- 一条记录 -->
-        <section class="scroll-view-item">
-          <section class="border-bottom wrapper">
-            <section class="goods-info">
-              <span class="title back">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
-            </section>
-            <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
-            </section>
-          </section>
-        </section>
-           <!-- 一条记录 -->
-        <section class="scroll-view-item">
-          <section class="border-bottom wrapper">
-            <section class="goods-info">
-              <span class="title success">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
-            </section>
-            <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
-            </section>
-          </section>
-        </section>
-           <!-- 一条记录 -->
-        <section class="scroll-view-item">
-          <section class="border-bottom wrapper">
-            <section class="goods-info">
-              <span class="title back">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
-            </section>
-            <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
-            </section>
-          </section>
-        </section>
-        <!-- 一条记录 -->
-        <section class="scroll-view-item">
-          <section class="border-bottom wrapper">
-            <section class="goods-info">
-              <span class="title success">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
-            </section>
-            <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
-            </section>
-          </section>
-        </section>
-        <!-- 一条记录 -->
-        <section class="scroll-view-item">
-          <section class="border-bottom wrapper">
-            <section class="goods-info">
-              <span class="title back">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
-            </section>
-            <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
-            </section>
-          </section>
-        </section>
 
-        <!-- 一条记录 -->
-        <section class="scroll-view-item">
-          <section class="border-bottom wrapper">
-            <section class="goods-info">
-              <span class="title success">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
-            </section>
-            <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
-            </section>
-          </section>
-        </section>
-
-        <!-- 一条记录 -->
-        <section class="scroll-view-item">
-          <section class="border-bottom wrapper">
-            <section class="goods-info">
-              <span class="title back">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
-            </section>
-            <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
-            </section>
-          </section>
-        </section>
       </scroll-view>
     </section>
   </section>
@@ -158,11 +68,12 @@ export default {
   .balance-warapper
     padding 30rpx
     .balance-bar
-      background red
       height 236rpx
       box-sizing border-box
       color #fff
       padding 50rpx 0 0 40rpx
+      background-size contain
+      background-repeat no-repeat
       .label
         font-size 14px
         margin-bottom 20rpx
@@ -217,3 +128,4 @@ export default {
         .price
           color $color-theme
 </style>
+//

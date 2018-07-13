@@ -34,6 +34,16 @@ no-wrap()
   overflow hidden
   white-space nowrap
 
+// 清楚按钮默认样式
+btn-normal()
+   background transparent
+   box-shadow none
+   border-radius 0
+   border none
+   padding 0
+   &::after
+      display none
+
 // 扩展点击区域
 extend-click()
   position relative

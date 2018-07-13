@@ -1,11 +1,6 @@
 <template>
   <scroll-view class="swiper-tab" scroll-x style="width: 100%">
-    <view :style="menuStyle"
-    v-for="(item,index) in tabList"
-    :key="item.id"
-    class="swiper-tab-item"
-    :data-current="index"
-    @tap="swichNav">{{item.title}}</view>
+    <view :style="menuStyle" v-for="(item,index) in tabList" :key="item.id" class="swiper-tab-item" :data-current="index" @tap="swichNav">{{item.status}}</view>
     <view class="block" :style="style"></view>
   </scroll-view>
 </template>
@@ -47,11 +42,13 @@ export default {
   computed: {
     style() {
       // 计算左侧剩余多少宽度，所以滚动条起始位置要加
-      let leftWidth = (this.winWidth - this.tabList.length * this.navWidth) / 2
-      let width = this.navWidth + 'px'
-      let left = leftWidth + this.navWidth * this.currentTab + 'px'
-      let style = { left, width }
-      return obj2style(style)
+      if (this.winWidth) {
+        let leftWidth = (this.winWidth - this.tabList.length * this.navWidth) / 2
+        let width = this.navWidth + 'px'
+        let left = leftWidth + this.navWidth * this.currentTab + 'px'
+        let style = { left, width }
+        return obj2style(style)
+      }
     },
     menuStyle() {
       let style = {}
