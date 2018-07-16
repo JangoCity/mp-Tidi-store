@@ -1,27 +1,40 @@
 <template>
   <section class="container">
     <!-- 地址类型 -->
-    <radio-group class="radio-group border-bottom" bindchange="radioChange">
-      <label class="radio" v-for="(item, index) in addressType" :key="index">
-        <radio value="item.name" checked="item.checked" color="#e60012" />{{item.value}}
+    <radio-group class="radio-group border-bottom"
+                 bindchange="radioChange">
+      <label class="radio"
+             v-for="(item, index) in addressType"
+             :key="index">
+        <radio value="item.name"
+               checked="item.checked"
+               color="#e60012" />{{item.value}}
       </label>
     </radio-group>
 
     <section class="form-group">
 
       <!-- 表单列表 -->
-      <section v-for="(item, index) in list" :key="item.id" class="row  border-bottom">
+      <section v-for="(item, index) in list"
+               :key="item.id"
+               class="row  border-bottom">
         <span class="label">{{item.label}}</span>
         <p class="input-wrapper">
-          <input :placeholder="item.placehodleText" :maxlength="item.maxlength" type="number" class="input">
+          <input :placeholder="item.placehodleText"
+                 :maxlength="item.maxlength"
+                 type="number"
+                 class="input">
         </p>
-        <button v-if="item.verify" class="btn-verify" @click="handleCountDownClick">发送验证码</button>
+        <button v-if="item.verify"
+                class="btn-verify"
+                @click="handleCountDownClick">发送验证码</button>
       </section>
 
     </section>
 
     <section class="btn-wrapper">
-      <button class="btn-confirm" @click="handleConfirmClick">保存</button>
+      <button class="btn-confirm"
+              @click="handleConfirmClick">保存</button>
     </section>
   </section>
 </template>

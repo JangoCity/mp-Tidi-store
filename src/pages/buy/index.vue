@@ -9,8 +9,14 @@
     <!-- 支付方式 -->
     <section class="pay-way">
       <h5 class="title">请选择支付方式</h5>
-      <section data-id=0 @click="handlePayWayClick" class="item balance border-bottom" :class="{ active: isBalance}">余额支付</section>
-      <section data-id=1 @click="handlePayWayClick" class="item wechat" :class="{active:isWechat}">微信支付</section>
+      <section data-id=0
+               @click="handlePayWayClick"
+               class="item balance border-bottom"
+               :class="{ active: isBalance}">余额支付</section>
+      <section data-id=1
+               @click="handlePayWayClick"
+               class="item wechat"
+               :class="{active:isWechat}">微信支付</section>
     </section>
 
     <!-- 商品信息 -->
@@ -23,7 +29,8 @@
       <!-- 商品相关信息 -->
       <section class="goods-total">
         <section class="img-wrapper">
-          <img src="./aasdasd.jpg" class="max-img">
+          <img src="./aasdasd.jpg"
+               class="max-img">
         </section>
         <section class="text-wrapper">
           <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 枣香枣脆 等你</p>
@@ -38,14 +45,19 @@
           <counter @change="handleCountClick"></counter>
         </span>
       </section>
-      <tip :rank='100' :sale="10"></tip>
+      <tip :rank='100'
+           :sale="10"></tip>
     </section>
 
     <!-- 客户留言 -->
     <section class="comment-wrapper">
       <p class="title">订单留言</p>
       <section class="textarea-wrapper">
-        <textarea class="textarea" :placeholder="'请填写您需要备注的信息'" placeholder-class="placehodle" placeholder-style="color:#999; font-size:14px;" auto-focus></textarea>
+        <textarea class="textarea"
+                  :placeholder="'请填写您需要备注的信息'"
+                  placeholder-class="placehodle"
+                  placeholder-style="color:#999; font-size:14px;"
+                  auto-focus></textarea>
       </section>
     </section>
 
@@ -67,7 +79,6 @@
 import counter from '@/components/counter'
 import userInfo from '@/components/userInfo'
 import tip from '@/components/tip'
-import { mapMutations } from 'vuex'
 import store from '@/store'
 
 export default {
@@ -91,8 +102,7 @@ export default {
       console.log(this.total)
       const base = 78
       this.total = base * count
-    },
-    ...mapMutations(['increment', 'incrementBy'])
+    }
   },
   computed: {
     isBalance() {

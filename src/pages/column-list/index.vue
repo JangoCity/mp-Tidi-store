@@ -1,7 +1,14 @@
 <template>
   <section class="container">
-    <swiper :autoplay="autoplay" :circular="circular" :indicatorDots="indicatorDots" :indicator-color="indicatorColor" :indicator-active-color="indicatorActiveColor" style="height:100%">
-      <section v-for="(item,index) in list" :key="item.id" class="wrapper">
+    <swiper :autoplay="autoplay"
+            :circular="circular"
+            :indicatorDots="indicatorDots"
+            :indicator-color="indicatorColor"
+            :indicator-active-color="indicatorActiveColor"
+            style="height:100%">
+      <section v-for="(item,index) in list"
+               :key="item.id"
+               class="wrapper">
         <swiper-item class="swiper-item">
 
           <section class="header">
@@ -14,7 +21,7 @@
 
           <section class="content">
             <!-- 展示更多返利优惠 -->
-            <section class="rebate-wrapper" >
+            <section class="rebate-wrapper">
               <rebate :activity="activity"></rebate>
             </section>
 
@@ -31,7 +38,10 @@
             </section>
           </section>
           <!-- 图片 -->
-          <image :src="item.imgUrl" mode="scaleToFill" class="slide-image" style="width:100%" />
+          <image :src="item.imgUrl"
+                 mode="scaleToFill"
+                 class="slide-image"
+                 style="width:100%" />
           <!-- 底部信息 -->
           <section class="bottom">
             <section class="count-time">

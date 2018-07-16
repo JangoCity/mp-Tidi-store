@@ -1,25 +1,38 @@
 <template>
   <section class="container">
     <section class="local-wraper">
-      <Local :address="address" :weather="weather"></Local>
+      <Local :address="address"
+             :weather="weather"></Local>
     </section>
     <!-- 分类 -->
     <section class="tabs wrapper">
-      <section v-for="item in indexInfo" :key="item.id" class="item" :class="{ active: item.id===currentId }" @click="handleTabClick(item.id)">
+      <section v-for="item in indexInfo"
+               :key="item.id"
+               class="item"
+               :class="{ active: item.id===currentId }"
+               @click="handleTabClick(item.id)">
         <span class="text">{{item.title}}</span>
       </section>
     </section>
     <!-- 内容 -->
     <section class="content">
-      <section v-for="(list,i) in indexInfo" :key="list.id" :class="{ active: list.id===currentId }" v-show="list.id===currentId " @click="handleTabClick(list.id)">
+      <section v-for="(list,i) in indexInfo"
+               :key="list.id"
+               :class="{ active: list.id===currentId }"
+               v-show="list.id===currentId "
+               @click="handleTabClick(list.id)">
         <ul class="list">
-          <li v-for="(item, index) in list.list" :key="item.id" class="item">
+          <li v-for="(item, index) in list.list"
+              :key="item.id"
+              class="item">
             <section class="text-wrapper">
               <h4 class="title">{{item.title}}</h4>
               <p class="desc">{{item.desc}}</p>
             </section>
             <section class="img-wrapper">
-              <img :src="item.image" mode="aspectFit" class="img">
+              <img :src="item.image"
+                   mode="aspectFit"
+                   class="img">
             </section>
           </li>
         </ul>
@@ -31,10 +44,12 @@
 <script type='text/ecmascript-6'>
 
 import fly from '@/utils/fly'
+import { showModal } from '@/utils'
 import { indexInfo } from '@/common/js/staticData'
 import { share } from '@/common/js/mixins'
-
 import Local from '@/components/local'
+
+import { mapGetters } from 'vuex'
 
 export default {
   mixins: [share],
@@ -46,41 +61,19 @@ export default {
       address: '未知地点', // 地址
       geo: { lat: '', lng: '' }, // 经纬度
       weather: {}, // 天气
-      userInfo: {},
       currentId: indexInfo[0].id,
       indexInfo: indexInfo
     }
   },
   computed: {
-
+    ...mapGetters(['userinfo'])
   },
   methods: {
     // 切换
     handleTabClick(id) {
       this.currentId = id
-    },
-    // 转换空气污染指数
-    _parseAir(index) {
-      let level = ''
-      index = parseInt(index, 10)
-      if (index > 0 && index < 50) {
-        level = '优'
-      } else if (index > 51 && index < 100) {
-        level = '良'
-      } else if (index > 101 && index < 150) {
-        level = '轻度'
-      } else if (index > 151 && index < 200) {
-        level = '中度'
-      } else if (index > 201 && index < 300) {
-        level = '重度'
-      }
-      return level
-    },
-    // 转换平均温度
-    _parseAvgTemp(high, low) {
-      high = parseFloat(high.substring(2, 5), 10)
-      low = parseFloat(low.substring(2, 5), 10)
-      return (high + low) / 2 + '℃'
+      // console.log(this.userinfo.nickName)
+      console.log('vm实例==========', this.userinfo)
     },
     // 获取设备经纬度
     _getGeo() {
@@ -98,19 +91,53 @@ export default {
       })
       return promise
     },
+    // 授权并且获取openid以及用户ID
+    _getOpenId() {
+      wx.login({
+        success: async (res) => {
+          if (res.code) {
+            // 获取openId
+            let params = { code: res.code }
+            let data = await fly.get('auth', params)
+            let openid = data.openid
+
+            let userinfo = wx.getStorageSync('userinfo')
+            if (!userinfo) return
+
+            // 根据openId获取用户信息
+            params = {
+              openid,
+              wechat_name: userinfo.nickName,
+              image: userinfo.avatarUrl,
+              sex: userinfo.gender
+            }
+            let login = await fly.post('login', params)
+            // 将uid并入userinfo并存储Storage
+            userinfo.uid = login.user.id
+            wx.setStorageSync('userinfo', userinfo)
+          } else {
+            showModal({
+              title: '获取用户登录态失败！',
+              content: res.errMsg
+            })
+          }
+        }
+      })
+    },
     // 获取首页信息
     async _getInfo() {
       const geo = await this._getGeo() // 参数需要返回的经纬度
       const params = { uid: 1, ...geo }
-      const res = await fly.get('index', params)
-      const data = res.data.data
+      const data = await fly.get('index', params)
+      // console.log('首页返回结果====', data)
       this.address = data.address
       this.weather = data.weather
-      this.weather.aqi = this._parseAir(data.aqi)
-      this.weather.avgTemperature = this._parseAvgTemp(this.weather.high, this.weather.low)
+      this.weather.aqi = data.aqi
+      this.weather.avgTemperature = data.weather.high
     }
   },
-  async created() {
+  mounted() {
+    this._getOpenId()
     this._getInfo()
   }
 }

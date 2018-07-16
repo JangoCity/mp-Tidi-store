@@ -6,7 +6,8 @@
         <span class="text">待付款</span>
       </section>
       <section class="user-info">
-        <user-info :hasType="false" :phone="3665656565"></user-info>
+        <user-info :hasType="false"
+                   :phone="3665656565"></user-info>
       </section>
       <!-- 插入组件 user-info-->
     </section>
@@ -15,7 +16,9 @@
     <section class="content">
       <section class="order-desc">
         <section class="img-wrapper">
-          <img src="./aasdasd.jpg" mode="aspectFit" class="max-img">
+          <img src="./aasdasd.jpg"
+               mode="aspectFit"
+               class="max-img">
         </section>
         <section class="text-wrapper">
           <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 枣香枣脆 等你抢购</p>
@@ -65,8 +68,10 @@
 
     <!-- 底部按钮 -->
     <section class="bottom">
-      <button class="btn  cancel" @click="handleCancelClick">取消订单</button>
-      <button class="btn pay " @click="handlePayClick">去支付</button>
+      <button class="btn  cancel"
+              @click="handleCancelClick">取消订单</button>
+      <button class="btn pay "
+              @click="handlePayClick">去支付</button>
     </section>
   </section>
 </template>

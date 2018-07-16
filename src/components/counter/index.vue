@@ -1,13 +1,16 @@
 <template>
   <div class="container">
-    <span class="sub btn" @click="decrement"></span>
+    <span class="sub btn"
+          @click="decrement"></span>
     <span class="count">{{ count }}</span>
-    <span class="add btn" @click="increment"></span>
+    <span class="add btn"
+          @click="increment"></span>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
 import store from '@/store'
+import { mapMutations } from 'vuex'
 
 export default {
   props: {
@@ -22,16 +25,10 @@ export default {
     }
   },
   methods: {
-    increment() {
-      store.commit('increment')
-      if (!this.count) return
-      this.$emit('change', this.count)
-    },
-    decrement() {
-      store.commit('decrement')
-      if (!this.count) return
-      this.$emit('change', this.count)
-    }
+    ...mapMutations({
+      'increment': 'INCREMENT',
+      'incrementBy': 'DECREMENT'
+    })
   }
 }
 </script>

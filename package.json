@@ -13,7 +13,6 @@
   "dependencies": {
     "mpvue": "^1.0.11",
     "vuex": "^3.0.1",
-    "wafer2-client-sdk": "2.1.0",
     "minapp-api-promise": "1.0.2"
   },
   "devDependencies": {

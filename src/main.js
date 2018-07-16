@@ -1,8 +1,13 @@
 import Vue from 'vue'
 import App from './App'
+import store from './store'
 
 import './common/stylus/index.styl'
+
 Vue.config.productionTip = false
+
+// mpvue只能这种方式挂载
+Vue.prototype.$store = store
 
 App.mpType = 'app'
 

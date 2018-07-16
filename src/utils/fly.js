@@ -1,9 +1,6 @@
 import Vue from 'vue'
-import {
-  HOST,
-  ERR_OK
-} from './config'
-const Fly = require('flyio/dist/npm/wx.js') // wx.js为flyio的微信小程序入口文件
+import { HOST, ERR_OK } from './config'
+const Fly = require('flyio/dist/npm/wx') // wx.js为flyio的微信小程序入口文件
 const fly = new Fly() // 创建fly实例
 
 // 添加拦截器
@@ -17,26 +14,32 @@ fly.interceptors.request.use((config, promise) => {
   return config
 })
 
+// 服务器响应
 fly.interceptors.response.use(
   (response, promise) => {
-    let data = response.data
-    if (typeof (data) === 'string' && data !== '') {
+    let res = response.data
+    let data = res.data
+
+    if (typeof data === 'string' && data !== '') {
       data = JSON.parse(data)
     }
-    if (data.code === ERR_OK) {
-      data = data.data
+
+    if (res.code === ERR_OK) {
+      promise.resolve(response.data)
     } else {
       wx.showLoading({
-        title: data.message
+        title: res.message
       })
     }
-
     wx.hideLoading()
+    console.log('拦截器返回结果：', data)
+    // 将请求结果返回
+    return data
   },
   (err, promise) => {
     // Do something with response error
-    console.log(err)
-    promise.reject('ssss')
+    console.log('拦截器错误消息：', err)
+    promise.reject(err)
     wx.hideLoading()
   }
 )

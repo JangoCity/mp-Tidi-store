@@ -1,11 +1,20 @@
 <template>
   <section class="container">
-    <section class="slide-nav-wrapper" v-if="tabList.length">
-      <slide-nav :menuWidth="menuWidth" :currentTab.sync="currentTab" :tabList="tabList"></slide-nav>
+    <section class="slide-nav-wrapper"
+             v-if="tabList.length">
+      <slide-nav :menuWidth="menuWidth"
+                 :currentTab.sync="currentTab"
+                 :tabList="tabList"></slide-nav>
     </section>
-    <swiper :current="currentTab" :style="contentHeight" class="swiper-box" duration="300" @change="swiperChange">
-      <swiper-item v-for="(item,index) in tabList" :key="item.id">
-        <order-list v-if="index===currentTab" :currentTab="item"></order-list>
+    <swiper :current="currentTab"
+            :style="contentHeight"
+            class="swiper-box"
+            duration="300"
+            @change="swiperChange">
+      <swiper-item v-for="(item,index) in tabList"
+                   :key="item.id">
+        <order-list v-if="index===currentTab"
+                    :currentTab="item"></order-list>
       </swiper-item>
     </swiper>
   </section>
@@ -20,10 +29,7 @@ import slideNav from '@/components/slideNav'
 import orderList from '@/components/orderList'
 export default {
   mixins: [share],
-  components: {
-    slideNav,
-    orderList
-  },
+  components: { slideNav, orderList },
   data() {
     return {
       winWidth: 0, // 设备宽度
@@ -46,14 +52,14 @@ export default {
       this.winHeight = info.windowHeight
     },
     async _getOrderList() {
-      const params = { uid: 2 }
+      const params = { uid: 1 }
       const res = await fly.get('orderList', params)
       const data = res.data.data
-      console.log('data===========', data)
       this.tabList = data.status
     }
   },
   computed: {
+    // 每个菜单的宽度
     menuWidth() {
       let width = 0
       switch (this.tabList.length) {
@@ -61,7 +67,7 @@ export default {
           width = 75
           break
         case 6:
-          width = 60
+          width = 68
           break
       }
       return width
@@ -72,8 +78,8 @@ export default {
     }
   },
   mounted() {
-    this._getOrderList()
     this._initSize()
+    this._getOrderList()
   },
   onHide() {
     this.currentTab = 0

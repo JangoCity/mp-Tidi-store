@@ -1,11 +1,12 @@
 <template>
   <section class="container">
-    <section class="local-box" @click="handeleRestInfoClick">
+    <section class="local-box"
+             @click="handeleRestInfoClick">
       <span class="local">{{address}}</span>
     </section>
     <section class="weather-box">
       <span> {{weather.avgTemperature}} {{weather.type}}</span>
-      <span>{{weather.aqi}}</span>
+      <span>{{airIndex}}</span>
     </section>
   </section>
 </template>
@@ -18,6 +19,24 @@ export default {
   },
   data() {
     return {
+    }
+  },
+  computed: {
+    airIndex() {
+      let level = ''
+      let airIndex = this.weather.aqi
+      if (airIndex > 0 && airIndex < 50) {
+        level = '优'
+      } else if (airIndex > 51 && airIndex < 100) {
+        level = '良'
+      } else if (airIndex > 101 && airIndex < 150) {
+        level = '轻度'
+      } else if (airIndex > 151 && airIndex < 200) {
+        level = '中度'
+      } else if (airIndex > 201 && airIndex < 300) {
+        level = '重度'
+      }
+      return level
     }
   },
   methods: {

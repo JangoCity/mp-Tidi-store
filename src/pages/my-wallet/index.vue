@@ -2,7 +2,8 @@
   <section class="container">
     <!-- <section class="balance-warapper" > -->
     <section class="balance-warapper">
-      <section class="balance-bar" style="background-image: url('../../static/img/wallet-bg.png')">
+      <section class="balance-bar"
+               style="background-image: url('../../static/img/wallet-bg.png')">
         <p class="label">可用余额</p>
         <p class="balance-text">200,300.00</p>
         <img src="">
@@ -19,7 +20,9 @@
 
     <!-- 消费情况 -->
     <section class="consume-list">
-      <scroll-view scroll-y scroll-top="scrollTop" style="height:775rpx">
+      <scroll-view scroll-y
+                   scroll-top="scrollTop"
+                   style="height:775rpx">
         <!-- 一条记录 -->
         <section class="scroll-view-item">
           <section class="border-bottom wrapper">
@@ -33,7 +36,7 @@
             </section>
           </section>
         </section>
-           <!-- 一条记录 -->
+        <!-- 一条记录 -->
         <section class="scroll-view-item">
           <section class="border-bottom wrapper">
             <section class="goods-info">

@@ -3,28 +3,40 @@
     <!-- 用户信息 -->
     <section class="user-info">
       <section class="avatar-wrapper content">
-        <img :src="userinfo.avatarUrl" class="avatar">
+        <img :src="userinfo.avatarUrl"
+             class="avatar">
       </section>
       <section class="profile content">
-        <button open-type="getUserInfo" class="nickname" size="mini" @getuserinfo="handleGetUserInfo" @click="handleCheckVersion">{{userinfo.nickName}}</button>
-        <p class="local" v-if="userinfo.city" v-text="userinfo.city"></p>
+        <button open-type="getUserInfo"
+                class="nickname"
+                size="mini"
+                @getuserinfo="handleGetUserInfo"
+                @click="handleCheckVersion">{{userinfo.nickName}}</button>
+        <p class="local"
+           v-if="userinfo.city"
+           v-text="userinfo.city"></p>
       </section>
       <section class="id content">
-        ID:19700001
+        ID:19700001{{userinfo.nickName}}
       </section>
 
       <!-- mask -->
       <section class="bg-img">
         <section class="mask"></section>
-        <img :src="userBgImg" class="img" mode="scaleToFill">
+        <img :src="userBgImg"
+             class="img"
+             mode="scaleToFill">
       </section>
     </section>
 
     <!-- panel -->
     <section class="list">
       <ul>
-        <li v-for="(item, index) in myList" :key="item.id" class="item">
-          <section class="text" @click="handleLinkClick(item)">{{item.title}}</section>
+        <li v-for="(item, index) in myList"
+            :key="item.id"
+            class="item">
+          <section class="text"
+                   @click="handleLinkClick(item)">{{item.title}}</section>
         </li>
       </ul>
     </section>
@@ -34,11 +46,13 @@
 <script type='text/ecmascript-6'>
 import { myList } from '@/common/js/staticData'
 import { share } from '@/common/js/mixins'
+import { showFail } from '@/utils'
+import { mapMutations, mapGetters } from 'vuex'
+
 export default {
   mixins: [share],
   data() {
     return {
-      id: '',
       userBgImg: 'http://image.zhangxinxu.com/image/blog/201208/2012-08-19_155221.jpg',
       userinfo: {
         avatarUrl: '../../../static/images/unlogin.png',
@@ -49,6 +63,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters['userinfo']
   },
   methods: {
     // 跳转
@@ -81,25 +96,31 @@ export default {
     // 检测用户微信版本
     handleCheckVersion() {
       if (!wx.canIUse('button.open-type.getUserInfo')) {
-        console.log('请升级微信版本')
+        showFail('请升级微信版本')
       }
     },
-    //
+    // 获取用户信息
     handleGetUserInfo(e) {
       let userinfo = wx.getStorageSync('userinfo')
       // 首次登陆
       if (!userinfo) {
         const detail = e.mp.detail
         if (detail.rawData) { // 用户按了允许授权按钮
-          const userInfo = detail.userInfo
-          wx.setStorageSync('userinfo', userInfo)
-          this.userinfo = userInfo
-          this.userBgImg = userInfo.avatarUrl
+          const userinfo = detail.userInfo
+          this.userinfo = userinfo
+          this.userBgImg = userinfo.avatarUrl
+
+          wx.setStorageSync('userinfo', userinfo)
+          this.setUserInfo(userinfo)
+          console.log('store储存成功')
         } else {
           console.log('用户按了拒绝按钮')
         }
       }
-    }
+    },
+    ...mapMutations({
+      setUserInfo: 'SET_USETINFO'
+    })
   },
   mounted() {
   },
