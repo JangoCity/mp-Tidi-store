@@ -1,7 +1,7 @@
 export const indexInfo = [{
   id: 10001,
   title: '工作/Work',
-  icon: '',
+  icon: 'icon-work',
   list: [{
     id: 101,
     title: '拼车',
@@ -21,7 +21,7 @@ export const indexInfo = [{
 }, {
   id: 10002,
   title: '生活/Life',
-  icon: '',
+  icon: 'icon-life',
   list: [{
     id: 101,
     title: '运动健身',
@@ -40,14 +40,6 @@ export const indexInfo = [{
   }]
 }]
 
-export const tabList = [
-  { title: '全部', type: 'all', id: 101 },
-  { title: '待付款', type: 'good', id: 102 },
-  { title: '待发货', type: 'share', id: 103 },
-  { title: '待收货', type: 'ask', id: 104 },
-  { title: '待评价', type: 'job', id: 105 }
-]
-
 export const myList = [
   { id: 101, title: '我的资料' },
   { id: 102, title: '我的钱包' },
@@ -56,10 +48,45 @@ export const myList = [
   { id: 105, title: '我的消息' }
 ]
 
-export const obj2style = style => {
-  let str = []
-  Object.keys(style).forEach(key => {
-    str.push(`${key}:${style[key]};`)
-  })
-  return str.join(';')
+export const createAddressType = [
+  { id: 0, name: 'home', value: '家庭住址', checked: true },
+  { id: 1, name: 'office', value: '办公住址', checked: false }
+]
+
+export const createAddressForm = {
+  name: {
+    id: 1001,
+    label: '姓名',
+    placehodleText: '收货人姓名',
+    value: '',
+    maxlength: 11
+  },
+  phone: {
+    id: 1002,
+    label: '手机',
+    placehodleText: '请输入手机号码',
+    value: '',
+    maxlength: 11
+  },
+  address: {
+    id: 1002,
+    label: '地区',
+    placehodleText: '选择地区',
+    value: '',
+    maxlength: 6
+  },
+  area: {
+    id: 1002,
+    label: '小区',
+    placehodleText: '所在小区名称',
+    value: '',
+    maxlength: 6
+  },
+  number: {
+    id: 1002,
+    label: '门牌号',
+    placehodleText: '具体的楼栋单元门牌号',
+    value: '',
+    maxlength: 6
+  }
 }

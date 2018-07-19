@@ -2,12 +2,12 @@
   <section class="container">
     <!-- 地址类型 -->
     <radio-group class="radio-group border-bottom"
-                 bindchange="radioChange">
+                 @change="handleChangeTypeClick">
       <label class="radio"
-             v-for="(item, index) in addressType"
-             :key="index">
-        <radio value="item.name"
-               checked="item.checked"
+             v-for="(item, index) in createAddressType"
+             :key="item.id">
+        <radio :value="item.id"
+               :checked="item.checked"
                color="#e60012" />{{item.value}}
       </label>
     </radio-group>
@@ -15,13 +15,14 @@
     <section class="form-group">
 
       <!-- 表单列表 -->
-      <section v-for="(item, index) in list"
+      <section v-for="(item, key, index) in createAddressForm"
                :key="item.id"
                class="row  border-bottom">
         <span class="label">{{item.label}}</span>
         <p class="input-wrapper">
           <input :placeholder="item.placehodleText"
                  :maxlength="item.maxlength"
+                 v-model="item.value"
                  type="number"
                  class="input">
         </p>
@@ -34,48 +35,23 @@
 
     <section class="btn-wrapper">
       <button class="btn-confirm"
+              hover-class="btn-confirm-hover"
               @click="handleConfirmClick">保存</button>
     </section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
+import { createAddressType, createAddressForm } from '@/common/js/staticData'
+
 export default {
   components: {
   },
   data() {
     return {
-      addressType: [
-        { name: 'home', value: '家庭住址', checked: 'true' },
-        { name: 'office', value: '办公住址' }
-      ],
-      // 列表
-      list: [{
-        id: 1001,
-        label: '姓名',
-        placehodleText: '收货人姓名',
-        maxlength: 11
-      }, {
-        id: 1002,
-        label: '手机',
-        placehodleText: '请输入手机号码',
-        maxlength: 11
-      }, {
-        id: 1002,
-        label: '地区',
-        placehodleText: '选择地区',
-        maxlength: 6
-      }, {
-        id: 1002,
-        label: '小区',
-        placehodleText: '所在小区名称',
-        maxlength: 6
-      }, {
-        id: 1002,
-        label: '门牌号',
-        placehodleText: '具体的楼栋但愿门牌号',
-        maxlength: 6
-      }]
+      type: 0,
+      createAddressType,
+      createAddressForm
     }
   },
   computed: {
@@ -84,11 +60,14 @@ export default {
     handleCountDownClick() {
       console.log('发送验证码')
     },
-    handleConfirmClick() { // 保存
-
+    // 保存信息
+    handleConfirmClick() {
+      console.log('表单信息', createAddressForm)
     },
-    radioChange: function (e) {
-      console.log('radio发生change事件，携带value值为：', e.detail.value)
+    // 更改地址类型
+    handleChangeTypeClick(e) {
+      this.type = e.mp.detail.value
+      console.log('携带value值==========', e.mp.detail.value)
     }
   }
 }

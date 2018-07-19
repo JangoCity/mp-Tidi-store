@@ -1,9 +1,9 @@
 <template>
   <section class="container">
     <section class="list-wrapper">
-
       <scroll-view scroll-y
-                   scroll-top="scrollTop">
+                   scroll-top="scrollTop"
+                   style="height:100%">
 
         <section v-for="(item, index) in noticeList"
                  :key="item.id"
@@ -52,7 +52,7 @@ export default {
       target.status = 1
       fly.get('messageDetail', { id: item.id })
     },
-    async _getNoticeList(init) {
+    async _getNoticeList() {
       wx.showNavigationBarLoading()
       const params = { uid: 1, type: 3 }
       const data = await fly.get('messageList', params)

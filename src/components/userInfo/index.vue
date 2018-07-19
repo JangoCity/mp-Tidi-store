@@ -1,11 +1,12 @@
 <template>
   <section class="container">
-    <section class="user-name">阿米
+    <section class="user-name">{{name}}
       <span class="phone-num">{{hidePhone}}</span>
     </section>
     <p class="address">
-      <span class="type company" v-if="hasType">{{addressType}}</span>
-      湖北武汉市洪山区城区 珞喻路876号华工科技产业大 厦9层</p>
+      <span class="type company"
+            v-if="hasType">{{addressType}}</span>
+     {{shoppingAddress}}</p>
   </section>
 </template>
 
@@ -19,6 +20,14 @@ export default {
     addressType: {
       type: String,
       default: '公司'
+    },
+    shoppingAddress: {
+      type: String,
+      default: ''
+    },
+    name: {
+      type: String,
+      default: ''
     },
     phone: {
       type: [String, Number],
@@ -57,5 +66,5 @@ export default {
       color #fff
       padding 0 20rpx
       &.company
-         background #4d87ff
+        background #4d87ff
 </style>

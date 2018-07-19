@@ -1,43 +1,83 @@
 <template>
   <section class="container">
-    <section class="order">
-      <section class="header">
-        <span class="code">2017062697569897</span>
-        <span class="state">待付款</span>
-      </section>
-      <section class="content">
-        <section class="img-wrapper">
-          <img src="./aasdasd.jpg" mode="aspectFit" style="max-width:100%" alt="">
+    <section v-if="list.length">
+      <section class="order"
+               v-for="(item, index) in list"
+               :key="item.id">
+        <section class="header">
+          <span class="code">{{item.list}}</span>
+          <span class="state">{{item.state}}</span>
         </section>
-        <section class="text-wrapper">
-          <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 枣香枣脆 等你</p>
-          <p class="spec">
-            <span class="total">规格:单</span>
-            <span class="count">x1</span>
+        <section class="content">
+          <section class="img-wrapper">
+            <img src="./aasdasd.jpg"
+                 mode="aspectFit"
+                 style="max-width:100%"
+                 alt="item.product_name">
+          </section>
+          <section class="text-wrapper">
+            <p class="title">{{item.product_name}}</p>
+            <p class="spec">
+              <span class="total">规格:单</span>
+              <span class="count">x{{item.number}}</span>
+            </p>
+            <p class="discounts"
+               v-if="item.curb_sales">已有30人购买，可返现￥{{item.curb_sales}}</p>
+          </section>
+        </section>
+        <section class="footer">
+          <p class="total-wrapper">实付:
+            <span class="total">{{item.price}}.00</span>
+            <span>（免运费）</span>
           </p>
-          <p class="discounts">已有30人购买，可返现￥10</p>
+        </section>
+        <section class="bottom">
+          <button class="btn"
+                  @click="handleCancleClick(item.id)">取消订单</button>
+          <button class="btn to-pay"
+                  v-if="item.status===1"
+                  @click="handlePayClick(item.id)">去支付</button>
+          <button class="btn"
+                  @click="handleViewDetailClick(item.id)">查看订单</button>
         </section>
       </section>
-      <section class="footer">
-        <p class="total-wrapper">实付:
-          <span class="total">78.00</span>
-          <span>（免运费）</span>
-        </p>
-      </section>
-      <section class="bottom">
-        <button class="btn">取消订单</button>
-        <button class="btn to-pay">去支付</button>
-        <button class="btn">查看订单</button>
-      </section>
+    </section>
+    <section v-else>
+      空空如也
     </section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
 export default {
+  props: {
+    list: {
+      type: Array,
+      default: []
+    },
+    status: {
+      type: Array,
+      default: []
+    }
+  },
   data() {
     return {
-      list: []
+      scrollTop: 100
+    }
+  },
+  methods: {
+    // 取消订单
+    handleCancleClick(id) {
+      this.$emit('cancle', id)
+    },
+    // 支付订单
+    handlePayClick(id) {
+      // showSuccess('支付订单' + id)
+      this.$emit('pay', id)
+    },
+    // 查看订单
+    handleViewDetailClick(id) {
+      this.$emit('view', id)
     }
   }
 }
@@ -47,11 +87,14 @@ export default {
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
 .container
+  background-color #f6f6f6
+  height 100%
   .order
     background #fff
     margin-bottom 20rpx
     font-size 28rpx
     color #333
+    margin-top 30rpx
   .header, .content, .footer, .bottom
     padding 0 30rpx
   .header
@@ -87,10 +130,13 @@ export default {
       width 510rpx
       font-size 28rpx
       .title
+        mult_line_ellipsis()
         font-weight 600
+        margin-bottom 20rpx
       .spec
         display flex
         justify-content space-between
+        margin-bottom 20rpx
         color #999
       .discounts
         color $color-theme
@@ -114,9 +160,11 @@ export default {
       line-height 60rpx
       font-size 14px
       border-radius 30px
-      border 1rpx solid #dcdcdc
-      background-color #fff
+      border 1px solid #dcdcdc
+      background #fff
       margin-left 10rpx
+      &::after
+        display none
       &.to-pay
         color $color-theme
         border-color $color-theme

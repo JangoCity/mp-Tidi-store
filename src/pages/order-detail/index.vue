@@ -5,15 +5,18 @@
       <section class="state">
         <span class="text">待付款</span>
       </section>
-      <section class="user-info">
+      <section class="user-info"
+               v-if="contact">
         <user-info :hasType="false"
-                   :phone="3665656565"></user-info>
+                   :name="contact.name"
+                   :phone="contact.phone"
+                   :shoppingAddress="shoppingAddress"></user-info>
       </section>
-      <!-- 插入组件 user-info-->
     </section>
 
     <!-- 订单SDK -->
-    <section class="content">
+    <section class="content"
+             v-if="product">
       <section class="order-desc">
         <section class="img-wrapper">
           <img src="./aasdasd.jpg"
@@ -21,7 +24,7 @@
                class="max-img">
         </section>
         <section class="text-wrapper">
-          <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 枣香枣脆 等你抢购</p>
+          <p class="title">{{product.product_name}}</p>
           <p class="discounts">已有30人购买，可返现￥10</p>
           <p class="spec">
             <span class="total">规格:单</span>
@@ -78,9 +81,27 @@
 
 <script type='text/ecmascript-6'>
 import userInfo from '@/components/userInfo'
+import fly from '@/utils/fly'
+import { share } from '@/common/js/mixins'
+
 export default {
+  minxins: [share],
   components: {
     userInfo
+  },
+  data() {
+    return {
+      product: null,
+      order: null,
+      contact: null
+    }
+  },
+  computed: {
+    shoppingAddress() {
+      if (!this.contact) return ''
+      const { province, city, area, district, address } = this.contact
+      return province.name + city.name + area.name + district + address
+    }
   },
   methods: {
     // 取消支付
@@ -93,11 +114,24 @@ export default {
       wx.navigateTo({
         url: '../buy/main'
       })
+    },
+
+    async _fetchOrderDetail() {
+      const params = { uid: 1, id: 1 }
+      const data = await fly.get('orderDetail', params)
+      try {
+        console.log('账单详情======', data)
+        this.product = data.product
+        this.contact = data.contact
+        this.order = data.order
+      } catch (err) {
+        console.log('账单详情报错======', data)
+      }
     }
   },
-  data() {
-    return {
-    }
+  mounted() {
+    console.log('query参数=======', this.$root.$mp.query)
+    this._fetchOrderDetail()
   }
 }
 </script>

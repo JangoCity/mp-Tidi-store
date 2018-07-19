@@ -1,57 +1,26 @@
 <template>
   <section class="container">
-    <scroll-view scroll-y scroll-top="scrollTop" style="height:100%">
+    <scroll-view scroll-y
+                 scroll-top="scrollTop"
+                 style="height:100%">
       <!-- 一条 -->
-      <section class="scroll-view-item">
+      <section class="scroll-view-item"
+               v-for="item in favoriteList"
+               :key="item.id">
         <section class="img-wrapper">
-          <img src="./aasdasd.jpg" alt="" class="img">
+          <img :src="item.product_image"
+               alt="item.product_name"
+               class="img">
         </section>
         <section class="text-wrapper border-bottom">
-          <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 果上市 大荔冬枣 5斤/箱 果上市 大荔冬枣 5斤/箱 枣香枣脆 等你抢购</p>
+          <p class="title">{{item.product_name}}</p>
           <section class="inside">
             <section class="price">
-              <span class="now-price money">78</span>
-              <span class="old-price money">99</span>
+              <span class="now-price money">{{item.selling_price}}</span>
+              <span class="old-price money">{{item.original_price}}</span>
             </section>
-            <section class="favorite"></section>
-          </section>
-          <section class="btn-wrapper">
-            <button class="btn">去购买</button>
-            <span class="count-down">剩余15小时23分11秒</span>
-          </section>
-        </section>
-      </section>
-      <section class="scroll-view-item">
-        <section class="img-wrapper">
-          <img src="./aasdasd.jpg" alt="" class="img">
-        </section>
-        <section class="text-wrapper border-bottom">
-          <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 果上市 大荔冬枣 5斤/箱 果上市 大荔冬枣 5斤/箱 枣香枣脆 等你抢购</p>
-          <section class="inside">
-            <section class="price">
-              <span class="now-price money">78</span>
-              <span class="old-price money">99</span>
-            </section>
-            <section class="favorite"></section>
-          </section>
-          <section class="btn-wrapper">
-            <button class="btn">去购买</button>
-            <span class="count-down">剩余15小时23分11秒</span>
-          </section>
-        </section>
-      </section>
-      <section class="scroll-view-item">
-        <section class="img-wrapper">
-          <img src="./aasdasd.jpg" alt="" class="img">
-        </section>
-        <section class="text-wrapper border-bottom">
-          <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 果上市 大荔冬枣 5斤/箱 果上市 大荔冬枣 5斤/箱 枣香枣脆 等你抢购</p>
-          <section class="inside">
-            <section class="price">
-              <span class="now-price money">78</span>
-              <span class="old-price money">99</span>
-            </section>
-            <section class="favorite"></section>
+            <section class="favorite"
+                     @click="handleRemoveClick(item.id)"></section>
           </section>
           <section class="btn-wrapper">
             <button class="btn">去购买</button>
@@ -64,10 +33,56 @@
 </template>
 
 <script type='text/ecmascript-6'>
+import fly from '@/utils/fly'
+import { showSuccess } from '@/utils'
+import { share } from '@/common/js/mixins'
+import { mapMutations, mapGetters } from 'vuex'
+
 export default {
+  mixins: [share],
   data() {
     return {
+      favoriteList: []
     }
+  },
+  computed: {
+    ...mapGetters(['userinfo'])
+  },
+  methods: {
+
+    // 取消收藏
+    async handleRemoveClick(id) {
+      console.log('id', id)
+      let data = await fly.get('favoriteDel', { uid: id })
+      try {
+        showSuccess(data.message)
+        this._getFavoriteList()
+      } catch (err) {
+        console.log('删除收藏报错', err)
+      }
+    },
+    //  获取收藏列表
+    async _getFavoriteList() {
+      wx.showNavigationBarLoading()
+      // const params = { uid: this.userinfo.uid }
+      const params = { uid: 1 }
+      const data = await fly.get('favorite', params)
+      console.log('信息列表页返回结果====', data)
+      this.favoriteList = data.list
+      // 注销下拉刷新事件
+      wx.stopPullDownRefresh()
+      // 注销刷新icon状态
+      wx.hideNavigationBarLoading()
+    },
+    ...mapMutations({
+      setFavorite: 'SET_FAVORITE'
+    })
+  },
+  mounted() {
+    this._getFavoriteList()
+  },
+  onPullDownRefresh() {
+    this._getFavoriteList()
   }
 }
 </script>
@@ -118,7 +133,7 @@ export default {
             bg-image('icon-favorite')
             left auto
             right 0
-            transform translate(-50%,-50%)
+            transform translate(-50%, -50%)
     .btn-wrapper
       display flex
       justify-content space-between

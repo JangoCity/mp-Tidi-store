@@ -1,3 +1,5 @@
+import fly from './fly'
+
 // 生成单个随机颜色
 export function getRandomColor() {
   return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6)
@@ -13,8 +15,40 @@ export function getArrRandomColor(length) {
 }
 
 // 获取openId
-export const getUserInfo = () => {
+export const getOpenId = () => {
+  let userinfo = wx.getStorageSync('userinfo')
+  if (userinfo) return
+  wx.login({
+    success: async (res) => {
+      if (res.code) {
+        // 获取openId
+        let params = { code: res.code }
+        let data = await fly.get('auth', params)
+        let openid = data.openid
 
+        let userinfo = wx.getStorageSync('userinfo')
+        if (!userinfo) return
+
+        // 根据openId获取用户信息
+        params = {
+          openid,
+          wechat_name: userinfo.nickName,
+          image: userinfo.avatarUrl,
+          sex: userinfo.gender
+        }
+        let login = await fly.post('login', params)
+        // 将uid并入userinfo并存储Storage
+        userinfo.uid = login.user.id
+        console.log('userinfo==========', userinfo)
+        wx.setStorageSync('userinfo', userinfo)
+      } else {
+        showModal({
+          title: '获取用户登录态失败！',
+          content: res.errMsg
+        })
+      }
+    }
+  })
 }
 
 export const obj2style = style => {

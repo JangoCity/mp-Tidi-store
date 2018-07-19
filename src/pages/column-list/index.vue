@@ -79,28 +79,7 @@ export default {
         diff: 16, // 差值
         rebate: 10, // 返利
         spec: [],
-        buyer: [{
-          id: 101,
-          name: '赵赵赵'
-        }, {
-          id: 101,
-          name: '钱钱钱'
-        }, {
-          id: 101,
-          name: '孙孙孙'
-        }, {
-          id: 101,
-          name: '李李李'
-        }, {
-          id: 101,
-          name: '李李李'
-        }, {
-          id: 101,
-          name: '王王王'
-        }, {
-          id: 101,
-          name: '欧阳欧阳'
-        }],
+        buyer: [{ id: 101, name: '赵赵赵' }, { id: 101, name: '钱钱钱' }, { id: 101, name: '孙孙孙' }, { id: 101, name: '李李李' }, { id: 101, name: '李李李' }, { id: 101, name: '王王王' }, { id: 101, name: '欧阳欧阳' }],
         count: '16:24:22',
         imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529263999482&di=3ea3ffbc95250dda4423761791c61d22&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2%2F590ac2cddbd03.jpg'
       }],
@@ -133,6 +112,13 @@ export default {
         }]
       }
     }
+  },
+  mounted() {
+  },
+  beforeMount() {
+    wx.setNavigationBarTitle({
+      title: this.$root.$mp.query.title
+    })
   }
 }
 </script>

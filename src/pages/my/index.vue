@@ -16,8 +16,9 @@
            v-if="userinfo.city"
            v-text="userinfo.city"></p>
       </section>
-      <section class="id content">
-        ID:19700001{{userinfo.nickName}}
+      <section class="id content"
+               v-show="userinfo.uid">
+        ID:{{userinfo.uid}}
       </section>
 
       <!-- mask -->
@@ -46,7 +47,7 @@
 <script type='text/ecmascript-6'>
 import { myList } from '@/common/js/staticData'
 import { share } from '@/common/js/mixins'
-import { showFail } from '@/utils'
+import { getOpenId, showFail } from '@/utils'
 import { mapMutations, mapGetters } from 'vuex'
 
 export default {
@@ -57,7 +58,7 @@ export default {
       userinfo: {
         avatarUrl: '../../../static/images/unlogin.png',
         nickName: '点击登录',
-        city: ''
+        uid: ''
       },
       myList
     }
@@ -89,9 +90,7 @@ export default {
       }
       console.log(url)
       // 跳转
-      wx.navigateTo({
-        url
-      })
+      wx.navigateTo({ url })
     },
     // 检测用户微信版本
     handleCheckVersion() {
@@ -112,7 +111,6 @@ export default {
 
           wx.setStorageSync('userinfo', userinfo)
           this.setUserInfo(userinfo)
-          console.log('store储存成功')
         } else {
           console.log('用户按了拒绝按钮')
         }
@@ -123,6 +121,7 @@ export default {
     })
   },
   mounted() {
+    getOpenId()
   },
   onShow() {
     let userinfo = wx.getStorageSync('userinfo')

@@ -1,6 +1,7 @@
 <template>
   <section class="container">
-    <section class="local-wraper">
+    <section class="local-wraper"
+             v-if="weather.wendu">
       <Local :address="address"
              :weather="weather"></Local>
     </section>
@@ -9,9 +10,13 @@
       <section v-for="item in indexInfo"
                :key="item.id"
                class="item"
-               :class="{ active: item.id===currentId }"
+               :class="{active: item.id===currentId }"
                @click="handleTabClick(item.id)">
-        <span class="text">{{item.title}}</span>
+        <p class="text">
+          <span class="iconfont"
+                :class="item.icon"></span>
+          {{item.title}}
+        </p>
       </section>
     </section>
     <!-- 内容 -->
@@ -24,7 +29,8 @@
         <ul class="list">
           <li v-for="(item, index) in list.list"
               :key="item.id"
-              class="item">
+              class="item"
+              @click="handleTypeClick(item)">
             <section class="text-wrapper">
               <h4 class="title">{{item.title}}</h4>
               <p class="desc">{{item.desc}}</p>
@@ -44,7 +50,7 @@
 <script type='text/ecmascript-6'>
 
 import fly from '@/utils/fly'
-import { showModal } from '@/utils'
+import { getOpenId } from '@/utils'
 import { indexInfo } from '@/common/js/staticData'
 import { share } from '@/common/js/mixins'
 import Local from '@/components/local'
@@ -58,9 +64,9 @@ export default {
   },
   data() {
     return {
-      address: '未知地点', // 地址
+      address: '未知地点...', // 地址
       geo: { lat: '', lng: '' }, // 经纬度
-      weather: {}, // 天气
+      weather: { wendu: '' }, // 天气
       currentId: indexInfo[0].id,
       indexInfo: indexInfo
     }
@@ -75,6 +81,11 @@ export default {
       // console.log(this.userinfo.nickName)
       console.log('vm实例==========', this.userinfo)
     },
+    // 进入栏目分类
+    handleTypeClick(item) {
+      const url = `../column-list/main?title=${item.title}&id=${item.id}`
+      wx.navigateTo({ url })
+    },
     // 获取设备经纬度
     _getGeo() {
       let _this = this
@@ -82,6 +93,7 @@ export default {
         wx.getLocation({
           success: geo => {
             _this.geo = { lat: geo.latitude, lng: geo.longitude }
+            console.log(_this.geo)
             resolve(_this.geo)
           },
           fail: () => {
@@ -91,53 +103,23 @@ export default {
       })
       return promise
     },
-    // 授权并且获取openid以及用户ID
-    _getOpenId() {
-      wx.login({
-        success: async (res) => {
-          if (res.code) {
-            // 获取openId
-            let params = { code: res.code }
-            let data = await fly.get('auth', params)
-            let openid = data.openid
-
-            let userinfo = wx.getStorageSync('userinfo')
-            if (!userinfo) return
-
-            // 根据openId获取用户信息
-            params = {
-              openid,
-              wechat_name: userinfo.nickName,
-              image: userinfo.avatarUrl,
-              sex: userinfo.gender
-            }
-            let login = await fly.post('login', params)
-            // 将uid并入userinfo并存储Storage
-            userinfo.uid = login.user.id
-            wx.setStorageSync('userinfo', userinfo)
-          } else {
-            showModal({
-              title: '获取用户登录态失败！',
-              content: res.errMsg
-            })
-          }
-        }
-      })
-    },
     // 获取首页信息
     async _getInfo() {
-      const geo = await this._getGeo() // 参数需要返回的经纬度
-      const params = { uid: 1, ...geo }
-      const data = await fly.get('index', params)
-      // console.log('首页返回结果====', data)
-      this.address = data.address
-      this.weather = data.weather
-      this.weather.aqi = data.aqi
-      this.weather.avgTemperature = data.weather.high
+      try {
+        const geo = await this._getGeo() // 参数需要返回的经纬度
+        const params = { uid: 1, ...geo }
+        const data = await fly.get('index', params)
+        this.address = data.address
+        this.weather = data.weather
+        this.weather.aqi = data.aqi
+        this.weather.wendu = data.wendu
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
   mounted() {
-    this._getOpenId()
+    getOpenId()
     this._getInfo()
   }
 }
@@ -146,6 +128,7 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
+@import '~common/stylus/icons.css'
 .container
   padding 0 40rpx
   color #999
@@ -166,21 +149,15 @@ export default {
       background #fff
       border 1px solid #d9d9d9
       border-radius 6px
-      text-indent 25rpx
       .text
         position relative
         display inline-block
-        &::before
-          prefix-icon(40rpx, 40rpx)
-          left -25rpx
-      &:nth-of-type(1) .text::before
-        bg-image('icon-work')
-      &:nth-of-type(2) .text::before
-        bg-image('icon-life')
-      &:nth-of-type(1).active .text::before
-        bg-image('icon-work-active')
-      &:nth-of-type(2).active .text::before
-        bg-image('icon-life-active')
+        .iconfont
+          vertical-align top
+          display inline-block
+          &::before
+            left -25rpx
+            font-size 24px
       &.active
         color #fff
         background linear-gradient(to bottom, #e61b00, #ff5408)

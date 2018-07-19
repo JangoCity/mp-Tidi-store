@@ -1,12 +1,13 @@
 <template>
   <section class="container">
-    <!-- <section class="balance-warapper" > -->
     <section class="balance-warapper">
-      <section class="balance-bar"
-               style="background-image: url('../../static/img/wallet-bg.png')">
+      <section class="balance-bar">
         <p class="label">可用余额</p>
-        <p class="balance-text">200,300.00</p>
-        <img src="">
+        <p class="balance-text">{{balance}}.00</p>
+      </section>
+      <section class="balance-bg-wrapper">
+        <img :src="balanceBg"
+             class="balance-bg">
       </section>
     </section>
 
@@ -14,38 +15,37 @@
     <section class="total-info border-bottom">
       <p class="date">2018-05</p>
       <p class="total">总计:
-        <span class="money">1311.00</span>
+        <span class="money">{{total}}.00</span>
+        <picker class="picker-date"
+                mode="date"
+                :value="date"
+                start="2015-09-01"
+                end="2017-09-01"
+                @change="handleDateChange">
+          <span class="placehodle">时间控件</span>
+        </picker>
       </p>
     </section>
 
     <!-- 消费情况 -->
-    <section class="consume-list">
+    <section class="consume-list"
+             v-if="walletList.length">
       <scroll-view scroll-y
                    scroll-top="scrollTop"
                    style="height:775rpx">
         <!-- 一条记录 -->
-        <section class="scroll-view-item">
+        <section class="scroll-view-item"
+                 v-for="(item, index) in walletList"
+                 :key="item.id">
           <section class="border-bottom wrapper">
             <section class="goods-info">
-              <span class="title back">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
+              <span class="title"
+                    :class=item.style>{{item.product_name}}</span>
+              <span class="date">{{item.pay_time}}</span>
             </section>
             <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
-            </section>
-          </section>
-        </section>
-        <!-- 一条记录 -->
-        <section class="scroll-view-item">
-          <section class="border-bottom wrapper">
-            <section class="goods-info">
-              <span class="title success">幸福的紫菜包饭下午茶</span>
-              <span class="date">2018-05-08</span>
-            </section>
-            <section class="state-info">
-              <span class="price">128</span>
-              <span class="state">支付成功</span>
+              <span class="price">{{item.cash}}</span>
+              <span class="state">{{item.state}}</span>
             </section>
           </section>
         </section>
@@ -56,10 +56,48 @@
 </template>
 
 <script type='text/ecmascript-6'>
+import fly from '@/utils/fly'
+import { showModal } from '@/utils'
+import { share } from '@/common/js/mixins'
+import { balanceBg } from './images'
 export default {
+  mixins: [share],
   data() {
     return {
+      walletList: [],
+      balance: 0,
+      balanceBg,
+      total: 0
     }
+  },
+  computed: {
+  },
+  methods: {
+    // 触发日历
+    handleDateChange(e) {
+      showModal('选中的日期', e.mp.detail.value)
+    },
+    // 获取消费列表
+    async _fetchWalletList() {
+      const params = { uid: 1 }
+      let data = await fly.get('walletList', params)
+      this.balance = data.balance
+      this.walletList = data.list
+
+      const states = ['待支付', '支付成功', '已退款']
+      const stateStyles = ['nopaid', 'succses', 'back']
+      const price = []
+      this.walletList.forEach((item, index) => {
+        item.state = states[item.pay_status]
+        item.style = stateStyles[item.pay_status]
+        price.push(parseInt(item.cash, 10))
+      })
+      this.total = price.reduce((prev, next) => prev + next)
+      console.log(data)
+    }
+  },
+  mounted() {
+    this._fetchWalletList()
   }
 }
 </script>
@@ -69,8 +107,11 @@ export default {
 @import '~common/stylus/variable'
 .container
   .balance-warapper
+    position relative
     padding 30rpx
     .balance-bar
+      position relative
+      z-index 5
       height 236rpx
       box-sizing border-box
       color #fff
@@ -82,15 +123,28 @@ export default {
         margin-bottom 20rpx
       .balance-text
         font-size 28px
+    .balance-bg-wrapper
+      position absolute
+      top 0
+      left 30rpx
+      right 30rpx
+      height 236rpx
+      z-index 1
+    .balance-bg
+      width 100%
+      height 100%
   .total-info
     position relative
     padding 0 30rpx 30rpx
     line-height 1.8
-    &::after
+    .picker-date
       prefix-icon(35rpx, 35rpx)
       bg-image('icon-calendar')
       left auto
       right 30rpx
+      text-indent -9999px
+      .placehodle
+        extend-click()
     .date
       font-size $font-size-medium-x
       color #333
@@ -123,12 +177,15 @@ export default {
           &::before
             prefix-icon(20rpx, 20rpx)
             border-radius 50%
-            left -30rpx
-          &.success::before
+            // left -30rpx
+          &.nopaid::before
             background-color $color-theme
+          &.success
+            background red
+            &::before
+              background-color $color-theme
           &.back::before
             background-color #ff9013
         .price
           color $color-theme
 </style>
-//

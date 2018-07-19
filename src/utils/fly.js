@@ -5,10 +5,11 @@ const fly = new Fly() // 创建fly实例
 
 // 添加拦截器
 fly.interceptors.request.use((config, promise) => {
-  wx.showLoading({
-    title: '加载中',
-    mask: true
-  })
+  // wx.showLoading({
+  //   title: '加载中',
+  //   mask: true
+  // })
+  wx.showNavigationBarLoading()
   // 给所有请求添加自定义header
   config.headers['X-Tag'] = 'flyio'
   return config
@@ -31,7 +32,8 @@ fly.interceptors.response.use(
         title: res.message
       })
     }
-    wx.hideLoading()
+    wx.hideNavigationBarLoading()
+    // wx.hideLoading()
     console.log('拦截器返回结果：', data)
     // 将请求结果返回
     return data

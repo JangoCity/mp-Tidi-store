@@ -49,18 +49,18 @@ export default {
       list: [{
         pagePath: 'pages/index/main',
         text: '首页',
-        iconPath: 'static/images/icon-home@3x.png',
-        selectedIconPath: 'static/images/icon-home-active@3x.png'
+        iconPath: 'static/images/icon-home.png',
+        selectedIconPath: 'static/images/icon-home-active.png'
       }, {
         pagePath: 'pages/order-list/main',
         text: '订单',
-        iconPath: 'static/images/icon-order@3x.png',
-        selectedIconPath: 'static/images/icon-order-active@3x.png'
+        iconPath: 'static/images/icon-order.png',
+        selectedIconPath: 'static/images/icon-order-active.png'
       }, {
         pagePath: 'pages/my/main',
         text: '我的',
-        iconPath: 'static/images/icon-my@3x.png',
-        selectedIconPath: 'static/images/icon-my-active@3x.png'
+        iconPath: 'static/images/icon-my.png',
+        selectedIconPath: 'static/images/icon-my-active.png'
       }]
     }
   }
