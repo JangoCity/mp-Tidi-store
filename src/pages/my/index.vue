@@ -17,7 +17,7 @@
            v-text="userinfo.city"></p>
       </section>
       <section class="id content"
-               v-show="userinfo.uid">
+               v-if="userinfo.uid">
         ID:{{userinfo.uid}}
       </section>
 
@@ -35,8 +35,10 @@
       <ul>
         <li v-for="(item, index) in myList"
             :key="item.id"
-            class="item">
-          <section class="text"
+            class="item iconfont icon-jiantouyou">
+            <span class="test"></span>
+          <section class="text iconfont"
+                   :class="item.icon"
                    @click="handleLinkClick(item)">{{item.title}}</section>
         </li>
       </ul>
@@ -48,7 +50,7 @@
 import { myList } from '@/common/js/staticData'
 import { share } from '@/common/js/mixins'
 import { getOpenId, showFail } from '@/utils'
-import { mapMutations, mapGetters } from 'vuex'
+import { mapMutations } from 'vuex'
 
 export default {
   mixins: [share],
@@ -64,7 +66,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters['userinfo']
   },
   methods: {
     // 跳转
@@ -88,7 +89,6 @@ export default {
           url = '../my-notice/main'
           break
       }
-      console.log(url)
       // 跳转
       wx.navigateTo({ url })
     },
@@ -101,19 +101,18 @@ export default {
     // 获取用户信息
     handleGetUserInfo(e) {
       let userinfo = wx.getStorageSync('userinfo')
+      if (userinfo) return
       // 首次登陆
-      if (!userinfo) {
-        const detail = e.mp.detail
-        if (detail.rawData) { // 用户按了允许授权按钮
-          const userinfo = detail.userInfo
-          this.userinfo = userinfo
-          this.userBgImg = userinfo.avatarUrl
-
-          wx.setStorageSync('userinfo', userinfo)
+      const detail = e.mp.detail
+      if (detail.rawData) { // 用户按了允许授权按钮
+        getOpenId(detail.userInfo, (userinfo) => {
+          if (!userinfo) return
+          this.userinfo = Object.assign({}, this.userinfo, userinfo)
+          this.userBgImg = this.userinfo.avatarUrl
           this.setUserInfo(userinfo)
-        } else {
-          console.log('用户按了拒绝按钮')
-        }
+        })
+      } else {
+        console.log('用户按了拒绝按钮')
       }
     },
     ...mapMutations({
@@ -121,7 +120,6 @@ export default {
     })
   },
   mounted() {
-    getOpenId()
   },
   onShow() {
     let userinfo = wx.getStorageSync('userinfo')
@@ -136,6 +134,7 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
+// @import '~common/stylus/icons.css'
 .container
   .user-info
     position relative
@@ -208,36 +207,32 @@ export default {
     padding 20rpx 0
     font-size 32rpx
     border-bottom 0.5rpx solid #d7d7d7
-    extend-click()
-    &::after, .text::before
-      prefix-icon()
-    &::after
-      bg-image('icon-arrow-r')
-      left auto
-      right 0
-      width 11rpx
-      height 18rpx
+    &::before
+      posY(10rpx,false)
+      color #ccc
+      font-size 24rpx
     .text
       position relative
       height 60rpx
       line-height 60rpx
       padding-left 60rpx
     .text::before
-      width 36rpx
-      height 36rpx
+      position absolute
+      font-size 30px
+      left 0
     &:nth-of-type(1)
       .text::before
-        bg-image('icon-01')
+        color #ff8376
     &:nth-of-type(2)
       .text::before
-        bg-image('icon-02')
+        color #8fd0ae
     &:nth-of-type(3)
       .text::before
-        bg-image('icon-03')
+        color #84c7ff
     &:nth-of-type(4)
       .text::before
-        bg-image('icon-04')
+        color #ff8376
     &:nth-of-type(5)
       .text::before
-        bg-image('icon-05')
+        color #8fd0ae
 </style>

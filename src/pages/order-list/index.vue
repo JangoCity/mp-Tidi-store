@@ -39,7 +39,7 @@ import fly from '@/utils/fly'
 import { showSuccess } from '@/utils'
 import { share } from '@/common/js/mixins'
 import slideNav from '@/components/slideNav'
-import order from '@/components/orderList'
+import order from '@/components/order'
 export default {
   mixins: [share],
   components: { slideNav, order },
@@ -142,7 +142,7 @@ export default {
     },
     // 内容高度
     contentHeight() {
-      return `height:${this.winHeight - 50}px`
+      return `height:${this.winHeight - 47}px`
     }
   },
   mounted() {

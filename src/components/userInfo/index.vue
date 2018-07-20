@@ -64,7 +64,7 @@ export default {
       display inline-block
       border-radius 30rpx
       color #fff
-      padding 0 20rpx
+      padding 5rpx 20rpx
       &.company
         background #4d87ff
 </style>

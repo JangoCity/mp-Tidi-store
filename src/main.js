@@ -37,7 +37,7 @@ export default {
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: '梯递',
+      navigationBarTitleText: '',
       navigationBarTextStyle: 'black'
     },
     tabBar: {

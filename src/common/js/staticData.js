@@ -1,3 +1,4 @@
+// 首页信息
 export const indexInfo = [{
   id: 10001,
   title: '工作/Work',
@@ -40,19 +41,22 @@ export const indexInfo = [{
   }]
 }]
 
+// 我的主页栏目列表
 export const myList = [
-  { id: 101, title: '我的资料' },
-  { id: 102, title: '我的钱包' },
-  { id: 103, title: '收货地址' },
-  { id: 104, title: '我的收藏' },
-  { id: 105, title: '我的消息' }
+  { id: 101, title: '我的资料', icon: 'icon-wodeziliao' },
+  { id: 102, title: '我的钱包', icon: 'icon-wodeqianbao' },
+  { id: 103, title: '收货地址', icon: 'icon-shouhuodizhi' },
+  { id: 104, title: '我的收藏', icon: 'icon-wodeshoucang' },
+  { id: 105, title: '我的消息', icon: 'icon-wodexiaoxi' }
 ]
 
+// 创建收货地址类型
 export const createAddressType = [
   { id: 0, name: 'home', value: '家庭住址', checked: true },
   { id: 1, name: 'office', value: '办公住址', checked: false }
 ]
 
+// 创建收货地址
 export const createAddressForm = {
   name: {
     id: 1001,
@@ -90,3 +94,14 @@ export const createAddressForm = {
     maxlength: 6
   }
 }
+
+// 支付方式
+export const paymentList = [{
+  type: '0',
+  icon: 'icon-yuezhifu balance',
+  text: '余额支付'
+}, {
+  type: '1',
+  icon: 'icon-weixinzhifu wechat',
+  text: '微信支付'
+}]

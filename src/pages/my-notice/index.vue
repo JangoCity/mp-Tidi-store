@@ -10,9 +10,10 @@
                  class="scroll-view-item  border-bottom"
                  @click="handleReadDetailClick(item, index)">
           <section class="header">
-            <span class="title">
-              <em class="icon system"
-                  :class={new:!item.status}></em>{{item.title}}</span>
+            <p class="title iconfont icon-xitongxiaoxi"
+               :class={new:!item.status}>
+              {{item.title}}
+            </p>
             <span class="date">
               {{item.created_at}}
             </span>
@@ -83,7 +84,6 @@ export default {
   .scroll-view-item
     padding 35rpx 30rpx
     box-sizing border-box
-    border-bottom 1px solid #eaeaea
   .header
     display flex
     justify-content space-between
@@ -92,26 +92,23 @@ export default {
     line-height 40rpx
     margin-bottom 20rpx
     .title
+      position relative
       font-weight 600
-      .icon
-        position relative
-        display inline-block
-        vertical-align top
-        width 38rpx
-        height 38rpx
-        margin-right 10rpx
-        background-size contain
-        &.new::before
-          position absolute
-          right -5rpx
-          top -5rpx
-          border-radius 50%
-          content ''
-          width 15rpx
-          height 15rpx
-          background red
-        &.system
-          bg-image('icon-notice')
+      padding-left 25px
+      &::before
+        posY()
+        color #ff9e14
+        font-size 24px
+        font-weight normal
+      &.new::after
+        position absolute
+        right -5rpx
+        top -5rpx
+        border-radius 50%
+        content ''
+        width 15rpx
+        height 15rpx
+        background red
     .date
       color #595959
   .content

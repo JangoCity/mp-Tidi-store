@@ -16,7 +16,7 @@
       <p class="date">2018-05</p>
       <p class="total">总计:
         <span class="money">{{total}}.00</span>
-        <picker class="picker-date"
+        <picker class="picker-date iconfont icon-rili"
                 mode="date"
                 :value="date"
                 start="2015-09-01"
@@ -37,7 +37,7 @@
         <section class="scroll-view-item"
                  v-for="(item, index) in walletList"
                  :key="item.id">
-          <section class="border-bottom wrapper">
+          <section class="wrapper border-bottom iconfont icon-jiantouyou">
             <section class="goods-info">
               <span class="title"
                     :class=item.style>{{item.product_name}}</span>
@@ -60,6 +60,7 @@ import fly from '@/utils/fly'
 import { showModal } from '@/utils'
 import { share } from '@/common/js/mixins'
 import { balanceBg } from './images'
+import { mapGetters } from 'vuex'
 export default {
   mixins: [share],
   data() {
@@ -71,6 +72,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['userinfo'])
   },
   methods: {
     // 触发日历
@@ -93,7 +95,7 @@ export default {
         price.push(parseInt(item.cash, 10))
       })
       this.total = price.reduce((prev, next) => prev + next)
-      console.log(data)
+      console.log('钱包页面个人信息===', this.userinfo)
     }
   },
   mounted() {
@@ -138,13 +140,14 @@ export default {
     padding 0 30rpx 30rpx
     line-height 1.8
     .picker-date
-      prefix-icon(35rpx, 35rpx)
-      bg-image('icon-calendar')
-      left auto
+      position absolute
+      top 0
       right 30rpx
-      text-indent -9999px
+      font-size 24px
       .placehodle
-        extend-click()
+        position absolute
+        top 0
+        text-indent -9999px
     .date
       font-size $font-size-medium-x
       color #333
@@ -159,11 +162,9 @@ export default {
         justify-content space-between
         padding 30rpx 50rpx 30rpx 30rpx
         line-height 1.8
-        &::after
-          prefix-icon(11rpx, 18rpx)
-          bg-image('icon-arrow-r')
-          left auto
-          right 0
+        &::before
+         posY(0,false)
+         color #ccc
         span
           display block
         .state-info

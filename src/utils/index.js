@@ -15,9 +15,8 @@ export function getArrRandomColor(length) {
 }
 
 // 获取openId
-export const getOpenId = () => {
-  let userinfo = wx.getStorageSync('userinfo')
-  if (userinfo) return
+export const getOpenId = (userinfo, callback) => {
+  if (!userinfo) return
   wx.login({
     success: async (res) => {
       if (res.code) {
@@ -25,9 +24,6 @@ export const getOpenId = () => {
         let params = { code: res.code }
         let data = await fly.get('auth', params)
         let openid = data.openid
-
-        let userinfo = wx.getStorageSync('userinfo')
-        if (!userinfo) return
 
         // 根据openId获取用户信息
         params = {
@@ -37,10 +33,11 @@ export const getOpenId = () => {
           sex: userinfo.gender
         }
         let login = await fly.post('login', params)
-        // 将uid并入userinfo并存储Storage
+        // 将uid和openid挂在userinfo并存于Storage
         userinfo.uid = login.user.id
-        console.log('userinfo==========', userinfo)
+        userinfo.openid = openid
         wx.setStorageSync('userinfo', userinfo)
+        callback instanceof Function && callback(userinfo)
       } else {
         showModal({
           title: '获取用户登录态失败！',

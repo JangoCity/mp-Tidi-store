@@ -19,7 +19,7 @@
               <span class="now-price money">{{item.selling_price}}</span>
               <span class="old-price money">{{item.original_price}}</span>
             </section>
-            <section class="favorite"
+            <section class="favorite icon-wodeshoucang iconfont"
                      @click="handleRemoveClick(item.id)"></section>
           </section>
           <section class="btn-wrapper">
@@ -125,15 +125,8 @@ export default {
           color #999
           text-decoration line-through
         .favorite
-          extend-click()
-          width 38px
-          height 38px
-          &::after
-            prefix-icon(32rpx, 32rpx)
-            bg-image('icon-favorite')
-            left auto
-            right 0
-            transform translate(-50%, -50%)
+          font-size 48rpx
+          color #ffb266
     .btn-wrapper
       display flex
       justify-content space-between

@@ -26,7 +26,7 @@ export default {
 .container
   .text
     no-wrap()
-    height 68rpx
+    line-height 38rpx
     border 1rpx #ff9996 solid
     background #fff7f8
     border-radius 4px

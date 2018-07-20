@@ -5,12 +5,12 @@
                v-for="(item, index) in list"
                :key="item.id">
         <section class="header">
-          <span class="code">{{item.list}}</span>
+          <span class="code iconfont icon-dingdan1">{{item.list}}</span>
           <span class="state">{{item.state}}</span>
         </section>
         <section class="content">
           <section class="img-wrapper">
-            <img src="./aasdasd.jpg"
+            <img src=""
                  mode="aspectFit"
                  style="max-width:100%"
                  alt="item.product_name">
@@ -33,6 +33,7 @@
         </section>
         <section class="bottom">
           <button class="btn"
+                  v-if="item.status===1"
                   @click="handleCancleClick(item.id)">取消订单</button>
           <button class="btn to-pay"
                   v-if="item.status===1"
@@ -103,11 +104,8 @@ export default {
     display flex
     justify-content space-between
     .code
-      position relative
-      padding-left 35rpx
       &::before
-        bg-image('icon-order')
-        prefix-icon(30rpx, 30rpx)
+        margin-right 10rpx
     .state
       color $color-theme
   .content

@@ -133,7 +133,7 @@ export default {
   padding 0 40rpx
   color #999
   .local-wraper
-    margin-bottom 30rpx
+    margin 30rpx 0
   .tabs
     display flex
     justify-content space-between

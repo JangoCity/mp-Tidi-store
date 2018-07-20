@@ -7,22 +7,14 @@
     </section>
 
     <!-- 支付方式 -->
-    <section class="pay-way">
-      <h5 class="title">请选择支付方式</h5>
-      <section data-id=0
-               @click="handlePayWayClick"
-               class="item balance border-bottom"
-               :class="{ active: isBalance}">余额支付</section>
-      <section data-id=1
-               @click="handlePayWayClick"
-               class="item wechat"
-               :class="{active:isWechat}">微信支付</section>
+    <section class="pay-way-wrapper">
+      <payment-mode @change="handlePaymentClick"></payment-mode>
     </section>
 
     <!-- 商品信息 -->
     <section class="order-wrapper">
       <section class="store-info">
-        <p class="title">麒林便利店</p>
+        <p class="title iconfont icon-shop">麒林便利店</p>
         <p class="address">深圳市宝安区西乡汇一城商铺</p>
       </section>
 
@@ -57,7 +49,7 @@
                   :placeholder="'请填写您需要备注的信息'"
                   placeholder-class="placehodle"
                   placeholder-style="color:#999; font-size:14px;"
-                  auto-focus></textarea>
+                  ></textarea>
       </section>
     </section>
 
@@ -65,9 +57,9 @@
     <section class="bottom">
       <p class="text  border-top">
         应付款
-        <span class="money">75.00</span>（店铺配送）
+        <span class="money">{{total}}</span>（店铺配送）
       </p>
-      <button class="line-gradient-btn btn">
+      <button class="line-gradient-btn btn-normal btn">
         立即支付
       </button>
     </section>
@@ -78,38 +70,36 @@
 <script type='text/ecmascript-6'>
 import counter from '@/components/counter'
 import userInfo from '@/components/userInfo'
+import paymentMode from '@/components/paymentMode'
 import tip from '@/components/tip'
-import store from '@/store'
-
+import { mapGetters } from 'vuex'
 export default {
   components: {
     userInfo,
+    paymentMode,
     counter,
     tip
   },
   data() {
     return {
-      payWay: null,
-      total: 78
+      price: 78
     }
   },
-  methods: {
-    handlePayWayClick(ev) {
-      this.payWay = ev.currentTarget.dataset.id
-      console.log(store.state.count)
+  computed: {
+    // 更改支付方式
+    handlePaymentClick() {
     },
+    // 总价
+    total() {
+      return this.price * this.count + '.00'
+    },
+    ...mapGetters(['count', 'payment'])
+  },
+  methods: {
     handleCountClick(count) {
       console.log(this.total)
       const base = 78
       this.total = base * count
-    }
-  },
-  computed: {
-    isBalance() {
-      return parseInt(this.payWay, 10) === 0
-    },
-    isWechat() {
-      return parseInt(this.payWay, 10) === 1
     }
   },
   mounted() {
@@ -124,7 +114,7 @@ export default {
   position relative
   padding 20rpx 30rpx 100rpx 30rpx
   background #f6f6f6
-  .user-info, .pay-way, .order-wrapper, .comment-wrapper
+  .user-info, .pay-way-wrapper, .order-wrapper, .comment-wrapper
     position relative
     padding 30rpx
     box-sizing border-box
@@ -141,43 +131,15 @@ export default {
       height 4px
       background linear-gradient(-60deg, #fc4331 25%, #f6f6f6 50%, #2e93ff 25%)
       background-size 30px 100%
-  .pay-way
-    padding-bottom 0
-    font-size 14px
-    .title
-      height 40rpx
-      line-height 40rpx
-      font-size 14px
-    .item
-      position relative
-      height 80rpx
-      line-height 80rpx
-      padding-left 40rpx
-      &.balance
-        border-bottom 1rpx solid #eee
-      &::before
-        prefix-icon(31rpx, 31rpx)
-      &.balance::before
-        bg-image('icon-balance')
-      &.wechat::before
-        bg-image('icon-wechat')
-    .active
-      &:after
-        prefix-icon(22rpx, 19rpx)
-        bg-image('icon-check')
-        left auto
-        right 0
   .order-wrapper
     .store-info
       position relative
-      padding-left 40rpx
       margin-bottom 25rpx
       &::before
-        prefix-icon(30rpx, 30rpx)
-        bg-image('icon-goods')
         top 25rpx
       .title
         font-size 16px
+        margin-bottom 20rpx
       .address
         font-size 12px
     .goods-total
@@ -188,17 +150,18 @@ export default {
         height 165rpx
         vertical-align top
         margin-right 20rpx
-      .text-wrapper
-        display inline-block
-        width 445rpx
-        height 165rpx
-        .title
-          mult_line_ellipsis()
-          font-size 16px
-          margin-bottom 35rpx
-        .price
-          color $color-theme
-          font-size 20px
+    .text-wrapper
+      display inline-block
+      width 445rpx
+      height 165rpx
+      .title
+        mult_line_ellipsis()
+        font-size 16px
+        margin-bottom 35rpx
+        line-height 26px
+      .price
+        color $color-theme
+        font-size 20px
   .count-wrapper
     display flex
     justify-content space-between
@@ -206,14 +169,19 @@ export default {
     .label
       font-size 18px
   .comment-wrapper
+    position relative
+    z-index 1
     .title
       font-size 16px
       margin-bottom 20rpx
     .textarea
       font-size 14px
       background #fbfafa
-      border 1px solid #f0f0f0
-      padding 20rpx
+      border 0.5rpx solid #f0f0f0
+      padding 15rpx 20rpx
+      box-sizing border-box
+      border-radius 10rpx
+      width 100%
   .bottom
     position fixed
     display flex
@@ -238,5 +206,6 @@ export default {
     .btn
       width 290rpx
       flex 0 0 290rpx
+      line-height 100rpx
       border-radius 0
 </style>

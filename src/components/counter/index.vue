@@ -1,33 +1,24 @@
 <template>
   <div class="container">
-    <span class="sub btn"
+    <span class=" btn decrement iconfont icon-subtract"
           @click="decrement"></span>
     <span class="count">{{ count }}</span>
-    <span class="add btn"
+    <span class=" btn increment iconfont icon--jiahao"
           @click="increment"></span>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
-import store from '@/store'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 
 export default {
-  props: {
-    num: {
-      type: Number,
-      default: 0
-    }
-  },
   computed: {
-    count() {
-      return store.state.count
-    }
+    ...mapGetters(['count'])
   },
   methods: {
     ...mapMutations({
       'increment': 'INCREMENT',
-      'incrementBy': 'DECREMENT'
+      'decrement': 'DECREMENT'
     })
   }
 }
@@ -42,27 +33,14 @@ export default {
   .count
     background #f6f6f6
     height 50rpx
+    line-height 50rpx
     width 100rpx
     font-size 16px
+    border-radius 10rpx
   .btn
     position relative
     width 50rpx
     height 50rpx
     line-height 50rpx
-    extend-click()
-    &::before
-      position absolute
-      top 50%
-      left 50%
-      transform translate(-50%, -50%)
-      background-size contain
-      background-repeat no-repeat
-      content ''
-      width 24rpx
-  .add::before
-    height 24rpx
-    bg-image('icon-add')
-  .sub::before
-    height 4rpx
-    bg-image('icon-sub')
+    color #333
 </style>

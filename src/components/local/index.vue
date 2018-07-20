@@ -2,7 +2,7 @@
   <section class="container">
     <section class="local-box"
              @click="handeleRestInfoClick">
-      <span class="local">{{address}}</span>
+      <span class="local iconfont icon-weizhi">{{address}}</span>
     </section>
     <section class="weather-box"
              v-if="weather">
@@ -76,7 +76,7 @@ export default {
   font-size 36rpx
   .local-box
     position relative
-    padding 0 30rpx 0 40rpx
+    padding 0 30rpx 0 10rpx
     color #000
     .local
       no-wrap()

@@ -3,23 +3,22 @@
     <!-- 头部信息 -->
     <section class="header">
       <section class="state">
-        <span class="text">待付款</span>
+        <span class="text iconfont icon-shijian">待付款</span>
       </section>
-      <section class="user-info"
-               v-if="contact">
+      <section class="user-info" >
         <user-info :hasType="false"
                    :name="contact.name"
                    :phone="contact.phone"
-                   :shoppingAddress="shoppingAddress"></user-info>
+                   :shoppingAddress="shoppingAddress"
+                   v-if="contact"></user-info>
       </section>
     </section>
 
     <!-- 订单SDK -->
-    <section class="content"
-             v-if="product">
-      <section class="order-desc">
+    <section class="content" >
+      <section class="order-desc" v-if="product">
         <section class="img-wrapper">
-          <img src="./aasdasd.jpg"
+          <img :src="product.image"
                mode="aspectFit"
                class="max-img">
         </section>
@@ -39,10 +38,10 @@
       </section>
       <section class="contact-desc">
         <p class="item">
-          <span class="server">联系客服</span>
+          <span class="server iconfont icon-kefu">联系客服</span>
         </p>
         <p class="item">
-          <span class="call">拨打电话</span>
+          <span class="call iconfont icon-tel">拨打电话</span>
         </p>
       </section>
     </section>
@@ -71,9 +70,9 @@
 
     <!-- 底部按钮 -->
     <section class="bottom">
-      <button class="btn  cancel"
+      <button class="btn btn-normal cancel"
               @click="handleCancelClick">取消订单</button>
-      <button class="btn pay "
+      <button class="btn btn-normal pay "
               @click="handlePayClick">去支付</button>
     </section>
   </section>
@@ -140,6 +139,7 @@ export default {
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
 .container
+  background #fbfafa
   .header
     position relative
     background red
@@ -151,10 +151,8 @@ export default {
       position relative
       font-size 18px
       color #fff
-      padding-left 45rpx
       &::before
-        bg-image('icon-clock')
-        prefix-icon(36rpx, 36rpx)
+        margin-right 10rpx
     .user-info
       position absolute
       top 120rpx
@@ -166,7 +164,6 @@ export default {
       border-radius 10px
       box-shadow 0 4px 8px rgba(0, 0, 0, 0.08)
   .content
-    margin-bottom 20rpx
     .order-desc
       padding 30rpx
       background-color #fbfafa
@@ -196,6 +193,7 @@ export default {
       line-height 90rpx
     .contact-desc
       display flex
+      background #fff
       justify-content space-between
       line-height 90rpx
       text-align center
@@ -215,15 +213,15 @@ export default {
           background #eee
       .server, .call
         position relative
-        padding-left 45rpx
         &::before
-          prefix-icon(32rpx, 32rpx)
+          font-size 18px
+          margin-right 10px
       .server::before
-        bg-image('icon-server')
+        color #ffc435
       .call::before
-        bg-image('icon-phone')
+        color #e60012
   .order-info
-    padding 20rpx 0 50rpx
+    margin 20rpx 0
     width 100%
     height auto
     background #f6f6f6
@@ -242,17 +240,18 @@ export default {
     height 100rpx
     padding 20rpx 30rpx
     text-align right
+    box-sizing border-box
     .btn
-      display inline-block
       height 60rpx
       line-height 60rpx
       border-radius 30rpx
-      border 1px solid #dcdcdc
       font-size 14px
+      padding 0 30rpx
       box-shadow none
       margin-left 20rpx
       &.cancel
-        background #fff
+        background #F8F8F8
+        border 1px solod #ccc !important
       &.pay
         color #fff
         background linear-gradient(to bottom, #e61b00, #ff5408)

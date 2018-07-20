@@ -52,12 +52,12 @@
     <!-- 底部信息 -->
     <section class="bottom">
       <section class="func-list">
-        <span class="item">首页</span>
-        <span class="item">收藏</span>
-        <span class="item">客服</span>
-        <span class="item">分享</span>
+        <span class="item iconfont icon-shouye">首页</span>
+        <span class="item iconfont icon-shoucang">收藏</span>
+        <span class="item iconfont icon-kefu">客服</span>
+        <span class="item iconfont icon-fenxiang">分享</span>
       </section>
-      <button class="line-gradient-btn btn">立即购买</button>
+      <button class=" btn-normal line-gradient-btn btn">立即购买</button>
     </section>
   </section>
 </template>
@@ -182,35 +182,23 @@ export default {
     width 100%
     background #fff
     height 100rpx
-    .func-list, .btn
-      display inline-block
     .func-list
-      width 430rpx
+      width 460rpx
       display flex
       text-align center
+      .btn
+      display inline-block
       .item
         position relative
         padding 10rpx 0
         width 25%
         &::before
-          content ''
           display block
-          width 46rpx
-          height 46rpx
+          font-size 48rpx
           margin auto
-          background-size contain
-          background-position center
-          background-repeat no-repeat
-        &:nth-of-type(1)::before
-          bg-image('icon-home')
-        &:nth-of-type(2)::before
-          bg-image('icon-favorite')
-        &:nth-of-type(3)::before
-          bg-image('icon-service')
-        &:nth-of-type(4)::before
-          bg-image('icon-share')
     .btn
       width 290rpx
       flex 0 0 290rpx
-      border-radius 0
+      margin 0
+      line-height 100rpx
 </style>
