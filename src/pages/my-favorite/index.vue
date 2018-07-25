@@ -23,8 +23,9 @@
                      @click="handleRemoveClick(item.id)"></section>
           </section>
           <section class="btn-wrapper">
-            <button class="btn">去购买</button>
-            <span class="count-down">剩余15小时23分11秒</span>
+            <button class="btn btn-normal"
+                    @click="handleToBuyClick(item)">去购买</button>
+            <span class="count-down">剩余{{item.count_time}}</span>
           </section>
         </section>
       </section>
@@ -49,7 +50,12 @@ export default {
     ...mapGetters(['userinfo'])
   },
   methods: {
-
+    handleToBuyClick(item) {
+      console.log(item)
+      showSuccess(item.product_name)
+      const url = `../goods-detail/main?id=${item.id}`
+      wx.navigateTo({ url })
+    },
     // 取消收藏
     async handleRemoveClick(id) {
       console.log('id', id)
@@ -67,7 +73,7 @@ export default {
       // const params = { uid: this.userinfo.uid }
       const params = { uid: 1 }
       const data = await fly.get('favorite', params)
-      console.log('信息列表页返回结果====', data)
+      console.log('收藏列表====', data)
       this.favoriteList = data.list
       // 注销下拉刷新事件
       wx.stopPullDownRefresh()
@@ -136,6 +142,8 @@ export default {
         font-size 14px
         height 52rpx
         line-height 52rpx
+        border-radius 10rpx
+        padding 0 10rpx
         color #fff
         background-color $color-theme
       .count-down

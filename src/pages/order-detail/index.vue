@@ -3,20 +3,19 @@
     <!-- 头部信息 -->
     <section class="header">
       <section class="state">
-        <span class="text iconfont icon-shijian">待付款</span>
+        <span class="text iconfont icon-shijian">{{payment}}</span>
       </section>
-      <section class="user-info" >
+      <section class="user-info"
+               v-if="contact">
         <user-info :hasType="false"
-                   :name="contact.name"
-                   :phone="contact.phone"
-                   :shoppingAddress="shoppingAddress"
-                   v-if="contact"></user-info>
+                   :userinfo="contact"></user-info>
       </section>
     </section>
 
     <!-- 订单SDK -->
-    <section class="content" >
-      <section class="order-desc" v-if="product">
+    <section class="content"
+             v-if="product">
+      <section class="order-desc">
         <section class="img-wrapper">
           <img :src="product.image"
                mode="aspectFit"
@@ -24,16 +23,16 @@
         </section>
         <section class="text-wrapper">
           <p class="title">{{product.product_name}}</p>
-          <p class="discounts">已有30人购买，可返现￥10</p>
+          <p class="discounts">已有30人购买，可返现￥{{product.curb_sales}}</p>
           <p class="spec">
             <span class="total">规格:单</span>
-            <span class="count">x1</span>
+            <span class="count">x{{product.number}}</span>
           </p>
         </section>
       </section>
       <section class="total-desc border-bottom">
         实付：
-        <span class="money">104.00</span>
+        <span class="money">{{product.selling_price}}</span>
         <span>（免运费）</span>
       </section>
       <section class="contact-desc">
@@ -41,29 +40,32 @@
           <span class="server iconfont icon-kefu">联系客服</span>
         </p>
         <p class="item">
-          <span class="call iconfont icon-tel">拨打电话</span>
+          <span class="call iconfont icon-tel"
+                @click="handleCallClick">拨打电话</span>
         </p>
       </section>
     </section>
 
     <!-- 订单信息 -->
-    <section class="order-info">
+    <section class="order-info"
+             v-if="order!==null">
+      <div></div>
       <ul class="list">
         <li class="item">
           <span class="label">订单编号:</span>
-          <span class="info">245935245324535</span>
+          <span class="info">{{order.code}}</span>
         </li>
         <li class="item">
           <span class="label">支付方式:</span>
-          <span class="info">待支付</span>
+          <span class="info">{{payment}}</span>
         </li>
         <li class="item">
           <span class="label">支付时间:</span>
-          <span class="info">2018-04-20 11:25:34</span>
+          <span class="info">{{order.pay_time}}</span>
         </li>
         <li class="item">
           <span class="label">下单时间:</span>
-          <span class="info">2018-04-20 11:23:34</span>
+          <span class="info">{{order.created_at}}</span>
         </li>
       </ul>
     </section>
@@ -71,7 +73,7 @@
     <!-- 底部按钮 -->
     <section class="bottom">
       <button class="btn btn-normal cancel"
-              @click="handleCancelClick">取消订单</button>
+              @click="handleCancelOrderClick">取消订单</button>
       <button class="btn btn-normal pay "
               @click="handlePayClick">去支付</button>
     </section>
@@ -81,10 +83,10 @@
 <script type='text/ecmascript-6'>
 import userInfo from '@/components/userInfo'
 import fly from '@/utils/fly'
-import { share } from '@/common/js/mixins'
+import { share, cancel, call } from '@/common/js/mixins'
 
 export default {
-  minxins: [share],
+  mixins: [share, cancel, call],
   components: {
     userInfo
   },
@@ -92,45 +94,53 @@ export default {
     return {
       product: null,
       order: null,
-      contact: null
+      contact: null,
+      phoneNumber: null
     }
   },
   computed: {
-    shoppingAddress() {
-      if (!this.contact) return ''
-      const { province, city, area, district, address } = this.contact
-      return province.name + city.name + area.name + district + address
+    payment() {
+      if (this.order) {
+        let str = ''
+        switch (this.order.status) {
+          case 1:
+            str = '待支付'
+            break
+          case 2:
+            str = '交易完成'
+            break
+          case 3:
+            str = '交易关闭'
+            break
+        }
+        return str
+      }
     }
   },
   methods: {
-    // 取消支付
-    handleCancelClick() {
-      console.log('取消支付')
-    },
-
     // 跳转支付
     handlePayClick() {
       wx.navigateTo({
         url: '../buy/main'
       })
     },
-
-    async _fetchOrderDetail() {
-      const params = { uid: 1, id: 1 }
+    // 拉取订单接口信息
+    async _fetchOrderDetail(id) {
+      const params = { uid: 1, id: id || 1 }
       const data = await fly.get('orderDetail', params)
       try {
-        console.log('账单详情======', data)
         this.product = data.product
         this.contact = data.contact
         this.order = data.order
+        this.phoneNumber = data.phone
+        console.log(data)
       } catch (err) {
-        console.log('账单详情报错======', data)
+        console.log('账单详情报错======', err)
       }
     }
   },
   mounted() {
-    console.log('query参数=======', this.$root.$mp.query)
-    this._fetchOrderDetail()
+    this._fetchOrderDetail(this.$root.$mp.query.id)
   }
 }
 </script>

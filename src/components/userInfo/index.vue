@@ -1,18 +1,19 @@
 <template>
   <section class="container">
-    <section class="user-name">{{name}}
+    <section class="user-name">{{userinfo.name}}
       <span class="phone-num">{{hidePhone}}</span>
     </section>
     <p class="address">
       <span class="type company"
             v-if="hasType">{{addressType}}</span>
-     {{shoppingAddress}}</p>
+      {{shoppingAddress}}</p>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
 export default {
   props: {
+    userinfo: Object,
     hasType: {
       type: Boolean,
       default: true
@@ -20,28 +21,23 @@ export default {
     addressType: {
       type: String,
       default: '公司'
-    },
-    shoppingAddress: {
-      type: String,
-      default: ''
-    },
-    name: {
-      type: String,
-      default: ''
-    },
-    phone: {
-      type: [String, Number],
-      default: 13425187777
     }
   },
   data() {
-    return {
-    }
   },
   computed: {
+    // 收货地址
+    shoppingAddress() {
+      if (!this.userinfo.province || !this.userinfo.city || !this.userinfo.area || !this.userinfo.district) return
+      const { province, city, area, district, address } = this.userinfo
+      return province.name + city.name + area.name + district + address
+    },
+    // 电话隐藏中间字段
     hidePhone() {
-      const num = this.phone + ''
-      return num.substr(0, 3) + '****' + num.substr(7)
+      const phone = this.userinfo.phone
+      if (!phone) return ''
+      const num = phone + ''
+      return phone.length ? num.substr(0, 3) + '****' + num.substr(7) : ''
     }
   }
 }

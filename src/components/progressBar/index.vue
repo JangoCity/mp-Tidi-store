@@ -4,7 +4,7 @@
     <section class="node-wrapper">
       <section class="node" v-for="(item, index) in activity.list" :key="item.id">
         <span class="dott"></span>
-        <span class="text">满{{item.final}}人返{{item.current}}</span>
+        <span class="text">满{{item.number}}人返{{item.money}}</span>
       </section>
     </section>
 
@@ -22,7 +22,7 @@ export default {
   props: {
     activity: {
       type: Object,
-      default: {}
+      default: null
     }
   },
   data() {

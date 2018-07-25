@@ -46,18 +46,10 @@
         <p class="input-wrapper">
           <button open-type="getPhoneNumber"
                   bindgetphonenumber="getPhoneNumber"
-                  placeholder="未填写"
-                  class="btn-normal phone">{{userinfo.phone}} </button>
+                  class="btn-normal phone">{{userinfo.phone||'未绑定'}} </button>
         </p>
       </section>
 
-      <!-- <section v-for="(item, index) in list" :key="item.id" class="row  border-bottom">
-        <span class="label">{{item.label}}</span>
-        <p class="input-wrapper">
-          <input :placeholder="item.placehodleText" :maxlength="item.maxlength" type="number" class="input">
-        </p>
-        <button v-if="item.verify" class="btn-verify" @click="handleCountDownClick">发送验证码</button>
-      </section> -->
     </section>
 
     <section class="btn-wrapper">
@@ -71,17 +63,13 @@
 <script type='text/ecmascript-6'>
 import { showModal } from '@/utils'
 import fly from '@/utils/fly'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   components: {
   },
   data() {
     return {
-      userinfo: {
-        avatarUrl: '../../../static/images/unlogin.png',
-        phone: '未绑定'
-      }
     }
   },
   computed: {
@@ -91,7 +79,6 @@ export default {
     // 获取手机号
     getPhoneNumber(e) {
       let phone = this.userinfo.phone
-      debugger
       if (!phone) {
         console.log(e.detail.errMsg)
         console.log(e.detail.iv)
@@ -101,13 +88,21 @@ export default {
       let modal = e.detail.errMsg === 'getPhoneNumber:fail user deny'
         ? { title: '提示', content: '未授权' }
         : { title: '提示', content: '同意授权' }
-      debugger
       showModal(modal)
     },
     async _saveProfileInfo() {
       const params = { uid: this.userinfo.uid }
-      let info = await fly.post('postCustomerInfo', params)
-      console.log('info=======', info)
+      let userinfo = await fly.post('postCustomerInfo', params)
+      try {
+        userinfo.avatarUrl = userinfo.image
+        userinfo.nickName = userinfo.wechat_name
+        userinfo.gender = this._parseSex(userinfo.sex)
+        userinfo.name = userinfo.username
+        console.log('info=======', userinfo)
+        this.setUserInfo(userinfo)
+      } catch (err) {
+        console.log('保存资料错误', err)
+      }
     },
     // 保存资料
     handleConfirmClick() {
@@ -130,12 +125,12 @@ export default {
     },
     _getUserInfo() {
       let userinfo = wx.getStorageSync('userinfo')
-      if (userinfo) {
-        this.userinfo = Object.assign({}, this.userinfo, userinfo)
-        this.userinfo.gender = this._parseSex(userinfo.gender)
-      }
-      console.log(userinfo)
-    }
+      userinfo.gender = this._parseSex(userinfo.gender)
+      this.setUserInfo(userinfo)
+    },
+    ...mapMutations({
+      setUserInfo: 'SET_USETINFO'
+    })
   },
   mounted() {
     this._getUserInfo()

@@ -51,7 +51,7 @@
               <span class="time">33</span>后停止购买
             </section>
             <button class="line-gradient-btn btn"
-                    @click="handleBuyClick">立即购买</button>
+                    @click="handleToBuyClick">立即购买</button>
           </section>
         </swiper-item>
       </section>
@@ -115,7 +115,7 @@ export default {
     }
   },
   methods: {
-    handleBuyClick() {
+    handleToBuyClick() {
       const url = '../buy/main'
       wx.navigateTo({ url })
     }

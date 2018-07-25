@@ -1,15 +1,18 @@
 <template>
-  <section class="container">
+  <section class="container"
+           v-if="billDetail">
     <section class="bill-state">
       <p class="info">
-        <span class="iconfont" :class="billState.icon"></span>
+        <span class="iconfont"
+              :class="billState.icon"></span>
         <span class="text ">{{billState.text}}</span>
       </p>
       <strong class="total">{{billDetail.cash}}</strong>
     </section>
 
     <!-- 商品信息 -->
-    <section class="goods-info list-text-between border-bottom" v-if="billDetail">
+    <section class="goods-info list-text-between border-bottom"
+             v-if="billDetail">
       <section class="item">
         <span class="label">商品信息</span>
         <p class="info">{{billDetail.product_name}}{{billDetail.desc}}</p>
@@ -17,7 +20,8 @@
     </section>
 
     <!-- 账单信息 -->
-    <section class="bill-info list-text-between" v-if="billDetail">
+    <section class="bill-info list-text-between"
+             v-if="billDetail">
       <ul>
         <li class="item">
           <span class="label">支付方式</span>
@@ -50,34 +54,39 @@ export default {
     // 支付方式
     payWay() {
       let way = ''
-      switch (this.billDetail.type) {
-        case 1:
-          way = '余额支付'
-          break
-        case 2:
-          way = '微信支付'
-          break
-        case 3:
-          way = '组合支付'
-          break
+      if (this.billDetail && this.billDetail.type) {
+        switch (this.billDetail.type) {
+          case 1:
+            way = '余额支付'
+            break
+          case 2:
+            way = '微信支付'
+            break
+          case 3:
+            way = '组合支付'
+            break
+        }
       }
       return way
     },
+    // 账单状态
     billState() {
       let state = {}
-      switch (this.billDetail.status) {
-        case 1:
-          state = {
-            text: '已到账（收入）',
-            icon: 'icon-duihao2'
-          }
-          break
-        case 2:
-          state = {
-            text: '支付成功（支出）',
-            icon: 'icon-chahao'
-          }
-          break
+      if (this.billDetail && this.billDetail.status) {
+        switch (this.billDetail.status) {
+          case 1:
+            state = {
+              text: '已到账（收入）',
+              icon: 'icon-duihao2'
+            }
+            break
+          case 2:
+            state = {
+              text: '支付成功（支出）',
+              icon: 'icon-chahao'
+            }
+            break
+        }
       }
       return state
     }
@@ -86,6 +95,7 @@ export default {
     async _fetchBillDetail() {
       const params = { id: 1, uid: 1 }
       const data = await fly.get('billDetail', params)
+      console.log('data===', data)
       try {
         this.billDetail = data.list[0]
         console.log(this.billDetail)

@@ -36,7 +36,6 @@
         <li v-for="(item, index) in myList"
             :key="item.id"
             class="item iconfont icon-jiantouyou">
-            <span class="test"></span>
           <section class="text iconfont"
                    :class="item.icon"
                    @click="handleLinkClick(item)">{{item.title}}</section>
@@ -87,6 +86,9 @@ export default {
           break
         case 105:
           url = '../my-notice/main'
+          break
+        case 106:
+          url = '../my-issues/main'
           break
       }
       // 跳转
@@ -208,7 +210,7 @@ export default {
     font-size 32rpx
     border-bottom 0.5rpx solid #d7d7d7
     &::before
-      posY(10rpx,false)
+      posY(10rpx, false)
       color #ccc
       font-size 24rpx
     .text
@@ -235,4 +237,7 @@ export default {
     &:nth-of-type(5)
       .text::before
         color #8fd0ae
+    &:nth-of-type(6)
+      .text::before
+        color #84c7ff
 </style>

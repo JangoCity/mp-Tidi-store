@@ -52,8 +52,11 @@ export default {
     // 天气图标
     weatherIcon() {
       if (!this.weather) return
-      const weatherType = [{ text: '台风', icon: 'icon-taifeng' }, { text: '沙尘暴', icon: 'icon-shachengbao' }, { text: '沙尘', icon: 'icon-shachen' }, { text: '风', icon: 'icon-feng' }, { text: '中雪', icon: 'icon-zhongxue' }, { text: '雨夹雪', icon: 'icon-yujiaxue' }, { text: '雷阵雪', icon: 'icon-leizhenxue' }, { text: '大雪', icon: 'icon-daxue' }, { text: '冰雹', icon: 'icon-bingbao' }, { text: '暴雪', icon: 'icon-baoxue' }, { text: '小雪', icon: 'icon-xiaoxue' }, { text: '雾霾', icon: 'icon-wumai' }, { text: '雷阵雨', icon: 'icon-leizhenyu' }, { text: '雾', icon: 'icon-wu' }, { text: '暴雨', icon: 'icon-baoyu' }, { text: '中雨', icon: 'icon-zhongyu' }, { text: '小雨', icon: 'icon-xiaoyu' }, { text: '多云转阴', icon: 'icon-duoyunzhuanyin' }, { text: '晴天', icon: 'icon-qingtian' }, { text: '多云', icon: 'icon-duoyun' }, { text: '大雨', icon: 'icon-dayu' }]
-      return weatherType.filter(item => this.weather.type === item.text)[0].icon
+
+      const weatherType = [{ text: '台风', icon: 'icon-taifeng' }, { text: '沙尘暴', icon: 'icon-shachengbao' }, { text: '沙尘', icon: 'icon-shachen' }, { text: '风', icon: 'icon-feng' }, { text: '中雪', icon: 'icon-zhongxue' }, { text: '雨夹雪', icon: 'icon-yujiaxue' }, { text: '雷阵雪', icon: 'icon-leizhenxue' }, { text: '大雪', icon: 'icon-daxue' }, { text: '冰雹', icon: 'icon-bingbao' }, { text: '暴雪', icon: 'icon-baoxue' }, { text: '小雪', icon: 'icon-xiaoxue' }, { text: '雾霾', icon: 'icon-wumai' }, { text: '雷阵雨', icon: 'icon-leizhenyu' }, { text: '阵雨', icon: 'icon-leizhenyu' }, { text: '雾', icon: 'icon-wu' }, { text: '暴雨', icon: 'icon-baoyu' }, { text: '中雨', icon: 'icon-zhongyu' }, { text: '小雨', icon: 'icon-xiaoyu' }, { text: '多云转阴', icon: 'icon-duoyunzhuanyin' }, { text: '晴天', icon: 'icon-qingtian' }, { text: '多云', icon: 'icon-duoyun' }, { text: '大雨', icon: 'icon-dayu' }]
+      const currentWeather = weatherType.filter(item => this.weather.type === item.text)
+      // 防止不满足所有天气条件，若都不匹配则返回一个“多云”天气
+      return currentWeather.length ? currentWeather[0].icon : 'icon-duoyun'
     }
   },
   methods: {
@@ -62,7 +65,7 @@ export default {
     }
   },
   mounted() {
-    console.log('weather====', this.weather)
+    // console.log('weather====', this.weather)
   }
 }
 </script>

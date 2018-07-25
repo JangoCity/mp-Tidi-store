@@ -24,8 +24,9 @@
                  :currentTab="index"
                  :list="list"
                  :status="tabList"
-                 @cancle="handleCancleClick"
+                 @cancle="handleCancelOrderClick"
                  @pay="handlePayClick"
+                 @confirm="handleConfirmOrderClick"
                  @view="handleViewDetailClick"></order>
         </scroll-view>
       </swiper-item>
@@ -37,11 +38,11 @@
 import wxp from 'minapp-api-promise'
 import fly from '@/utils/fly'
 import { showSuccess } from '@/utils'
-import { share } from '@/common/js/mixins'
+import { share, cancel } from '@/common/js/mixins'
 import slideNav from '@/components/slideNav'
 import order from '@/components/order'
 export default {
-  mixins: [share],
+  mixins: [share, cancel],
   components: { slideNav, order },
   data() {
     return {
@@ -64,24 +65,9 @@ export default {
       console.log(e)
       // this._getOrderList()
     },
-    // 取消订单
-    handleCancleClick(id) {
-      wx.showModal({
-        title: '提示',
-        content: '确定取消该订单吗？',
-        cancelText: '我再想想',
-        success: (res) => {
-          if (res.confirm) {
-            console.log('用户点击确定')
-          } else if (res.cancel) {
-            console.log('用户点击取消')
-          }
-        }
-      })
-    },
-    // 支付订单
-    handlePayClick(id) {
-      showSuccess('支付订单' + id)
+    // 确认订单
+    handleConfirmOrderClick(id) {
+      showSuccess('确认订单' + id)
     },
     // 查看订单
     handleViewDetailClick(id) {

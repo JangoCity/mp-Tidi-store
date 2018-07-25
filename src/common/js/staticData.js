@@ -47,7 +47,8 @@ export const myList = [
   { id: 102, title: '我的钱包', icon: 'icon-wodeqianbao' },
   { id: 103, title: '收货地址', icon: 'icon-shouhuodizhi' },
   { id: 104, title: '我的收藏', icon: 'icon-wodeshoucang' },
-  { id: 105, title: '我的消息', icon: 'icon-wodexiaoxi' }
+  { id: 105, title: '我的消息', icon: 'icon-wodexiaoxi' },
+  { id: 106, title: '常见问题', icon: 'icon-wenti' }
 ]
 
 // 创建收货地址类型

@@ -38,6 +38,9 @@
           <button class="btn to-pay"
                   v-if="item.status===1"
                   @click="handlePayClick(item.id)">去支付</button>
+          <button class="btn to-pay"
+                  v-if="item.status===2"
+                  @click="handleConfirmClick(item.id)">确认订单</button>
           <button class="btn"
                   @click="handleViewDetailClick(item.id)">查看订单</button>
         </section>
@@ -70,6 +73,10 @@ export default {
     // 取消订单
     handleCancleClick(id) {
       this.$emit('cancle', id)
+    },
+    // 确认订单
+    handleConfirmClick(id) {
+      this.$emit('confirm', id)
     },
     // 支付订单
     handlePayClick(id) {

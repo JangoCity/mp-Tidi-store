@@ -2,8 +2,9 @@
   <section class="container">
 
     <!-- 用户信息 -->
-    <section class="user-info">
-      <user-info></user-info>
+    <section class="user-info"
+             v-if="userinfo">
+      <user-info :userinfo="userinfo"></user-info>
     </section>
 
     <!-- 支付方式 -->
@@ -21,7 +22,7 @@
       <!-- 商品相关信息 -->
       <section class="goods-total">
         <section class="img-wrapper">
-          <img src="./aasdasd.jpg"
+          <img src=""
                class="max-img">
         </section>
         <section class="text-wrapper">
@@ -48,8 +49,7 @@
         <textarea class="textarea"
                   :placeholder="'请填写您需要备注的信息'"
                   placeholder-class="placehodle"
-                  placeholder-style="color:#999; font-size:14px;"
-                  ></textarea>
+                  placeholder-style="color:#999; font-size:14px;"></textarea>
       </section>
     </section>
 
@@ -59,7 +59,8 @@
         应付款
         <span class="money">{{total}}</span>（店铺配送）
       </p>
-      <button class="line-gradient-btn btn-normal btn">
+      <button class="line-gradient-btn btn-normal btn"
+              @click.prevent="handlePayClick">
         立即支付
       </button>
     </section>
@@ -68,12 +69,17 @@
 </template>
 
 <script type='text/ecmascript-6'>
+
 import counter from '@/components/counter'
 import userInfo from '@/components/userInfo'
 import paymentMode from '@/components/paymentMode'
 import tip from '@/components/tip'
+
+import fly from '@/utils/fly'
+import { share, pay } from '@/common/js/mixins'
 import { mapGetters } from 'vuex'
 export default {
+  mixins: [share, pay],
   components: {
     userInfo,
     paymentMode,
@@ -89,6 +95,12 @@ export default {
     // 更改支付方式
     handlePaymentClick() {
     },
+    // 用户信息
+    userinfo() {
+      const info = wx.getStorageSync('userinfo')
+      console.log(info)
+      return info
+    },
     // 总价
     total() {
       return this.price * this.count + '.00'
@@ -96,13 +108,24 @@ export default {
     ...mapGetters(['count', 'payment'])
   },
   methods: {
+    // 点击计数
     handleCountClick(count) {
-      console.log(this.total)
       const base = 78
       this.total = base * count
+    },
+    // 拉取接口数据
+    async _fetchData() {
+      const params = { id: 1, uid: 1 }
+      const data = await fly.get('buyProduct', params)
+      try {
+        console.log(data)
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
   mounted() {
+    console.log(this.userinfo)
   }
 }
 </script>
@@ -175,6 +198,8 @@ export default {
       font-size 16px
       margin-bottom 20rpx
     .textarea
+      position static
+      z-index 1
       font-size 14px
       background #fbfafa
       border 0.5rpx solid #f0f0f0
@@ -185,8 +210,9 @@ export default {
   .bottom
     position fixed
     display flex
-    z-index 99
+    z-index 100
     left 0
+    right 0
     bottom 0
     width 100%
     background #fff
