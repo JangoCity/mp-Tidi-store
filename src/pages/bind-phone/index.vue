@@ -1,55 +1,76 @@
 <template>
   <section class="container">
     <section class="form-group">
-      <section v-for="(item, index) in list" :key="item.id" class="row border-bottom" >
-        <span class="label">{{item.label}}</span>
+      <!-- 绑定手机号 -->
+      <section class="row border-bottom">
+        <span class="label">手机号</span>
         <p class="input-wrapper">
-          <input
-          :placeholder="item.placehodleText"
-          :maxlength = "item.maxlength"
-          type="number"
-          class="input">
+          <input placeholder="请输入手机号"
+                 maxlength="11"
+                 type="number"
+                 class="input"
+                 v-model="phone">
         </p>
-        <button v-if="item.verify" class="btn-verify" @click="handleCountDownClick">发送验证码</button>
       </section>
 
+      <!-- 发送验证码 -->
+      <section class="row border-bottom">
+        <span class="label">验证码</span>
+        <p class="input-wrapper">
+          <input placeholder="请输入验证码"
+                 maxlength="6"
+                 type="number"
+                 class="input"
+                 v-model="qrCode">
+        </p>
+        <button class="btn-verify"
+                @click="handleCountDownClick">{{qrText}}</button>
+      </section>
     </section>
 
     <section class="btn-wrapper">
-      <button class="btn-confirm">确定</button>
+      <button class="btn-confirm"
+              hover-class="btn-confirm-hover">确定</button>
     </section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
+import { showSuccess, showNormal } from '@/utils'
+import fly from '@/utils/fly'
+
+const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
+
 export default {
   components: {
   },
   data() {
     return {
-      list: [{
-        id: 1001,
-        label: '手机号',
-        placehodleText: '请输入手机号',
-        maxlength: 11
-      }, {
-        id: 1002,
-        label: '验证码',
-        verify: true,
-        placehodleText: '请输入验证码',
-        maxlength: 6
-      }],
-      count: 60
+      count: 60,
+      qrCode: '',
+      qrDisbled: false, // 禁止验证码
+      qrText: '发送验证码',
+      phone: '13425187659'
     }
   },
   computed: {
   },
   methods: {
-    handleConfirmClick() { // 确定
+    // 确定绑定
+    handleConfirmClick() {
 
     },
-    handleCountDownClick() {
-      console.log('发送验证码')
+    // 发送验证码
+    async handleCountDownClick() {
+      if (!reg.test(this.phone)) {
+        showNormal('请填写正确的手机号')
+        return
+      }
+      const params = { mobile: '18627175798', uid: 1 }
+      const data = await fly.get('sendbindSms', params)
+
+      console.log('data', data)
+      showSuccess('绑定手机成功')
     }
   }
 }
@@ -60,7 +81,7 @@ export default {
 @import '~common/stylus/variable'
 .container
   background #f6f6f6
-  height 1136rpx
+  height 100%
   .form-group
     padding 0 30rpx
     margin-bottom 40rpx

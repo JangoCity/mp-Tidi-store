@@ -53,26 +53,31 @@ export default {
       target.status = 1
       fly.get('messageDetail', { id: item.id })
     },
-    async _getNoticeList() {
+
+    // 获取通知列表
+    async _fetchNoticeList() {
       wx.showNavigationBarLoading()
       const params = { uid: 1, type: 3 }
-      const data = await fly.get('messageList', params)
-      console.log('信息列表页返回结果====', data)
-      this.noticeList = data
-      // 注销下拉刷新事件
-      wx.stopPullDownRefresh()
-      // 注销刷新icon状态
-      wx.hideNavigationBarLoading()
-      this.noticeList.forEach(item => {
-        item.created_at = item.created_at.substring(5, 16)
-      })
+      const res = await fly.get('messageList', params)
+      try {
+        this.noticeList = res.data
+        // 注销下拉刷新事件
+        wx.stopPullDownRefresh()
+        // 注销刷新icon状态
+        wx.hideNavigationBarLoading()
+        this.noticeList.forEach(item => {
+          item.created_at = item.created_at.substring(5, 16)
+        })
+      } catch (err) {
+        console.log('获取通知列表报错====', err)
+      }
     }
   },
   mounted() {
-    this._getNoticeList()
+    this._fetchNoticeList()
   },
   onPullDownRefresh() {
-    this._getNoticeList()
+    this._fetchNoticeList()
   }
 }
 </script>

@@ -95,7 +95,7 @@ export default {
       product: null,
       order: null,
       contact: null,
-      phoneNumber: null
+      phone: null
     }
   },
   computed: {
@@ -124,22 +124,23 @@ export default {
         url: '../buy/main'
       })
     },
-    // 拉取订单接口信息
+    // 获取订单接口信息
     async _fetchOrderDetail(id) {
       const params = { uid: 1, id: id || 1 }
-      const data = await fly.get('orderDetail', params)
+      const res = await fly.get('orderDetail', params)
       try {
-        this.product = data.product
-        this.contact = data.contact
-        this.order = data.order
-        this.phoneNumber = data.phone
-        console.log(data)
+        const { product, contact, order, phone } = res.data
+        this.product = product
+        this.contact = contact
+        this.order = order
+        this.phone = phone
       } catch (err) {
         console.log('账单详情报错======', err)
       }
     }
   },
   mounted() {
+    console.log('id==========', this.$root.$mp.query.id)
     this._fetchOrderDetail(this.$root.$mp.query.id)
   }
 }

@@ -61,9 +61,10 @@ export default {
       let { current } = e.target
       this.currentTab = current
     },
-    up(e) {
-      console.log(e)
-      // this._getOrderList()
+    // 支付
+    handlePayClick(id) {
+      let url = `../buy/main?id=${id}`
+      wx.navigateTo({ url })
     },
     // 确认订单
     handleConfirmOrderClick(id) {
@@ -71,7 +72,7 @@ export default {
     },
     // 查看订单
     handleViewDetailClick(id) {
-      this.$emit('view', id)
+      // this.$emit('view', id)
       let url = `../order-detail/main?id=${id}`
       wx.navigateTo({ url })
     },
@@ -80,17 +81,16 @@ export default {
       let info = await wxp.getSystemInfo()
       this.winWidth = info.windowWidth
       this.winHeight = info.windowHeight
-      console.log('当前设备高度====', this.winHeight)
     },
     // 获取订单列表
-    async _getOrderList() {
+    async _fetchOrderList() {
       const params = { uid: 1 }
       wx.showNavigationBarLoading()
+      const res = await fly.get('orderList', params)
       try {
-        const data = await fly.get('orderList', params)
+        const data = res.data
         this.tabList = data.status
         this.orderList = data.list.data
-        console.log('订单列表分配前========', this.orderList)
         this._parseOrderList(this.orderList)
         // 注销下拉刷新事件
         wx.stopPullDownRefresh()
@@ -133,11 +133,10 @@ export default {
   },
   mounted() {
     this._initSize()
-    this._getOrderList()
+    this._fetchOrderList()
   },
   onPullDownRefresh() {
-    console.log('触发下拉')
-    this._getOrderList()
+    this._fetchOrderList()
   },
   onHide() {
     this.currentTab = 0

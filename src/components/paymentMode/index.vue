@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <h5 class="title">请选择支付方式</h5>
-    <section data-type="0"
+    <section data-type="1"
              @click="handlepaymentClick"
              class="item iconfont icon-yuezhifu balance"
              :class="{active:isBalance}">
       余额支付
     </section>
-    <section data-type="1"
+    <section data-type="2"
              @click="handlepaymentClick"
              class="item iconfont icon-weixinzhifu wechat"
              :class="{active:isWechat}">
@@ -19,24 +19,20 @@
 <script type="text/ecmascript-6">
 import { mapGetters, mapMutations } from 'vuex'
 export default {
-  data() {
-    return {
-    }
-  },
   computed: {
     isBalance() {
-      return this.payment === 0
+      return this.payment === 1
     },
     isWechat() {
-      return this.payment === 1
+      return this.payment === 2
     },
     ...mapGetters(['payment'])
   },
   methods: {
     // 切换付费方式
     handlepaymentClick(ev) {
-      const type = parseInt(ev.mp.currentTarget.dataset.type, 10)
-      this.setPayment(type)
+      const mode = parseInt(ev.mp.currentTarget.dataset.type, 10)
+      this.setPayment(mode)
     },
     ...mapMutations({
       setPayment: 'SET_PAYMENT'

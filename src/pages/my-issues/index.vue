@@ -47,10 +47,13 @@ export default {
     // 拉取信息
     async _getIssuesList() {
       const params = { uid: 1 }
-      const data = await fly.get('question', params)
-      console.log('信息列表页返回结果====', data)
-      this.issuesList = data
-      console.log(this.issuesList)
+      const res = await fly.get('question', params)
+      try {
+        const data = res.data
+        this.issuesList = data
+      } catch (err) {
+        console.log('获取常见问题报错====', err)
+      }
     }
   },
   mounted() {

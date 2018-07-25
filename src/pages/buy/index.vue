@@ -9,7 +9,7 @@
 
     <!-- 支付方式 -->
     <section class="pay-way-wrapper">
-      <payment-mode @change="handlePaymentClick"></payment-mode>
+      <payment-mode @changeType="handlePayModeClick"></payment-mode>
     </section>
 
     <!-- 商品信息 -->
@@ -47,6 +47,7 @@
       <p class="title">订单留言</p>
       <section class="textarea-wrapper">
         <textarea class="textarea"
+                  v-model="message"
                   :placeholder="'请填写您需要备注的信息'"
                   placeholder-class="placehodle"
                   placeholder-style="color:#999; font-size:14px;"></textarea>
@@ -88,13 +89,11 @@ export default {
   },
   data() {
     return {
-      price: 78
+      price: 78,
+      message: '' // 用户留言
     }
   },
   computed: {
-    // 更改支付方式
-    handlePaymentClick() {
-    },
     // 用户信息
     userinfo() {
       const info = wx.getStorageSync('userinfo')
@@ -108,16 +107,12 @@ export default {
     ...mapGetters(['count', 'payment'])
   },
   methods: {
-    // 点击计数
-    handleCountClick(count) {
-      const base = 78
-      this.total = base * count
-    },
     // 拉取接口数据
     async _fetchData() {
       const params = { id: 1, uid: 1 }
-      const data = await fly.get('buyProduct', params)
+      const res = await fly.get('buyProduct', params)
       try {
+        const data = res.data
         console.log(data)
       } catch (err) {
         console.log(err)
@@ -208,7 +203,7 @@ export default {
       border-radius 10rpx
       width 100%
   .bottom
-    position fixed
+    position absolute
     display flex
     z-index 100
     left 0

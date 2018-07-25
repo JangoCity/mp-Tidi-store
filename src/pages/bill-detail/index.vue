@@ -94,9 +94,9 @@ export default {
   methods: {
     async _fetchBillDetail() {
       const params = { id: 1, uid: 1 }
-      const data = await fly.get('billDetail', params)
-      console.log('data===', data)
+      const res = await fly.get('billDetail', params)
       try {
+        const data = res.data
         this.billDetail = data.list[0]
         console.log(this.billDetail)
       } catch (err) {

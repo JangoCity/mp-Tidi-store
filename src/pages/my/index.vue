@@ -48,7 +48,7 @@
 <script type='text/ecmascript-6'>
 import { myList } from '@/common/js/staticData'
 import { share } from '@/common/js/mixins'
-import { getOpenId, showFail } from '@/utils'
+import { getOpenId, showNormal } from '@/utils'
 import { mapMutations } from 'vuex'
 
 export default {
@@ -97,7 +97,7 @@ export default {
     // 检测用户微信版本
     handleCheckVersion() {
       if (!wx.canIUse('button.open-type.getUserInfo')) {
-        showFail('请升级微信版本')
+        showNormal('请升级微信版本')
       }
     },
     // 获取用户信息

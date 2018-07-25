@@ -67,15 +67,15 @@ export default {
   async onLoad() {
     // 获取系统消息
     let info = await wxp.getSystemInfo()
-    this.winWidth = info.windowWidth
-    this.winHeight = info.windowHeight
-    if (!this.menuWidth) {
-      // 如果没有
-      this.navWidth = this.winWidth / this.tabList.length
-    } else {
-      this.navWidth = this.menuWidth
+    try {
+      this.winWidth = info.windowWidth
+      this.winHeight = info.windowHeight
+      this.navWidth = this.winWidth
+        ? this.menuWidth
+        : this.winWidth / this.tabList.length
+    } catch (err) {
+      console.log('获取系统信息报错')
     }
-    console.log(this.menuWidth)
   }
 }
 </script>

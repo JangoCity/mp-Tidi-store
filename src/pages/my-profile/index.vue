@@ -1,12 +1,13 @@
 <template>
   <section class="container">
     <!-- 表单列表 -->
-    <section class="form-group">
+    <section class="form-group"
+             v-if="custom">
       <!-- 头像 -->
       <section class="row  border-bottom">
         <span class="label">头像</span>
         <p class="input-wrapper">
-          <img :src="userinfo.avatarUrl"
+          <img :src="custom.avatarUrl"
                class="avatar"
                mode="aspectFill">
         </p>
@@ -16,9 +17,9 @@
         <span class="label">昵称</span>
         <p class="input-wrapper">
           <input placeholder="未填写"
-                 disabled="!userinfo.nickName"
+                 disabled="!custom.nickName"
                  placeholder-style="color:#333"
-                 v-model="userinfo.nickName">
+                 v-model="custom.nickName">
         </p>
       </section>
       <!-- 性别 -->
@@ -28,7 +29,7 @@
           <input placeholder="未知"
                  disabled
                  placeholder-style="color:#333"
-                 v-model="userinfo.gender">
+                 v-model="custom.gender">
         </p>
       </section>
       <!-- 姓名 -->
@@ -37,16 +38,15 @@
         <p class="input-wrapper">
           <input placeholder="未填写"
                  placeholder-style="color:#333"
-                 v-model="userinfo.name">
+                 v-model="custom.name">
         </p>
       </section>
       <!-- 手机 -->
       <section class="row  border-bottom">
         <span class="label">手机</span>
         <p class="input-wrapper">
-          <button open-type="getPhoneNumber"
-                  bindgetphonenumber="getPhoneNumber"
-                  class="btn-normal phone">{{userinfo.phone||'未绑定'}} </button>
+          <button class="btn-normal phone"
+                  @click="getPhoneNumber">{{custom.phone||'未绑定'}} </button>
         </p>
       </section>
 
@@ -61,15 +61,16 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import { showModal } from '@/utils'
+import { showSuccess } from '@/utils'
 import fly from '@/utils/fly'
 import { mapGetters, mapMutations } from 'vuex'
-
+import { ERR_OK } from '@/utils/config'
 export default {
   components: {
   },
   data() {
     return {
+      custom: null // 自定义个人信息
     }
   },
   computed: {
@@ -80,34 +81,11 @@ export default {
     getPhoneNumber(e) {
       let phone = this.userinfo.phone
       if (!phone) {
-        console.log(e.detail.errMsg)
-        console.log(e.detail.iv)
-        console.log(e.detail.encryptedData)
-      }
-
-      let modal = e.detail.errMsg === 'getPhoneNumber:fail user deny'
-        ? { title: '提示', content: '未授权' }
-        : { title: '提示', content: '同意授权' }
-      showModal(modal)
-    },
-    async _saveProfileInfo() {
-      const params = { uid: this.userinfo.uid }
-      let userinfo = await fly.post('postCustomerInfo', params)
-      try {
-        userinfo.avatarUrl = userinfo.image
-        userinfo.nickName = userinfo.wechat_name
-        userinfo.gender = this._parseSex(userinfo.sex)
-        userinfo.name = userinfo.username
-        console.log('info=======', userinfo)
-        this.setUserInfo(userinfo)
-      } catch (err) {
-        console.log('保存资料错误', err)
+        let url = '../bind-phone/main'
+        wx.navigateTo({ url })
       }
     },
-    // 保存资料
-    handleConfirmClick() {
-      this._saveProfileInfo()
-    },
+    // 转换性别
     _parseSex(sex = '') {
       sex = parseInt(sex, 10)
       switch (sex) {
@@ -123,17 +101,43 @@ export default {
       }
       return sex
     },
-    _getUserInfo() {
+    // 获取个人信息
+    async _fetchUserInfo() {
       let userinfo = wx.getStorageSync('userinfo')
-      userinfo.gender = this._parseSex(userinfo.gender)
-      this.setUserInfo(userinfo)
+      const params = { uid: userinfo.uid }
+      const res = await fly.get('customerInfo', params)
+      try {
+        const data = res.data
+        this.custom = {
+          avatarUrl: data.image,
+          gender: this._parseSex(data.sex),
+          nickName: data.wechat_name,
+          name: data.username,
+          phone: data.tel
+        }
+      } catch (err) {
+        console.log('获取个人信息报错====', err)
+      }
+    },
+    // 保存资料
+    async handleConfirmClick() {
+      const params = { uid: this.userinfo.uid }
+      let res = await fly.post('postCustomerInfo', params)
+      console.log('保存', res)
+      try {
+        const finalUserInfo = Object.assign({}, this.userinfo, this.custom)
+        res.code === ERR_OK && showSuccess(res.message)
+        this.setUserInfo(finalUserInfo)
+      } catch (err) {
+        console.log('保存资料错误', err)
+      }
     },
     ...mapMutations({
       setUserInfo: 'SET_USETINFO'
     })
   },
   mounted() {
-    this._getUserInfo()
+    this._fetchUserInfo()
   }
 }
 </script>

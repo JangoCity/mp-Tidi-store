@@ -89,10 +89,12 @@ export default {
     handleAddFavoriteClick(goodsId) {
       console.log('点击收藏')
     },
+    // 获取详情信息
     async _fetchDetailInfo(id) {
       const params = { uid: 1, id: id || 1 }
-      const data = await fly.get('productDetail', params)
+      const res = await fly.get('productDetail', params)
       try {
+        const data = res.data
         this.imgUrls = data.product_image
         this.goods = data.product
         this.isLike = data.is_like

@@ -82,20 +82,24 @@ export default {
     // 获取消费列表
     async _fetchWalletList() {
       const params = { uid: 1 }
-      let data = await fly.get('walletList', params)
-      this.balance = data.balance
-      this.walletList = data.list
+      const res = await fly.get('walletList', params)
+      try {
+        const data = res.data
+        this.balance = data.balance
+        this.walletList = data.list
 
-      const states = ['待支付', '支付成功', '已退款']
-      const stateStyles = ['nopaid', 'succses', 'back']
-      const price = []
-      this.walletList.forEach((item, index) => {
-        item.state = states[item.pay_status]
-        item.style = stateStyles[item.pay_status]
-        price.push(parseInt(item.cash, 10))
-      })
-      this.total = price.reduce((prev, next) => prev + next)
-      console.log('钱包页面个人信息===', this.userinfo)
+        const states = ['待支付', '支付成功', '已退款']
+        const stateStyles = ['nopaid', 'succses', 'back']
+        const price = []
+        this.walletList.forEach((item, index) => {
+          item.state = states[item.pay_status]
+          item.style = stateStyles[item.pay_status]
+          price.push(parseInt(item.cash, 10))
+        })
+        this.total = price.reduce((prev, next) => prev + next)
+      } catch (err) {
+        console.log('获取钱包信息报错===', res)
+      }
     }
   },
   mounted() {
@@ -163,8 +167,8 @@ export default {
         padding 30rpx 50rpx 30rpx 30rpx
         line-height 1.8
         &::before
-         posY(0,false)
-         color #ccc
+          posY(0, false)
+          color #ccc
         span
           display block
         .state-info

@@ -79,7 +79,7 @@ export default {
     handleTabClick(id) {
       this.currentId = id
       // console.log(this.userinfo.nickName)
-      console.log('vm实例==========', this.userinfo)
+      // console.log('vm实例==========', this.userinfo)
     },
     // 进入栏目分类
     handleTypeClick(item) {
@@ -93,7 +93,6 @@ export default {
         wx.getLocation({
           success: geo => {
             _this.geo = { lat: geo.latitude, lng: geo.longitude }
-            console.log(_this.geo)
             resolve(_this.geo)
           },
           fail: () => {
@@ -105,10 +104,11 @@ export default {
     },
     // 获取首页信息
     async _getInfo() {
+      const geo = await this._getGeo() // 参数需要返回的经纬度
+      const params = { uid: 1, ...geo }
+      const res = await fly.get('index', params)
       try {
-        const geo = await this._getGeo() // 参数需要返回的经纬度
-        const params = { uid: 1, ...geo }
-        const data = await fly.get('index', params)
+        const data = res.data
         this.address = data.address
         this.weather = data.weather
         this.weather.aqi = data.aqi

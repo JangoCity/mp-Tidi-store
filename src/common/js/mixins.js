@@ -1,4 +1,4 @@
-import { showSuccess, showFail } from '@/utils'
+import { showSuccess, showNormal } from '@/utils'
 import fly from '@/utils/fly'
 
 //  页面公共
@@ -18,21 +18,41 @@ export const pay = {
   methods: {
     // 点击支付
     async handlePayClick() {
-      const params = { id: '1', uid: 2, contact_id: '2', pay_method: 2, price: '0.01', message: '', number: 1 }
-      // 获取
+      let params = {
+        id: '1',
+        uid: 2,
+        contact_id: '2',
+        pay_method: this.payment,
+        price: this.total,
+        message: this.message,
+        number: this.count
+      }
+      console.log('支付模式==', this.payment)
+      console.log('用户留言==', this.message)
+      console.log('总价==', this.total)
+      console.log('购买数量==', this.count)
+      // 获取订单Id
       const getOrderId = await fly.post('postBuy', params)
+
       try {
-        const id = getOrderId.order_id
+        console.log('getOrderId===', getOrderId)
+        const id = getOrderId.data.order_id
         if (!id) return
-        const payInfo = await fly.post('pay', { id, uid: 2 })
-        let { paySign, signType, timeStamp } = payInfo
+        // 然后处理支付接口
+        params = { id, uid: 2 }
+        const payInfo = await fly.post('pay', params)
+        console.log('payinfo===', payInfo)
+        let { paySign, signType, timeStamp } = payInfo.data
         const getPackage = payInfo.package // 'package' es关键字
         const nonceStr = payInfo.nonce_str // 'nonce_str' 非驼峰
         timeStamp = timeStamp + '' // 'timeStamp' 必须是string格式
 
         console.log(paySign, signType, timeStamp)
-        const success = () => {
-          console.log('支付成功')
+        const success = (msg) => {
+          showSuccess(msg)
+        }
+        const fail = (er) => {
+          showNormal(er)
         }
         wx.requestPayment({
           nonceStr,
@@ -40,7 +60,8 @@ export const pay = {
           paySign,
           signType,
           timeStamp,
-          success
+          success,
+          fail
         })
       } catch (err) {
         console.log('支付报错=====', err)
@@ -63,17 +84,17 @@ export const cancel = {
         title: '提示',
         content: '确定取消该订单吗？',
         cancelText: '我再想想',
-        success: async (res) => {
-          if (res.confirm) {
+        success: async (ev) => {
+          if (ev.confirm) {
             const params = { id: this.orderId, uid: 1 }
-            const data = await fly.get('orderDelete', params)
+            const res = await fly.get('orderDelete', params)
             try {
-              showSuccess(data[0])
+              showSuccess(res.message)
               wx.navigateBack()
             } catch (err) {
-              showFail(err)
+              showNormal(err)
             }
-          } else if (res.cancel) {
+          } else if (ev.cancel) {
             console.log('用户点击取消')
           }
         }

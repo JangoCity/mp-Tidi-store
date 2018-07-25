@@ -59,8 +59,9 @@ export default {
     // 取消收藏
     async handleRemoveClick(id) {
       console.log('id', id)
-      let data = await fly.get('favoriteDel', { uid: id })
+      const res = await fly.get('favoriteDel', { uid: id })
       try {
+        const data = res.data
         showSuccess(data.message)
         this._getFavoriteList()
       } catch (err) {
@@ -68,27 +69,31 @@ export default {
       }
     },
     //  获取收藏列表
-    async _getFavoriteList() {
+    async _fetchFavoriteList() {
       wx.showNavigationBarLoading()
       // const params = { uid: this.userinfo.uid }
       const params = { uid: 1 }
       const data = await fly.get('favorite', params)
       console.log('收藏列表====', data)
-      this.favoriteList = data.list
-      // 注销下拉刷新事件
-      wx.stopPullDownRefresh()
-      // 注销刷新icon状态
-      wx.hideNavigationBarLoading()
+      try {
+        this.favoriteList = data.list
+        // 注销下拉刷新事件
+        wx.stopPullDownRefresh()
+        // 注销刷新icon状态
+        wx.hideNavigationBarLoading()
+      } catch (err) {
+        console.log('获取收藏列表报错====', err)
+      }
     },
     ...mapMutations({
       setFavorite: 'SET_FAVORITE'
     })
   },
   mounted() {
-    this._getFavoriteList()
+    this._fetchFavoriteList()
   },
   onPullDownRefresh() {
-    this._getFavoriteList()
+    this._fetchFavoriteList()
   }
 }
 </script>

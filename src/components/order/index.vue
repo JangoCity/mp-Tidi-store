@@ -27,7 +27,7 @@
         </section>
         <section class="footer">
           <p class="total-wrapper">实付:
-            <span class="total">{{item.price}}.00</span>
+            <span class="total">{{item.price}}</span>
             <span>（免运费）</span>
           </p>
         </section>
@@ -80,7 +80,6 @@ export default {
     },
     // 支付订单
     handlePayClick(id) {
-      // showSuccess('支付订单' + id)
       this.$emit('pay', id)
     },
     // 查看订单

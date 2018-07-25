@@ -36,6 +36,8 @@ export const getOpenId = (userinfo, callback) => {
         // 将uid和openid挂在userinfo并存于Storage
         userinfo.uid = login.user.id
         userinfo.openid = openid
+
+        console.log('userinfo====', userinfo)
         wx.setStorageSync('userinfo', userinfo)
         callback instanceof Function && callback(userinfo)
       } else {
@@ -69,9 +71,9 @@ export function showSuccess(text) {
   })
 }
 
-export function showFail(text) {
+export function showNormal(text) {
   wx.showToast({
     title: text,
-    icon: 'fail'
+    icon: 'none'
   })
 }
