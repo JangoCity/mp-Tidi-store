@@ -1,4 +1,5 @@
 import { showSuccess, showNormal } from '@/utils'
+import { ERR_OK } from '@/utils/config'
 import fly from '@/utils/fly'
 
 //  页面公共
@@ -89,7 +90,7 @@ export const cancel = {
             const params = { id: this.orderId, uid: 1 }
             const res = await fly.get('orderDelete', params)
             try {
-              showSuccess(res.message)
+              res.code === ERR_OK && showSuccess(res.message)
               wx.navigateBack()
             } catch (err) {
               showNormal(err)

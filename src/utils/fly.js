@@ -32,7 +32,7 @@ fly.interceptors.response.use(
       }, 1500)
     }
     wx.hideNavigationBarLoading()
-    console.log('拦截器返回结果：', res)
+    console.log('拦截器返回结果：', data)
     return res // 将请求结果返回
   },
   (err, promise) => {
