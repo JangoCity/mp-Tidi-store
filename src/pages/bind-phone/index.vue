@@ -23,55 +23,88 @@
                  class="input"
                  v-model="qrCode">
         </p>
+
+        <button class="btn-disabled"
+                disabled
+                v-if="qrDisbled"
+                @click="handleCountDownClick">{{countdown}}秒后发送</button>
         <button class="btn-verify"
+                v-else
                 @click="handleCountDownClick">{{qrText}}</button>
       </section>
     </section>
 
     <section class="btn-wrapper">
       <button class="btn-confirm"
-              hover-class="btn-confirm-hover">确定</button>
+              hover-class="btn-confirm-hover"
+              @click="handleConfirmClick">确定</button>
     </section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
-import { showSuccess, showNormal } from '@/utils'
+import { showNormal, showSuccess } from '@/utils'
 import fly from '@/utils/fly'
+import { ERR_OK } from '@/utils/config'
+import { mapMutations } from 'vuex'
 
-const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
+const MAX_COUNT = 60
+const REG = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
 
 export default {
-  components: {
-  },
   data() {
     return {
-      count: 60,
+      countdown: MAX_COUNT,
       qrCode: '',
       qrDisbled: false, // 禁止验证码
       qrText: '发送验证码',
-      phone: '13425187659'
+      phone: '13425187659',
+      timer: null
     }
   },
   computed: {
   },
   methods: {
     // 确定绑定
-    handleConfirmClick() {
-
+    async handleConfirmClick() {
+      let userinfo = wx.getStorageSync('userinfo')
+      const params = {
+        tel: this.phone,
+        code: this.qrCode,
+        uid: 1
+      }
+      const res = await fly.post('postPhoneAuth', params)
+      res.code === ERR_OK && showSuccess(res.message)
+      userinfo.phone = this.phone
+      this.setUserInfo(userinfo)
+      wx.navigateBack()
     },
     // 发送验证码
     async handleCountDownClick() {
-      if (!reg.test(this.phone)) {
+      if (!REG.test(this.phone)) {
         showNormal('请填写正确的手机号')
         return
       }
-      const params = { mobile: '18627175798', uid: 1 }
-      const data = await fly.get('sendbindSms', params)
-
-      console.log('data', data)
-      showSuccess('绑定手机成功')
-    }
+      const params = { mobile: this.phone, uid: 1 }
+      const res = await fly.get('sendbindSms', params)
+      res.code === ERR_OK && (res.message) && this._setQrTime()
+    },
+    // 发送验证码
+    _setQrTime() {
+      if (this.countdown === 1) {
+        this.qrDisbled = false
+        this.countdown = MAX_COUNT
+        return
+      } else {
+        this.qrDisbled = true
+        this.countdown--
+      }
+      setTimeout(() => { this._setQrTime(this) }
+        , 1000)
+    },
+    ...mapMutations({
+      setUserInfo: 'SET_USETINFO'
+    })
   }
 }
 </script>
@@ -101,12 +134,15 @@ export default {
       flex 1
       height 60rpx
       line-height 60rpx
-    .btn-verify
+    .btn-disabled, .btn-verify
       background #ffeaec
       height 60rpx
       line-height 60rpx
       font-size 14px
       color $color-theme
+    .btn-disabled
+      background #e7e7e7
+      color #666
   .btn-wrapper
     padding 0 30rpx
 </style>

@@ -5,40 +5,41 @@
             :indicatorDots="indicatorDots"
             :indicator-color="indicatorColor"
             :indicator-active-color="indicatorActiveColor"
-            style="height:100%">
-      <section v-for="(item,index) in list"
+            style="height:100%"
+            v-if="columnList.length">
+      <section v-for="(item,index) in columnList"
                :key="item.id"
                class="wrapper">
         <swiper-item class="swiper-item">
 
           <section class="header">
-            <h2 class="title">{{item.name}}</h2>
+            <h2 class="title">{{item.product_name}}</h2>
             <p class="price">
-              <span class="now-price money">{{item.nowPrice}}</span>
-              <span class="old-price money">{{item.oldPrice}}</span>
+              <span class="now-price money">{{item.selling_price}}</span>
+              <span class="old-price money">{{item.original_price}}</span>
             </p>
           </section>
 
           <section class="content">
             <!-- 展示更多返利优惠 -->
             <section class="rebate-wrapper">
-              <rebate :activity="activity"></rebate>
+              <rebate :activity="item.rebage"></rebate>
             </section>
 
             <p class="tip">
               已有
-              <span class="item-diff">{{item.sold}}</span>人购买, 还差
-              <span class="item-diff">{{item.diff}}</span>人就可每人返利
-              <span class="item-diff money">{{item.rebate}}</span>
+              <span class="item-diff">{{item.number}}</span>人购买, 还差
+              <span class="item-diff">{{item.will_number}}</span>人就可每人返利
+              <span class="item-diff money">{{item.money}}</span>
             </p>
 
             <!-- 购买人数滚动组件 -->
             <section class="scroll-buyer-wrapper">
-              <scroll-text :list='item.buyer'></scroll-text>
+              <scroll-text :list='item.buy_log'></scroll-text>
             </section>
           </section>
           <!-- 图片 -->
-          <image :src="item.imgUrl"
+          <image :src="item.product_image"
                  mode="scaleToFill"
                  class="slide-image"
                  style="width:100%" />
@@ -50,7 +51,11 @@
               <span class="time">22</span>:
               <span class="time">33</span>后停止购买
             </section>
-            <button class="line-gradient-btn btn"
+            <button class="btn-disabled btn-normal  btn"
+                    v-if="item.isEmpty"
+                    disabled>售罄</button>
+            <button class="line-gradient-btn btn-normal  btn"
+                    v-else
                     @click="handleToBuyClick">立即购买</button>
           </section>
         </swiper-item>
@@ -63,6 +68,8 @@
 import swiperGroup from '@/components/swiper'
 import scrollText from '@/components/scrollText'
 import rebate from '@/components/rebate'
+
+import fly from '@/utils/fly'
 export default {
   components: {
     swiperGroup,
@@ -71,61 +78,52 @@ export default {
   },
   data() {
     return {
-      list: [{
-        id: 1001,
-        name: '【店铺配送】新鲜水果上市大荔冬枣  5斤/ 箱 枣香枣脆 等你抢购【商品名1称】',
-        oldPrice: '98',
-        nowPrice: '75',
-        sold: 34, // 已卖
-        diff: 16, // 差值
-        rebate: 10, // 返利
-        spec: [],
-        buyer: [{ id: 101, name: '赵赵赵' }, { id: 101, name: '钱钱钱' }, { id: 101, name: '孙孙孙' }, { id: 101, name: '李李李' }, { id: 101, name: '李李李' }, { id: 101, name: '王王王' }, { id: 101, name: '欧阳欧阳' }],
-        count: '16:24:22',
-        imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1529263999482&di=3ea3ffbc95250dda4423761791c61d22&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2%2F590ac2cddbd03.jpg'
-      }],
-      activity: {
-        final: 200,
-        current: 40,
-        list: [{
-          id: 1001,
-          final: 50,
-          current: 10,
-          reached: 1 // 是否已完成 1 是，0否
-        },
-        {
-          id: 1002,
-          final: 100,
-          current: 30,
-          reached: 1
-        },
-        {
-          id: 1003,
-          reached: 0
-        },
-        {
-          id: 1004,
-          reached: 0
-        },
-        {
-          id: 1005,
-          reached: 0
-        }]
-      }
+      columnList: []
     }
   },
+  computed: {
+  },
   methods: {
+    // 购买
     handleToBuyClick() {
       const url = '../buy/main'
       wx.navigateTo({ url })
+    },
+    // 获取列表数据
+    async _fetchColumnList() {
+      const params = { shop_id: 8, category: 1, uid: 1 }
+      const res = await fly.get('columnDetail', params)
+      try {
+        const data = res.data
+        console.log('栏目列表', data.product.data)
+        this.columnList = data.product.data
+        this._transRebate(this.columnList)
+      } catch (err) {
+        console.error('获取栏目列表报错', err)
+      }
+    },
+    // 转换优惠
+    _transRebate(list) {
+      list.forEach(goods => {
+        const { rebage, number, repertory } = goods
+        const willNumber = goods.will_number
+        goods.isEmpty = parseInt(repertory, 10) === 0
+        rebage.forEach(item => {
+          const people = parseInt(item.number, 10)
+          const money = parseInt(item.money, 10)
+          item.reached = people === money || people === (number + willNumber)
+        })
+      })
     }
   },
   mounted() {
+    this._fetchColumnList()
   },
   beforeMount() {
-    wx.setNavigationBarTitle({
-      title: this.$root.$mp.query.title
-    })
+    const title = this.$root.$mp.query.title
+    if (title && title.length > 0) {
+      wx.setNavigationBarTitle({ title })
+    }
   }
 }
 </script>
@@ -231,5 +229,4 @@ export default {
       height 100rpx
       line-height 100rpx
       flex 0 0 290rpx
-      border-radius 0
 </style>

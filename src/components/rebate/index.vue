@@ -1,8 +1,14 @@
 <template>
   <section class='container'>
-    <section v-for="(item, index) in activity.list" :key="item.id" class="item" :class="item.active" :style={zIndex:item.zIndex,left:item.offsetLeft}>
-      <span class="text" v-if="item.reached">满{{item.final}}人返{{item.current}}元</span>
-      <span class="text" v-else>更多优惠</span>
+    <section v-for="(item, index) in activity"
+             :key="item.id"
+             class="item"
+             :class="item.active"
+             :style={zIndex:item.zIndex,left:item.offsetLeft}>
+      <span class="text"
+            v-if="item.reached">满{{item.number}}人返{{item.money}}元</span>
+      <span class="text"
+            v-else>更多优惠</span>
     </section>
   </section>
 </template>
@@ -10,22 +16,17 @@
 <script type='text/ecmascript-6'>
 export default {
   props: {
-    activity: Object
-  },
-  data() {
-    return {
-    }
+    activity: Array
   },
   methods: {
     _countStyle() {
-      let list = this.activity.list
-      if (!list.length) return
+      if (!this.activity.length) return
       const OFFSET_LEFT_ACTIVE = 90
       const OFFSET_LEFT_NORMAL = 75
-      const ACTIVE_LENGTH = list.length - list.filter(item => item.reached === 1).length - 1
+      const ACTIVE_LENGTH = this.activity.length - this.activity.filter(item => item.reached === 1).length - 1
 
       // 区分返利的样式
-      list.forEach((item, index) => {
+      this.activity.forEach((item, index) => {
         item.zIndex = index
         item.active = item.reached ? 'active' : 'normal'
         item.offsetLeft = item.reached || index === ACTIVE_LENGTH

@@ -99,7 +99,7 @@ export default {
       border-top 6px solid #999
   .weather-box
     display flex !important
-    width 170rpx
+    min-width 170rpx
     text-align right
     .text
       font-size 24rpx

@@ -3,6 +3,7 @@ import * as types from './mutation-types'
 const mutations = {
   [types.SET_USETINFO](state, userinfo) {
     state.userinfo = userinfo
+    wx.setStorageSync('userinfo', userinfo)
   },
   [types.SET_FAVORITE](state, goods) {
     state.favoriteList.push(goods)

@@ -28,9 +28,13 @@
 
 .icon-duihao:before { content: "\e646"; }
 
+.icon-shanchu:before { content: "\e61b"; }
+
 .icon-rili:before { content: "\e6bc"; }
 
 .icon-shijian:before { content: "\e790"; }
+
+.icon-bj:before { content: "\e620"; }
 
 .icon-tel:before { content: "\e61e"; }
 

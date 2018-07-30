@@ -11,9 +11,12 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "lodash.merge": "^4.6.1",
+    "lodash.trim": "^4.5.1",
+    "minapp-api-promise": "1.0.2",
+    "moment": "^2.22.2",
     "mpvue": "1.0.13",
-    "vuex": "^3.0.1",
-    "minapp-api-promise": "1.0.2"
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
@@ -74,5 +77,9 @@
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
   },
-  "browserslist": ["> 1%", "last 2 versions", "not ie <= 8"]
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

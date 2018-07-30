@@ -32,11 +32,11 @@
               class="item"
               @click="handleTypeClick(item)">
             <section class="text-wrapper">
-              <h4 class="title">{{item.title}}</h4>
+              <h4 class="title">{{item.name}}</h4>
               <p class="desc">{{item.desc}}</p>
             </section>
             <section class="img-wrapper">
-              <img :src="item.image"
+              <img :src="item.column_pic"
                    mode="aspectFit"
                    class="img">
             </section>
@@ -68,7 +68,8 @@ export default {
       geo: { lat: '', lng: '' }, // 经纬度
       weather: { wendu: '' }, // 天气
       currentId: indexInfo[0].id,
-      indexInfo: indexInfo
+      indexInfo,
+      shopId: undefined // 店铺ID
     }
   },
   computed: {
@@ -78,12 +79,10 @@ export default {
     // 切换
     handleTabClick(id) {
       this.currentId = id
-      // console.log(this.userinfo.nickName)
-      // console.log('vm实例==========', this.userinfo)
     },
     // 进入栏目分类
     handleTypeClick(item) {
-      const url = `../column-list/main?title=${item.title}&id=${item.id}`
+      const url = `../column-list/main?title=${item.name}&id=${this.shopId}`
       wx.navigateTo({ url })
     },
     // 获取设备经纬度
@@ -113,8 +112,12 @@ export default {
         this.weather = data.weather
         this.weather.aqi = data.aqi
         this.weather.wendu = data.wendu
+        this.shopId = data.shop_id
+        data.column.forEach(item => {
+          indexInfo[item.category - 1].list.push(item)
+        })
       } catch (err) {
-        console.log(err)
+        console.log('获取首页信息报错', err)
       }
     }
   },

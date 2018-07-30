@@ -3,42 +3,12 @@ export const indexInfo = [{
   id: 10001,
   title: '工作/Work',
   icon: 'icon-work',
-  list: [{
-    id: 101,
-    title: '拼车',
-    desc: '要下班了，公交太堵，头大要不拼个车',
-    image: '../../static/images/work-01.png'
-  }, {
-    id: 102,
-    title: '下午茶',
-    desc: '累了吧，累了吧，累了吧，累了吧',
-    image: '../../static/images/work-02.png'
-  }, {
-    id: 103,
-    title: '宵夜',
-    desc: '加班到深夜，加班到深夜，加班到深夜，',
-    image: '../../static/images/work-03.png'
-  }]
+  list: []
 }, {
   id: 10002,
   title: '生活/Life',
   icon: 'icon-life',
-  list: [{
-    id: 101,
-    title: '运动健身',
-    desc: '生活生活生活生活1',
-    image: '../../static/images/life-01.png'
-  }, {
-    id: 102,
-    title: '亲子活动',
-    desc: '生活生活生活生活222',
-    image: '../../static/images/life-02.png'
-  }, {
-    id: 103,
-    title: '水果',
-    desc: '生活生活生活生活3333',
-    image: '../../static/images/life-03.png'
-  }]
+  list: []
 }]
 
 // 我的主页栏目列表
@@ -53,8 +23,8 @@ export const myList = [
 
 // 创建收货地址类型
 export const createAddressType = [
-  { id: 0, name: 'home', value: '家庭住址', checked: true },
-  { id: 1, name: 'office', value: '办公住址', checked: false }
+  { id: 1, name: 'home', value: '家庭住址', checked: true },
+  { id: 2, name: 'office', value: '办公住址', checked: false }
 ]
 
 // 创建收货地址

@@ -23,8 +23,7 @@ export const getOpenId = (userinfo, callback) => {
         // 获取openId
         let params = { code: res.code }
         let data = await fly.get('auth', params)
-        let openid = data.openid
-
+        let openid = data.data.openid
         // 根据openId获取用户信息
         params = {
           openid,
@@ -34,10 +33,8 @@ export const getOpenId = (userinfo, callback) => {
         }
         let login = await fly.post('login', params)
         // 将uid和openid挂在userinfo并存于Storage
-        userinfo.uid = login.user.id
         userinfo.openid = openid
-
-        console.log('userinfo====', userinfo)
+        userinfo.uid = login.data.user.id
         wx.setStorageSync('userinfo', userinfo)
         callback instanceof Function && callback(userinfo)
       } else {
