@@ -30,7 +30,7 @@
           <li v-for="(item, index) in list.list"
               :key="item.id"
               class="item"
-              @click="handleTypeClick(item)">
+              @click="handleTypeClick(item.name)">
             <section class="text-wrapper">
               <h4 class="title">{{item.name}}</h4>
               <p class="desc">{{item.desc}}</p>
@@ -81,8 +81,8 @@ export default {
       this.currentId = id
     },
     // 进入栏目分类
-    handleTypeClick(item) {
-      const url = `../column-list/main?title=${item.name}&id=${this.shopId}`
+    handleTypeClick(title) {
+      const url = `../column-list/main?title=${title}&id=${this.shopId}`
       wx.navigateTo({ url })
     },
     // 获取设备经纬度
@@ -113,9 +113,11 @@ export default {
         this.weather.aqi = data.aqi
         this.weather.wendu = data.wendu
         this.shopId = data.shop_id
-        data.column.forEach(item => {
-          indexInfo[item.category - 1].list.push(item)
-        })
+        if (Array.isArray(data.column)) {
+          data.column.forEach(item => {
+            indexInfo[item.category - 1].list.push(item)
+          })
+        }
       } catch (err) {
         console.log('获取首页信息报错', err)
       }

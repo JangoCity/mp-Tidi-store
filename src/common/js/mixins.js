@@ -2,7 +2,7 @@ import { showSuccess, showNormal } from '@/utils'
 import { ERR_OK } from '@/utils/config'
 import fly from '@/utils/fly'
 
-//  页面公共
+//  页面分享
 export const share = {
   onShareAppMessage(res) {
     let target = res.from

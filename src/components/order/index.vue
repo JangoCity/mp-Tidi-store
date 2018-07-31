@@ -10,7 +10,7 @@
         </section>
         <section class="content">
           <section class="img-wrapper">
-            <img src=""
+            <img :src="item.image"
                  mode="aspectFit"
                  style="max-width:100%"
                  alt="item.product_name">
@@ -18,11 +18,11 @@
           <section class="text-wrapper">
             <p class="title">{{item.product_name}}</p>
             <p class="spec">
-              <span class="total">规格:单</span>
+              <!--<span class="total">规格:单</span>-->
               <span class="count">x{{item.number}}</span>
             </p>
             <p class="discounts"
-               v-if="item.curb_sales">已有30人购买，可返现￥{{item.curb_sales}}</p>
+               v-if="item.orderBy">已有{{item.orderBy}}人购买，可返现￥{{item.rebage}}</p>
           </section>
         </section>
         <section class="footer">
@@ -38,9 +38,9 @@
           <button class="btn to-pay"
                   v-if="item.status===1"
                   @click="handlePayClick(item.id)">去支付</button>
-          <button class="btn to-pay"
+          <!--<button class="btn to-pay"
                   v-if="item.status===2"
-                  @click="handleConfirmClick(item.id)">确认订单</button>
+                  @click="handleConfirmClick(item.id)">确认订单</button>-->
           <button class="btn"
                   @click="handleViewDetailClick(item.id)">查看订单</button>
         </section>

@@ -24,7 +24,7 @@ fly.interceptors.response.use(
     }
     clearTimeout(timer)
     if (res.code === ERR_OK) {
-      promise.resolve(response.data)
+      promise.resolve(data)
     } else {
       showNormal(res.message)
       timer = setTimeout(() => {

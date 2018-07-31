@@ -15,18 +15,18 @@
     <!-- 商品信息 -->
     <section class="order-wrapper">
       <section class="store-info">
-        <p class="title iconfont icon-shop">麒林便利店</p>
-        <p class="address">深圳市宝安区西乡汇一城商铺</p>
+        <p class="title iconfont icon-shop">{{shop_name}}</p>
+        <p class="address">{{address}}</p>
       </section>
 
       <!-- 商品相关信息 -->
       <section class="goods-total">
         <section class="img-wrapper">
-          <img src=""
+          <img :src="image"
                class="max-img">
         </section>
         <section class="text-wrapper">
-          <p class="title">【仅限深圳同城地区】新鲜水果上市 大荔冬枣 5斤/箱 枣香枣脆 等你</p>
+          <p class="title">{{product_name}}</p>
           <p class="price money">{{total}}</p>
         </section>
       </section>
@@ -38,8 +38,9 @@
           <counter @change="handleCountClick"></counter>
         </span>
       </section>
-      <tip :rank='100'
-           :sale="10"></tip>
+      <tip :rank="tipInfo.rank"
+           :sale="tipInfo.sale"
+           v-if="tipInfo"></tip>
     </section>
 
     <!-- 客户留言 -->
@@ -58,7 +59,7 @@
     <section class="bottom">
       <p class="text  border-top">
         应付款
-        <span class="money">{{total}}</span>（店铺配送）
+        <span class="money">{{total}}</span>（{{type}}）
       </p>
       <button class="line-gradient-btn btn-normal btn"
               @click.prevent="handlePayClick">
@@ -89,22 +90,23 @@ export default {
   },
   data() {
     return {
-      price: 78,
-      message: '' // 用户留言
+      price: 0, // 商品价格
+      userinfo: undefined,
+      tipInfo: undefined,
+      message: '', // 用户留言
+      shop_name: undefined,
+      address:undefined,
+      product_name: null,
+      image: null,
+      type:1,
     }
   },
   computed: {
-    // 用户信息
-    userinfo() {
-      const info = wx.getStorageSync('userinfo')
-      console.log(info)
-      return info
-    },
     // 总价
     total() {
       return this.price * this.count + '.00'
     },
-    ...mapGetters(['count', 'payment'])
+    ...mapGetters(['count', 'payment']),
   },
   methods: {
     // 拉取接口数据
@@ -113,13 +115,45 @@ export default {
       const res = await fly.get('buyProduct', params)
       try {
         const data = res.data
-        console.log(data)
+        console.log('data', data)
+        const { contact, product, shop } = data
+        // 默认地址信息
+        const { name, phone, district, address } = contact
+        const province = contact.province_id
+        const city = contact.city_id
+        const area = contact.area_id
+        //商品信息
+        this.product_name = product.product_name
+        this.image = product.image
+        //店铺信息
+        this.shop_name = shop.shop_name
+        this.address = shop.address
+        this.type = product.type===1?'店铺配送':'到店消费'
+        this.userinfo = {
+          name,
+          phone,
+          province,
+          city,
+          area,
+          district,
+          address
+        }
+
+        // 商品价格
+        this.price = product.selling_price
+        // 提示
+        this.tipInfo = {
+          rank: data.orderBy,
+          sale: data.rebage
+        }
+
       } catch (err) {
         console.log(err)
       }
     }
   },
   mounted() {
+    this._fetchData()
     console.log(this.userinfo)
   }
 }

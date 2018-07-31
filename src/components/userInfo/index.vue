@@ -23,14 +23,12 @@ export default {
       default: '公司'
     }
   },
-  data() {
-  },
   computed: {
     // 收货地址
     shoppingAddress() {
       if (!this.userinfo.province || !this.userinfo.city || !this.userinfo.area || !this.userinfo.district) return
       const { province, city, area, district, address } = this.userinfo
-      return province.name + city.name + area.name + district + address
+      return province + city + area + district + address
     },
     // 电话隐藏中间字段
     hidePhone() {

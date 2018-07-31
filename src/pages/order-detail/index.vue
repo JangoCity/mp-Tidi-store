@@ -23,16 +23,16 @@
         </section>
         <section class="text-wrapper">
           <p class="title">{{product.product_name}}</p>
-          <p class="discounts">已有30人购买，可返现￥{{product.curb_sales}}</p>
+          <p class="discounts">已有{{product.number}}人购买，可返现￥{{rebage}}</p>
           <p class="spec">
-            <span class="total">规格:单</span>
-            <span class="count">x{{product.number}}</span>
+            <!--<span class="total">规格:单</span>-->
+            <span class="count">x{{order.number}}</span>
           </p>
         </section>
       </section>
       <section class="total-desc border-bottom">
         实付：
-        <span class="money">{{product.selling_price}}</span>
+        <span class="money">{{order.price}}</span>
         <span>（免运费）</span>
       </section>
       <section class="contact-desc">
@@ -53,7 +53,7 @@
       <ul class="list">
         <li class="item">
           <span class="label">订单编号:</span>
-          <span class="info">{{order.code}}</span>
+          <span class="info">{{order.list}}</span>
         </li>
         <li class="item">
           <span class="label">支付方式:</span>
@@ -72,9 +72,9 @@
 
     <!-- 底部按钮 -->
     <section class="bottom">
-      <button class="btn btn-normal cancel"
+      <button class="btn btn-normal cancel"  v-if="payment==='待支付'"
               @click="handleCancelOrderClick">取消订单</button>
-      <button class="btn btn-normal pay "
+      <button class="btn btn-normal pay "  v-if="payment==='待支付'"
               @click="handlePayClick">去支付</button>
     </section>
   </section>
@@ -95,7 +95,8 @@ export default {
       product: null,
       order: null,
       contact: null,
-      phone: null
+      phone: null,
+      rebage: null,
     }
   },
   computed: {
@@ -107,11 +108,20 @@ export default {
             str = '待支付'
             break
           case 2:
-            str = '交易完成'
+            str = '待确认'
             break
           case 3:
-            str = '交易关闭'
+            str = '待发货'
             break
+          case 4:
+            str = '待兑换'
+            break
+          case 5:
+            str = '待收货'
+            break
+          case 6:
+             str = '已完成'
+             break
         }
         return str
       }
@@ -129,11 +139,12 @@ export default {
       const params = { uid: 1, id: id || 1 }
       const res = await fly.get('orderDetail', params)
       try {
-        const { product, contact, order, phone } = res.data
+        const { product, contact, order, phone, rebage, } = res.data
         this.product = product
         this.contact = contact
         this.order = order
         this.phone = phone
+        this.rebage = rebage
       } catch (err) {
         console.log('账单详情报错======', err)
       }
