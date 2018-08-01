@@ -46,6 +46,8 @@ export const getOpenId = (userinfo, callback) => {
     }
   })
 }
+// 十位补零
+export const padTime = (num) => num < 10 ? '0' + num : num
 
 export const obj2style = style => {
   let str = []

@@ -1,6 +1,6 @@
 <template>
   <section class="container">
-    <section class="user-name">{{userinfo.name}}
+    <section class="user-name">{{contact.name}}
       <span class="phone-num">{{hidePhone}}</span>
     </section>
     <p class="address">
@@ -13,7 +13,7 @@
 <script type='text/ecmascript-6'>
 export default {
   props: {
-    userinfo: Object,
+    contact: Object,
     hasType: {
       type: Boolean,
       default: true
@@ -26,13 +26,13 @@ export default {
   computed: {
     // 收货地址
     shoppingAddress() {
-      if (!this.userinfo.province || !this.userinfo.city || !this.userinfo.area || !this.userinfo.district) return
-      const { province, city, area, district, address } = this.userinfo
+      if (!this.contact.province || !this.contact.city || !this.contact.area || !this.contact.district) return
+      const { province, city, area, district, address } = this.contact
       return province + city + area + district + address
     },
     // 电话隐藏中间字段
     hidePhone() {
-      const phone = this.userinfo.phone
+      const phone = this.contact.phone
       if (!phone) return ''
       const num = phone + ''
       return phone.length ? num.substr(0, 3) + '****' + num.substr(7) : ''

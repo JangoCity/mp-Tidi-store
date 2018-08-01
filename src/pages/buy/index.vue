@@ -3,8 +3,8 @@
 
     <!-- 用户信息 -->
     <section class="user-info"
-             v-if="userinfo">
-      <user-info :userinfo="userinfo"></user-info>
+             v-if="contact">
+      <user-info :contact="contact"></user-info>
     </section>
 
     <!-- 支付方式 -->
@@ -91,14 +91,14 @@ export default {
   data() {
     return {
       price: 0, // 商品价格
-      userinfo: undefined,
+      contact: undefined,
       tipInfo: undefined,
       message: '', // 用户留言
       shop_name: undefined,
-      address:undefined,
+      address: undefined,
       product_name: null,
       image: null,
-      type:1,
+      type: 1
     }
   },
   computed: {
@@ -106,7 +106,7 @@ export default {
     total() {
       return this.price * this.count + '.00'
     },
-    ...mapGetters(['count', 'payment']),
+    ...mapGetters(['count', 'payment'])
   },
   methods: {
     // 拉取接口数据
@@ -115,30 +115,23 @@ export default {
       const res = await fly.get('buyProduct', params)
       try {
         const data = res.data
-        console.log('data', data)
         const { contact, product, shop } = data
+
         // 默认地址信息
         const { name, phone, district, address } = contact
         const province = contact.province_id
         const city = contact.city_id
         const area = contact.area_id
-        //商品信息
+        // 商品信息
         this.product_name = product.product_name
         this.image = product.image
-        //店铺信息
+        // 店铺信息
         this.shop_name = shop.shop_name
         this.address = shop.address
-        this.type = product.type===1?'店铺配送':'到店消费'
-        this.userinfo = {
-          name,
-          phone,
-          province,
-          city,
-          area,
-          district,
-          address
-        }
+        this.type = product.type === 1 ? '店铺配送' : '到店消费'
+        this.contact = { name, phone, province, city, area, district, address }
 
+        console.log('this.contact', this.contact)
         // 商品价格
         this.price = product.selling_price
         // 提示
@@ -146,15 +139,13 @@ export default {
           rank: data.orderBy,
           sale: data.rebage
         }
-
       } catch (err) {
-        console.log(err)
+        console.log('拉取接口信息报错', err)
       }
     }
   },
   mounted() {
     this._fetchData()
-    console.log(this.userinfo)
   }
 }
 </script>

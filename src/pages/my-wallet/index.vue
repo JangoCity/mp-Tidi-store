@@ -13,7 +13,7 @@
 
     <!-- 消费总计 -->
     <section class="total-info border-bottom">
-      <p class="date">2018-05</p>
+      <p class="date">{{currentMonth}}</p>
       <p class="total">总计:
         <span class="money">{{total}}.00</span>
         <picker class="picker-date iconfont icon-rili"
@@ -52,36 +52,64 @@
 
       </scroll-view>
     </section>
+
+    <!-- 列表为空 -->
+    <section class="empty-wrapper"
+             v-else>
+      <empty></empty>
+    </section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
 import fly from '@/utils/fly'
-import { showModal } from '@/utils'
+import { padTime } from '@/utils'
 import { share } from '@/common/js/mixins'
 import { balanceBg } from './images'
-import { mapGetters } from 'vuex'
+
+import Empty from '@/components/Empty'
 export default {
   mixins: [share],
+  components: {
+    Empty
+  },
   data() {
     return {
       walletList: [],
-      balance: 0,
-      balanceBg,
-      total: 0
+      balance: 0, // 余额
+      balanceBg, // 背景图片
+      total: 0, // 总额
+      currentMonth: '', // 当前月份
+      date: '' // 当前日期
     }
   },
   computed: {
-    ...mapGetters(['userinfo'])
+    // // 获取今天的月份
+    // 获取今天的日期
+    currentDay() {
+      let day = new Date()
+      day.setTime(day.getTime())
+      return day.getFullYear() + '年' + padTime((day.getMonth() + 1)) + '月' + padTime(day.getDate()) + '日'
+    }
   },
   methods: {
     // 触发日历
-    handleDateChange(e) {
-      showModal('选中的日期', e.mp.detail.value)
+    handleDateChange(ev) {
+      let date = ev.mp.detail.value
+      date = date.split('-')
+      date = date[0] + '年' + date[1] + '月' + date[2] + '日'
+      this._fetchWalletList(date)
+    },
+    _currentMonth() {
+      let day = new Date()
+      day.setTime(day.getTime())
+      return day.getFullYear() + '-' + padTime((day.getMonth() + 1))
     },
     // 获取消费列表
-    async _fetchWalletList() {
-      const params = { uid: 1 }
+    async _fetchWalletList(date) {
+      date = date || this.currentDay
+      this.currentMonth = date.substring(0, 8)
+      const params = { uid: 1, time: date }
       const res = await fly.get('walletList', params)
       try {
         const data = res.data

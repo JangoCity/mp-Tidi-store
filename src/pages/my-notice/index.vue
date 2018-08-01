@@ -38,9 +38,11 @@
 import fly from '@/utils/fly'
 import { showModal } from '@/utils'
 import { share } from '@/common/js/mixins'
+import Empty from '@/components/Empty'
 export default {
   mixins: [share],
   components: {
+    Empty
   },
   data() {
     return {

@@ -55,7 +55,7 @@ export default {
     return {
       countdown: MAX_COUNT,
       qrCode: '',
-      qrDisbled: false, // 禁止验证码
+      qrDisbled: false, // 验证码禁止状态
       qrText: '发送验证码',
       phone: '',
       timer: null
@@ -71,7 +71,6 @@ export default {
         uid: 1
       }
       const res = await fly.post('postPhoneAuth', params)
-      console.log('res', res)
       res.code === ERR_OK && showSuccess(res.message)
       userinfo.phone = this.phone
       wx.setStorageSync('userinfo', userinfo)
@@ -97,8 +96,14 @@ export default {
         this.qrDisbled = true
         this.countdown--
       }
-      setTimeout(() => { this._setQrTime(this) }
+      this.timer = setTimeout(() => { this._setQrTime(this) }
         , 1000)
+    }
+  },
+  onShow() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.qrDisbled = false
     }
   }
 }

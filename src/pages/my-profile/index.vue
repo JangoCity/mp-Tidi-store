@@ -69,7 +69,7 @@ export default {
   },
   data() {
     return {
-      userinfo: wx.getStorageSync('userinfo') // 自定义个人信息
+      userinfo: null // 自定义个人信息
     }
   },
   methods: {
@@ -99,8 +99,9 @@ export default {
     },
     // 获取个人信息
     async _fetchUserInfo() {
+      let userinfo = wx.getStorageSync('userinfo')
+      this.userinfo = userinfo
       const params = { uid: this.userinfo.uid }
-      console.log(params)
       const res = await fly.get('customerInfo', params)
       try {
         const data = res.data
@@ -112,6 +113,9 @@ export default {
           phone: data.tel
         }
         this.userinfo = Object.assign({}, this.userinfo, custom)
+
+        console.log('custom', custom)
+        console.log('userinfo', this.userinfo)
       } catch (err) {
         console.log('获取个人信息报错====', err)
       }

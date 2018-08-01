@@ -109,13 +109,14 @@ export const call = {
   methods: {
     // 电话服务
     handleCallClick() {
+      console.log()
       wx.makePhoneCall({
-        phoneNumber: this.phoneNumber
+        phoneNumber: this.phone
       })
     },
     // 在线客服
     handleServerClick() {
-      console.log('客服')
+      showNormal('暂未开通')
     }
   }
 }

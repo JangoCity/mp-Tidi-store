@@ -8,7 +8,7 @@
       <section class="user-info"
                v-if="contact">
         <user-info :hasType="false"
-                   :userinfo="contact"></user-info>
+                   :contact="contact"></user-info>
       </section>
     </section>
 
@@ -37,7 +37,8 @@
       </section>
       <section class="contact-desc">
         <p class="item">
-          <span class="server iconfont icon-kefu">联系客服</span>
+          <span class="server iconfont icon-kefu"
+                @click="handleServerClick">联系客服</span>
         </p>
         <p class="item">
           <span class="call iconfont icon-tel"
@@ -72,9 +73,11 @@
 
     <!-- 底部按钮 -->
     <section class="bottom">
-      <button class="btn btn-normal cancel"  v-if="payment==='待支付'"
+      <button class="btn btn-normal cancel"
+              v-if="payment==='待支付'"
               @click="handleCancelOrderClick">取消订单</button>
-      <button class="btn btn-normal pay "  v-if="payment==='待支付'"
+      <button class="btn btn-normal pay "
+              v-if="payment==='待支付'"
               @click="handlePayClick">去支付</button>
     </section>
   </section>
@@ -92,14 +95,15 @@ export default {
   },
   data() {
     return {
-      product: null,
-      order: null,
-      contact: null,
-      phone: null,
-      rebage: null,
+      product: null, // 商品信息
+      order: null, // 订单信息
+      contact: null, // 联系方式信息
+      rebage: null, // 返利
+      phone: null // 电话
     }
   },
   computed: {
+    // 转换支付方式
     payment() {
       if (this.order) {
         let str = ''
@@ -120,8 +124,8 @@ export default {
             str = '待收货'
             break
           case 6:
-             str = '已完成'
-             break
+            str = '已完成'
+            break
         }
         return str
       }
@@ -136,22 +140,26 @@ export default {
     },
     // 获取订单接口信息
     async _fetchOrderDetail(id) {
-      const params = { uid: 1, id: id || 1 }
+      const params = { uid: 1, id: 1, pay_status: 1 }
       const res = await fly.get('orderDetail', params)
       try {
-        const { product, contact, order, phone, rebage, } = res.data
+        const { product, contact, order, phone, rebage } = res.data
         this.product = product
-        this.contact = contact
         this.order = order
-        this.phone = phone
         this.rebage = rebage
+        this.phone = phone
+        // 默认地址信息
+        const { name, district, address } = contact
+        const province = contact.province_id
+        const city = contact.city_id
+        const area = contact.area_id
+        this.contact = { name, phone, province, city, area, district, address }
       } catch (err) {
         console.log('账单详情报错======', err)
       }
     }
   },
   mounted() {
-    console.log('id==========', this.$root.$mp.query.id)
     this._fetchOrderDetail(this.$root.$mp.query.id)
   }
 }
