@@ -2,12 +2,12 @@
   <section class="container">
     <!-- 表单列表 -->
     <section class="form-group"
-             v-if="custom">
+             v-if="userinfo">
       <!-- 头像 -->
       <section class="row  border-bottom">
         <span class="label">头像</span>
         <p class="input-wrapper">
-          <img :src="custom.avatarUrl"
+          <img :src="userinfo.avatarUrl"
                class="avatar"
                mode="aspectFill">
         </p>
@@ -17,9 +17,9 @@
         <span class="label">昵称</span>
         <p class="input-wrapper">
           <input placeholder="未填写"
-                 disabled="!custom.nickName"
+                 disabled="!userinfo.nickName"
                  placeholder-style="color:#333"
-                 v-model="custom.nickName">
+                 v-model="userinfo.nickName">
         </p>
       </section>
       <!-- 性别 -->
@@ -29,7 +29,7 @@
           <input placeholder="未知"
                  disabled
                  placeholder-style="color:#333"
-                 v-model="custom.gender">
+                 v-model="userinfo.gender">
         </p>
       </section>
       <!-- 姓名 -->
@@ -38,7 +38,7 @@
         <p class="input-wrapper">
           <input placeholder="未填写"
                  placeholder-style="color:#333"
-                 v-model="custom.name">
+                 v-model="userinfo.name">
         </p>
       </section>
       <!-- 手机 -->
@@ -46,7 +46,7 @@
         <span class="label">手机</span>
         <p class="input-wrapper">
           <button class="btn-normal phone"
-                  @click="getPhoneNumber">{{custom.phone||'未绑定'}} </button>
+                  @click="getPhoneNumber">{{userinfo.phone||'未绑定'}} </button>
         </p>
       </section>
 
@@ -63,18 +63,14 @@
 <script type='text/ecmascript-6'>
 import { showSuccess } from '@/utils'
 import fly from '@/utils/fly'
-import { mapGetters, mapMutations } from 'vuex'
 import { ERR_OK } from '@/utils/config'
 export default {
   components: {
   },
   data() {
     return {
-      custom: null // 自定义个人信息
+      userinfo: wx.getStorageSync('userinfo') // 自定义个人信息
     }
-  },
-  computed: {
-    ...mapGetters(['userinfo'])
   },
   methods: {
     // 获取手机号
@@ -103,38 +99,35 @@ export default {
     },
     // 获取个人信息
     async _fetchUserInfo() {
-      let userinfo = wx.getStorageSync('userinfo')
-      const params = { uid: userinfo.uid }
+      const params = { uid: this.userinfo.uid }
+      console.log(params)
       const res = await fly.get('customerInfo', params)
       try {
         const data = res.data
-        this.custom = {
+        const custom = {
           avatarUrl: data.image,
           gender: this._parseSex(data.sex),
           nickName: data.wechat_name,
           name: data.username,
           phone: data.tel
         }
+        this.userinfo = Object.assign({}, this.userinfo, custom)
       } catch (err) {
         console.log('获取个人信息报错====', err)
       }
     },
     // 保存资料
     async handleConfirmClick() {
-      const params = { uid: this.userinfo.uid }
-      let res = await fly.post('postCustomerInfo', params)
-      console.log('保存', res)
+      const params = { uid: this.userinfo.uid, username: this.userinfo.name }
+      const res = await fly.post('postuserinfoerInfo', params)
       try {
-        const finalUserInfo = Object.assign({}, this.userinfo, this.custom)
+        wx.setStorageSync('userinfo', this.userinfo)
+        // this._fetchUserInfo()
         res.code === ERR_OK && showSuccess(res.message)
-        this.setUserInfo(finalUserInfo)
       } catch (err) {
         console.log('保存资料错误', err)
       }
-    },
-    ...mapMutations({
-      setUserInfo: 'SET_USETINFO'
-    })
+    }
   },
   mounted() {
     this._fetchUserInfo()

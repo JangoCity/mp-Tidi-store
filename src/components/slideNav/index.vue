@@ -2,14 +2,14 @@
   <scroll-view class="swiper-tab"
                scroll-x
                style="width: 100%">
-    <view :style="menuStyle"
-          v-for="(item,index) in tabList"
-          :key="item.id"
-          class="swiper-tab-item"
-          :data-current="index"
-          @tap="swichNav">{{item.status}}</view>
-    <view class="block"
-          :style="style"></view>
+    <section :style="menuStyle"
+             v-for="(item,index) in tabList"
+             :key="item.id"
+             class="swiper-tab-item"
+             :data-current="index"
+             @tap="swichNav">{{item.status}}</section>
+    <section class="block"
+             :style="style"></section>
   </scroll-view>
 </template>
 <script>

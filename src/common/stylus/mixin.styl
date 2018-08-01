@@ -61,6 +61,13 @@ clearfix()
   &:after
     clear both
     overflow hidden
+//水平垂直居中
+posCenter(){
+ position absolute
+ top 50%
+ left 50%
+ transform translate(-50%,-60%)
+}
 
 //垂直居中
 posY($offset = 0, $left = true)

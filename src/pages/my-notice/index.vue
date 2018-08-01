@@ -1,10 +1,10 @@
 <template>
   <section class="container">
-    <section class="list-wrapper">
+    <section class="list-wrapper"
+             v-if="noticeList.length">
       <scroll-view scroll-y
                    scroll-top="scrollTop"
                    style="height:100%">
-
         <section v-for="(item, index) in noticeList"
                  :key="item.id"
                  class="scroll-view-item  border-bottom"
@@ -24,6 +24,11 @@
         </section>
       </scroll-view>
 
+    </section>
+    <!-- 列表为空 -->
+    <section class="empty-wrapper"
+             v-else>
+      <empty></empty>
     </section>
   </section>
 </template>

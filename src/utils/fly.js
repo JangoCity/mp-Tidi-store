@@ -27,9 +27,6 @@ fly.interceptors.response.use(
       promise.resolve(data)
     } else {
       showNormal(res.message)
-      timer = setTimeout(() => {
-        wx.hideLoading()
-      }, 1500)
     }
     wx.hideNavigationBarLoading()
     console.log('拦截器返回结果：', data)
@@ -38,8 +35,9 @@ fly.interceptors.response.use(
   (err, promise) => {
     // Do something with response error
     console.log('拦截器错误消息：', err)
+    showNormal(err.message)
+    wx.hideNavigationBarLoading()
     promise.reject(err)
-    wx.hideLoading()
   }
 )
 

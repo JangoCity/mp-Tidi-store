@@ -67,9 +67,9 @@ export default {
       wx.navigateTo({ url })
     },
     // 确认订单
-   /* handleConfirmOrderClick(id) {
+    handleConfirmOrderClick(id) {
       showSuccess('确认订单' + id)
-    },*/
+    },
     // 查看订单
     handleViewDetailClick(id) {
       // this.$emit('view', id)

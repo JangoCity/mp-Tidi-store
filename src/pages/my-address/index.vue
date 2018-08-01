@@ -26,11 +26,11 @@
           </section>
           <section class="right">
             <section @click="handleEditClick(item.id)">
-              <span class="iconfont icon--jiahao"></span>
+              <span class="iconfont icon-bj"></span>
               编辑
             </section>
             <section @click="handleDeleteClick(item.id)">
-              <span class="iconfont icon--jiahao"></span>
+              <span class="iconfont icon-shanchu"></span>
               删除
             </section>
           </section>

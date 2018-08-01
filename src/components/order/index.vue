@@ -46,14 +46,21 @@
         </section>
       </section>
     </section>
-    <section v-else>
-      空空如也
+    <!-- 列表为空 -->
+    <section class="empty-wrapper"
+             v-else>
+      <empty></empty>
     </section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
+import Empty from '@/components/Empty'
+
 export default {
+  components: {
+    Empty
+  },
   props: {
     list: {
       type: Array,

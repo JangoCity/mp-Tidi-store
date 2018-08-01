@@ -49,7 +49,6 @@
 import { myList } from '@/common/js/staticData'
 import { share } from '@/common/js/mixins'
 import { getOpenId, showNormal } from '@/utils'
-import { mapMutations } from 'vuex'
 
 export default {
   mixins: [share],
@@ -111,17 +110,12 @@ export default {
           if (!userinfo) return
           this.userinfo = Object.assign({}, this.userinfo, userinfo)
           this.userBgImg = this.userinfo.avatarUrl
-          this.setUserInfo(userinfo)
+          wx.setStorageSync('userinfo', userinfo)
         })
       } else {
         console.log('用户按了拒绝按钮')
       }
-    },
-    ...mapMutations({
-      setUserInfo: 'SET_USETINFO'
-    })
-  },
-  mounted() {
+    }
   },
   onShow() {
     let userinfo = wx.getStorageSync('userinfo')

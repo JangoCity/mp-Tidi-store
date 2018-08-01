@@ -2,10 +2,11 @@
   <section class="container">
     <scroll-view scroll-y
                  scroll-top="scrollTop"
-                 style="height:100%">
-      <!-- 一条 -->
+                 style="height:100%"
+                 v-if="favoriteList.length">
+      <!-- 收藏列表 -->
       <section class="scroll-view-item"
-               v-for="item in favoriteList"
+               v-for="(item,index) in favoriteList"
                :key="item.id">
         <section class="img-wrapper">
           <img :src="item.product_image"
@@ -20,7 +21,7 @@
               <span class="old-price money">{{item.original_price}}</span>
             </section>
             <section class="favorite icon-wodeshoucang iconfont"
-                     @click="handleRemoveClick(item.id)"></section>
+                     @click="handleRemoveClick(item.id,index)"></section>
           </section>
           <section class="btn-wrapper">
             <button class="btn btn-normal"
@@ -29,17 +30,27 @@
           </section>
         </section>
       </section>
+
     </scroll-view>
+    <!-- 列表为空 -->
+    <section class="empty-wrapper" v-else>
+      <empty></empty>
+    </section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
+import Empty from '@/components/Empty'
+
 import fly from '@/utils/fly'
 import { showSuccess } from '@/utils'
 import { share } from '@/common/js/mixins'
 import { mapMutations, mapGetters } from 'vuex'
 
 export default {
+  components: {
+    Empty
+  },
   mixins: [share],
   data() {
     return {
@@ -50,6 +61,7 @@ export default {
     ...mapGetters(['userinfo'])
   },
   methods: {
+    // 点击购买
     handleToBuyClick(item) {
       console.log(item)
       showSuccess(item.product_name)
@@ -57,13 +69,12 @@ export default {
       wx.navigateTo({ url })
     },
     // 取消收藏
-    async handleRemoveClick(id) {
-      console.log('id', id)
-      const res = await fly.get('favoriteDel', { uid: id })
+    async handleRemoveClick(id, index) {
+      const res = await fly.get('favoriteDel', { uid: 1, id })
       try {
-        const data = res.data
-        showSuccess(data.message)
-        this._getFavoriteList()
+        this.favoriteList.slice(index, 1)
+        showSuccess(res.data.message)
+        this._fetchFavoriteList()
       } catch (err) {
         console.log('删除收藏报错', err)
       }
@@ -73,10 +84,11 @@ export default {
       wx.showNavigationBarLoading()
       // const params = { uid: this.userinfo.uid }
       const params = { uid: 1 }
-      const data = await fly.get('favorite', params)
-      console.log('收藏列表====', data)
+      const res = await fly.get('favorite', params)
       try {
+        const data = res.data
         this.favoriteList = data.list
+        console.log('收藏列表====', this.favoriteList)
         // 注销下拉刷新事件
         wx.stopPullDownRefresh()
         // 注销刷新icon状态

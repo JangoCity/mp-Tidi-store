@@ -46,7 +46,6 @@
 import { showNormal, showSuccess } from '@/utils'
 import fly from '@/utils/fly'
 import { ERR_OK } from '@/utils/config'
-import { mapMutations } from 'vuex'
 
 const MAX_COUNT = 60
 const REG = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
@@ -58,11 +57,9 @@ export default {
       qrCode: '',
       qrDisbled: false, // 禁止验证码
       qrText: '发送验证码',
-      phone: '13425187659',
+      phone: '',
       timer: null
     }
-  },
-  computed: {
   },
   methods: {
     // 确定绑定
@@ -74,9 +71,10 @@ export default {
         uid: 1
       }
       const res = await fly.post('postPhoneAuth', params)
+      console.log('res', res)
       res.code === ERR_OK && showSuccess(res.message)
       userinfo.phone = this.phone
-      this.setUserInfo(userinfo)
+      wx.setStorageSync('userinfo', userinfo)
       wx.navigateBack()
     },
     // 发送验证码
@@ -89,7 +87,7 @@ export default {
       const res = await fly.get('sendbindSms', params)
       res.code === ERR_OK && (res.message) && this._setQrTime()
     },
-    // 发送验证码
+    // 倒计时
     _setQrTime() {
       if (this.countdown === 1) {
         this.qrDisbled = false
@@ -101,10 +99,7 @@ export default {
       }
       setTimeout(() => { this._setQrTime(this) }
         , 1000)
-    },
-    ...mapMutations({
-      setUserInfo: 'SET_USETINFO'
-    })
+    }
   }
 }
 </script>
