@@ -68,7 +68,6 @@ export default {
   methods: {
     // 跳转
     handleLinkClick(item) {
-      console.log(item.id)
       let url = ''
       switch (item.id) {
         case 101:

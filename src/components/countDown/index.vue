@@ -1,171 +1,178 @@
 <template>
-  <section class="ui-count-down">
-    <section v-if="timeUp"
-             class="time-up">
-      {{doneText}}
-    </section>
-    <section class="count-down-wrap"
-             wx:if="{{!timeUp}}">
-      <section class="count-down-item"
-               style="{{item.type === 'split' ? selfSplitStyle : selfNumberStyle}}"
-               v-for="(item,index) in itemArray"
-               :key="index">{{item.value}}</section>
-    </section>
-  </section>
-
-  <view></view>
+  <div class="container">
+    <p v-if="msTime.show">
+      <span v-if="tipShow">{{tipText}}:</span>
+      <span v-if="!tipShow">{{tipTextEnd}}</span>
+      <span v-if="msTime.day>0"
+            class="time">
+        {{msTime.day}}
+      </span>天
+      <span class="time">{{msTime.hour}}</span>:
+      <span class="time">{{msTime.minutes}}</span>:
+      <span class="time">{{msTime.seconds}}</span>
+      <span v-if="!tipShow">后停止购买</span>
+    </p>
+    <p v-if="!msTime.show">{{endText}}</p>
+  </div>
 </template>
 
-<script>
-import StyleHelper from '@/utils/StyleHelper'
-let moment = require('moment')
-
+<script type="text/ecmascript-6">
 export default {
-  // behaviors: [],
-  props: {
-    time: {
-      type: [Number, String],
-      default: moment().add(1, 'days').format('YYYY/MM/DD HH:mm:ss')
-    },
-    timetype: {
-      type: String,
-      default: 'datetime'
-    },
-    format: {
-      type: String,
-      default: '{%d}天{%h}时{%m}分{%s}秒'
-    },
-    numStyle: {
-      type: String,
-      default: ''
-    },
-    splitStyle: {
-      type: [String, Object],
-      default: '',
-      observer(val) {
-        this.setData({
-          selfSplitStyle: StyleHelper.getPlainStyle(val)
-        })
-      }
-    },
-    numberStyle: {
-      type: [String, Object],
-      default: '',
-      observer(val) {
-        console.log(StyleHelper.getPlainStyle(val))
-        this.setData({
-          selfNumberStyle: StyleHelper.getPlainStyle(val)
-        })
-      }
-    },
-    doneText: {
-      type: String,
-      value: '已结束'
-    }
-  },
   data() {
     return {
-      futureTimeStamp: undefined,
-      itemArray: [],
-      mode: 0,
-      day: undefined,
-      hour: undefined,
-      minute: undefined,
-      second: undefined,
-      selfSplitStyle: '',
-      selfNumberStyle: ''
+      tipShow: true,
+      msTime: { // 倒计时数值
+        show: false, // 倒计时状态
+        day: '', // 天
+        hour: '', // 小时
+        minutes: '', // 分钟
+        seconds: '' // 秒
+      },
+      star: '', // 活动开始时间
+      end: '', // 活动结束时间
+      current: ''// 当前时间
     }
   },
-  attached() {
-    this.selfSplitStyle = StyleHelper.getPlainStyle(this.splitStyle)
-    this.selfNumberStyle = StyleHelper.getPlainStyle(this.numberStyle)
-    console.log(this.selfNumberStyle)
+  props: {
+    // 距离开始提示文字
+    tipText: {
+      type: String,
+      default: '距离开始'
+    },
+    // 距离结束提示文字
+    tipTextEnd: {
+      type: String,
+      default: '本品将于'
+    },
+    // 时间控件ID
+    id: {
+      type: String,
+      default: '1'
+    },
+    // 当前时间
+    currentTime: {
+      type: Number
+    },
+    // 活动开始时间
+    startTime: {
+      type: Number
+    },
+    // 活动结束时间
+    endTime: {
+      type: Number
+    },
+    // 倒计时结束显示文本
+    endText: {
+      type: String,
+      default: '已结束'
+    },
+    // 是否开启秒表倒计，未完成
+    secondsFixed: {
+      type: Boolean,
+      defaule: false
+    }
+  },
+  mounted() {
+    // 判断是秒还是毫秒
+    this.startTime.toString().length === 10 ? this.star = this.startTime * 1000 : this.star = this.startTime
+    this.endTime.toString().length === 10 ? this.end = this.endTime * 1000 : this.end = this.endTime
+    if (this.currentTime) {
+      this.currentTime.toString().length === 10 ? this.current = this.currentTime * 1000 : this.current = this.currentTime
+    } else {
+      this.current = (new Date()).getTime()
+    }
 
-    this.onPageShow()
-  },
-  ready() {
-  },
-  detached() {
-    this.onPageHide()
+    if (this.end < this.current) {
+      /**
+       * 结束时间小于当前时间 活动已结束
+       */
+      this.msTime.show = false
+      this.end_message()
+    } else if (this.current < this.star) {
+      /**
+       * 当前时间小于开始时间 活动尚未开始
+       */
+      this.$set(this, 'tipShow', true)
+      setTimeout(() => {
+        this.runTime(this.star, this.current, this.start_message)
+      }, 1)
+    } else if ((this.end > this.current && this.star < this.current) || this.star === this.current) {
+      /**
+       * 结束时间大于当前并且开始时间小于当前时间，执行活动开始倒计时
+       */
+      this.$set(this, 'tipShow', false)
+      this.msTime.show = true
+      this.$emit('startCallback', this.msTime.show)
+      setTimeout(() => {
+        this.runTime(this.end, this.star, this.end_message, true)
+      }, 1)
+    }
   },
   methods: {
-    onPageHide() {
-      if (this.interval) {
-        clearInterval(this.interval)
-      }
-    },
-    onPageShow() {
-      if (this.timetype === 'second') {
-        this.futureTimeStamp = Math.floor(moment().add(this.time, 'seconds').format('x') / 1000)
+    runTime(startTime, endTime, callFun, type) {
+      let msTime = this.msTime
+      let timeDistance = startTime - endTime
+      if (timeDistance > 0) {
+        this.msTime.show = true
+        msTime.day = Math.floor(timeDistance / 86400000)
+        timeDistance -= msTime.day * 86400000
+        msTime.hour = Math.floor(timeDistance / 3600000)
+        timeDistance -= msTime.hour * 3600000
+        msTime.minutes = Math.floor(timeDistance / 60000)
+        timeDistance -= msTime.minutes * 60000
+        // 是否开启秒表倒计,未完成
+        //     this.secondsFixed ? msTime.seconds = new Number(timeDistance / 1000).toFixed(2) : msTime.seconds = Math.floor( timeDistance / 1000 ).toFixed(0)
+        msTime.seconds = Math.floor(timeDistance / 1000).toFixed(0)
+        timeDistance -= msTime.seconds * 1000
+
+        if (msTime.hour < 10) {
+          msTime.hour = '0' + msTime.hour
+        }
+        if (msTime.minutes < 10) {
+          msTime.minutes = '0' + msTime.minutes
+        }
+        if (msTime.seconds < 10) {
+          msTime.seconds = '0' + msTime.seconds
+        }
+        let _s = Date.now()
+        let _e = Date.now()
+        let diffPerFunc = _e - _s
+        setTimeout(() => {
+          if (type) {
+            this.runTime(this.end, endTime += 1000, callFun, true)
+          } else {
+            this.runTime(this.star, endTime += 1000, callFun)
+          }
+        }, 1000 - diffPerFunc)
       } else {
-        this.futureTimeStamp = Math.floor(moment(this.time).format('x') / 1000)
+        callFun()
       }
-      let tempArray = this.format.split(/(\{.*?\})/)
-      tempArray.forEach((item) => {
-        let obj = {}
-        if (item === '{%d}') {
-          obj.type = 'day'
-          obj.value = ''
-          this.day = obj
-        } else if (item === '{%h}') {
-          obj.type = 'hour'
-          obj.value = ''
-          this.hour = obj
-        } else if (item === '{%m}') {
-          obj.type = 'minute'
-          obj.value = ''
-          this.minute = obj
-        } else if (item === '{%s}') {
-          obj.type = 'second'
-          obj.value = ''
-          this.second = obj
-        } else {
-          obj.type = 'split'
-          obj.value = item
-        }
-        this.itemArray.push(obj)
-      })
-      this.startCountDown()
     },
-    startCountDown() {
-      this.interval = setInterval(() => {
-        let diffSecond = Math.floor(moment(this.futureTimeStamp * 1000).diff(moment()) / 1000)
-        this.timeUp = (diffSecond < 0)
-        if (this.timeUp) {
-          this.setData({
-            timeUp: this.timeUp
-          })
-          this.triggerEvent('timeup')
-          clearInterval(this.interval)
-        } else {
-          if (this.day) {
-            this.day.value = Math.floor(diffSecond / (60 * 60 * 24))
-            diffSecond = diffSecond % (60 * 60 * 24)
-          }
-          if (this.hour) {
-            this.hour.value = Math.floor(diffSecond / (60 * 60))
-            diffSecond = diffSecond % (60 * 60)
-          }
-          if (this.minute) {
-            this.minute.value = Math.floor(diffSecond / 60)
-            diffSecond = diffSecond % 60
-          }
-          if (this.second) {
-            this.second.value = Math.floor(diffSecond)
-          }
-          this.setData({
-            itemArray: this.itemArray
-          })
-        }
-      }, 1000)
+    start_message() {
+      this.$set(this, 'tipShow', false)
+      this.$emit('startCallback', this.msTime.show)
+      setTimeout(() => {
+        this.runTime(this.end, this.star, this.end_message, true)
+      }, 1)
+    },
+    end_message() {
+      this.msTime.show = false
+      this.$emit('endCallback', this.msTime.show)
     }
   }
 }
 </script>
 
-<style lang="stylus">
-.ui-count-down
-  .count-down-item
-    display inline
+<style scoped lang="stylus">
+.container
+  font-size 24rpx
+  .time
+    background #ddd
+    display inline-block
+    height 34rpx
+    line-height 34rpx
+    width 34rpx
+    color #000
+    font-weight 600
+    border-radius 4px
 </style>
-

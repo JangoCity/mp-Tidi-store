@@ -23,15 +23,11 @@ export const pay = {
         id: '1',
         uid: 2,
         contact_id: '2',
-        pay_method: this.payment,
-        price: this.total,
-        message: this.message,
-        number: this.count
+        pay_method: this.payment, // 支付方式
+        price: this.total, // 支付价格
+        message: this.message, // 留言
+        number: this.count // 购买个数
       }
-      console.log('支付模式==', this.payment)
-      console.log('用户留言==', this.message)
-      console.log('总价==', this.total)
-      console.log('购买数量==', this.count)
       // 获取订单Id
       const getOrderId = await fly.post('postBuy', params)
 

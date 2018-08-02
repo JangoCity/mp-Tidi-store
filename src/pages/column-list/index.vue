@@ -7,11 +7,12 @@
             :indicator-active-color="indicatorActiveColor"
             style="height:100%"
             v-if="columnList.length">
-      <section v-for="(item,index) in columnList"
-               :key="item.id"
-               class="wrapper">
-        <swiper-item class="swiper-item">
+      <swiper-item class="swiper-item"
+                   v-for="(item,index) in columnList"
+                   :key="item.id">
+        <section class="wrapper">
 
+          <!-- 顶部信息 -->
           <section class="header">
             <h2 class="title">{{item.product_name}}</h2>
             <p class="price">
@@ -34,7 +35,8 @@
             </p>
 
             <!-- 购买人数滚动组件 -->
-            <section class="scroll-buyer-wrapper">
+            <section class="scroll-buyer-wrapper"
+                     v-if="item.buy_log.length>3">
               <scroll-text :list='item.buy_log'></scroll-text>
             </section>
           </section>
@@ -44,13 +46,14 @@
                  class="slide-image"
                  style="width:100%" />
           <!-- 底部信息 -->
+
           <section class="bottom">
             <section class="count-time">
-              本品将于
-              <span class="time">15</span>:
-              <span class="time">22</span>:
-              <span class="time">33</span>后停止购买
+              <count-down @endCallback="countDownEnd(item)"
+                          :startTime="currentTime"
+                          :endTime="item.end_buytime"></count-down>
             </section>
+
             <button class="btn-disabled btn-normal  btn"
                     v-if="item.isEmpty"
                     disabled>售罄</button>
@@ -58,8 +61,9 @@
                     v-else
                     @click="handleToBuyClick">立即购买</button>
           </section>
-        </swiper-item>
-      </section>
+        </section>
+
+      </swiper-item>
     </swiper>
   </section>
 </template>
@@ -68,22 +72,31 @@
 import swiperGroup from '@/components/swiper'
 import scrollText from '@/components/scrollText'
 import rebate from '@/components/rebate'
+import countDown from '@/components/countDown'
 
 import fly from '@/utils/fly'
 export default {
   components: {
     swiperGroup,
     scrollText,
-    rebate
+    rebate,
+    countDown
   },
   data() {
     return {
-      columnList: []
+      columnList: [], // 栏目列表,
+      endTime: ''
     }
   },
   computed: {
+    currentTime() {
+      return new Date().getTime()
+    }
   },
   methods: {
+    countDownEnd(item) {
+      item.isEmpty = true
+    },
     // 购买
     handleToBuyClick() {
       const url = '../buy/main'
@@ -94,9 +107,9 @@ export default {
       const params = { shop_id: 8, category: 1, uid: 1 }
       const res = await fly.get('columnDetail', params)
       try {
-        const data = res.data
-        console.log('栏目列表', data.product.data)
-        this.columnList = data.product.data
+        const data = res.data.product
+        console.log('栏目列表', data.data)
+        this.columnList = data.data
         this._transRebate(this.columnList)
       } catch (err) {
         console.error('获取栏目列表报错', err)
@@ -107,6 +120,7 @@ export default {
       list.forEach(goods => {
         const { rebage, number, repertory } = goods
         const willNumber = goods.will_number
+        goods.end_buytime = new Date(goods.end_buytime).getTime()
         goods.isEmpty = parseInt(repertory, 10) === 0
         rebage.forEach(item => {
           const people = parseInt(item.number, 10)
@@ -132,22 +146,23 @@ export default {
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
 .container
-  position relative
-  height 1146rpx
-  padding 30rpx
+  height 1216rpx
+  box-sizing border-box
   background #f7f7f7
-  .wrapper
-    height inherit
   .swiper-item
     height 100%
-    box-sizing border-box
-    padding 30rpx
+    .wrapper
+      padding 30rpx
+      box-sizing border-box
+      height inherit
+      width 100%
+      position relative
     .header, .content
       position absolute
       width 630rpx
       z-index 99
+      padding 30rpx
     .header
-      top 30rpx
       color #fff
       .title
         font-size 16px
@@ -190,7 +205,7 @@ export default {
         height 250rpx
         overflow hidden
     .slide-image
-      position absolute
+      // position absolute
       left 0
       top 0
       height 100%
@@ -201,29 +216,17 @@ export default {
     position absolute
     display flex
     z-index 99
-    left 0
-    bottom 0
-    width 100%
+    left 30rpx
+    right 30rpx
+    bottom 30rpx
     background #fff
     height 100rpx
     line-height 100rpx
-    .count-time, .btn
-      display inline-block
     .count-time
       width 460rpx
       line-height 100rpx
       font-size 12px
       text-align center
-      .time
-        background #ddd
-        display inline-block
-        height 34rpx
-        line-height 34rpx
-        width 34rpx
-        color #333
-        margin-right 5rpx
-        color #000
-        border-radius 2px
     .btn
       width 290rpx
       height 100rpx
