@@ -33,7 +33,8 @@
 
     </scroll-view>
     <!-- 列表为空 -->
-    <section class="empty-wrapper" v-else>
+    <section class="empty-wrapper"
+             v-else>
       <empty></empty>
     </section>
   </section>
@@ -82,8 +83,8 @@ export default {
     //  获取收藏列表
     async _fetchFavoriteList() {
       wx.showNavigationBarLoading()
-      // const params = { uid: this.userinfo.uid }
-      const params = { uid: 1 }
+      const { uid } = wx.getStorageSync('userinfo')
+      const params = { uid }
       const res = await fly.get('favorite', params)
       try {
         const data = res.data

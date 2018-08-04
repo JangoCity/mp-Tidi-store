@@ -59,7 +59,7 @@
                     disabled>售罄</button>
             <button class="line-gradient-btn btn-normal  btn"
                     v-else
-                    @click="handleToBuyClick">立即购买</button>
+                    @click="handleToBuyClick(item.id)">立即购买</button>
           </section>
         </section>
 
@@ -98,8 +98,8 @@ export default {
       item.isEmpty = true
     },
     // 购买
-    handleToBuyClick() {
-      const url = '../buy/main'
+    handleToBuyClick(id) {
+      const url = `../buy/main?id=${id}`
       wx.navigateTo({ url })
     },
     // 获取列表数据

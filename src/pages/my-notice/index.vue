@@ -64,7 +64,8 @@ export default {
     // 获取通知列表
     async _fetchNoticeList() {
       wx.showNavigationBarLoading()
-      const params = { uid: 1, type: 3 }
+      const { uid } = wx.getStorageSync('userinfo')
+      const params = { uid, type: 3 }
       const res = await fly.get('messageList', params)
       try {
         this.noticeList = res.data

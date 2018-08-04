@@ -46,7 +46,8 @@ export default {
     },
     // 拉取信息
     async _getIssuesList() {
-      const params = { uid: 1 }
+        const { uid } = wx.getStorageSync('userinfo')
+      const params = { uid }
       const res = await fly.get('question', params)
       try {
         const data = res.data

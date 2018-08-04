@@ -3,7 +3,8 @@
 
     <!-- 用户信息 -->
     <section class="user-info"
-             v-if="contact">
+             v-if="contact"
+             @click="handleChangeContactClick">
       <user-info :contact="contact"></user-info>
     </section>
 
@@ -94,8 +95,8 @@ export default {
       contact: undefined,
       tipInfo: undefined,
       message: '', // 用户留言
-      shop_name: undefined,
-      address: undefined,
+      shop_name: null,
+      address: null,
       product_name: null,
       image: null,
       type: 1
@@ -109,9 +110,15 @@ export default {
     ...mapGetters(['count', 'payment'])
   },
   methods: {
+    // 切换收货地址
+    handleChangeContactClick() {
+      const url = '../my-address/main'
+      wx.navigateTo({ url })
+    },
     // 拉取接口数据
-    async _fetchData() {
-      const params = { id: 1, uid: 1 }
+    async _fetchData(id) {
+      const { uid } = wx.getStorageSync('userinfo')
+      const params = { id, uid }
       const res = await fly.get('buyProduct', params)
       try {
         const data = res.data
@@ -145,7 +152,7 @@ export default {
     }
   },
   mounted() {
-    this._fetchData()
+    this._fetchData(this.$root.$mp.query.id)
   }
 }
 </script>

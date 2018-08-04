@@ -79,8 +79,9 @@ export default {
     // 保存信息
     async handleConfirmClick() {
       const { name, phone, area, number } = createAddressForm
+        const { uid } = wx.getStorageSync('userinfo')
       let params = {
-        uid: 1,
+        uid,
         name: name.value,
         phone: phone.value,
         province_id: this.region[0],

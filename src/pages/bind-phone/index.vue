@@ -65,10 +65,11 @@ export default {
     // 确定绑定
     async handleConfirmClick() {
       let userinfo = wx.getStorageSync('userinfo')
+        const { uid } = wx.getStorageSync('userinfo')
       const params = {
         tel: this.phone,
         code: this.qrCode,
-        uid: 1
+        uid
       }
       const res = await fly.post('postPhoneAuth', params)
       res.code === ERR_OK && showSuccess(res.message)

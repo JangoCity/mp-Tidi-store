@@ -2,7 +2,8 @@
   <section class="container">
     <scroll-view scroll-y
                  scroll-top="scrollTop"
-                 style="height:100%">
+                 style="height:100%"
+                 v-if="addressList.length">
       <section v-for="(item, index) in addressList"
                class="address-wrapper"
                :key="item.id">
@@ -37,6 +38,11 @@
         </section>
       </section>
     </scroll-view>
+    <!-- 列表为空 -->
+    <section class="empty-wrapper"
+             v-else>
+      <empty></empty>
+    </section>
     <section class="btn-wrapper">
       <button class="btn-confirm"
               hover-class="btn-confirm-hover"
@@ -50,8 +56,11 @@
 import fly from '@/utils/fly'
 import { showSuccess, showNormal } from '@/utils'
 
+import Empty from '@/components/Empty'
+
 export default {
   components: {
+    Empty
   },
   data() {
     return {
@@ -79,7 +88,8 @@ export default {
       this.addressList.slice(index, 1)
       // 确定删除回调
       const del = async () => {
-        const params = { uid: 1, id }
+        const { uid } = wx.getStorageSync('userinfo')
+        const params = { uid, id }
         const res = await fly.get('deleteContact', params)
         try {
           showSuccess(res.message)
@@ -103,8 +113,9 @@ export default {
     },
     // 更改默认地址
     async handleDefaultAddressClick(e) {
+      const { uid } = wx.getStorageSync('userinfo')
       const targetId = parseInt(e.mp.detail.value, 10)
-      const params = { uid: 1, id: targetId }
+      const params = { uid, id: targetId }
       const res = await fly.get('setDefault', params)
       try {
         showSuccess(res.message)
@@ -115,7 +126,8 @@ export default {
     },
     // 获取收货地址列表
     async _fetchAddressList() {
-      const params = { uid: 1 }
+      const { uid } = wx.getStorageSync('userinfo')
+      const params = { uid }
       const res = await fly.get('contact', params)
       try {
         const data = res.data

@@ -37,7 +37,7 @@
                   @click="handleCancleClick(item.id)">取消订单</button>
           <button class="btn to-pay"
                   v-if="item.status===1"
-                  @click="handlePayClick(item.id)">去支付</button>
+                  @click="handlePayClick(item.product_id)">去支付</button>
           <!--<button class="btn to-pay"
                   v-if="item.status===2"
                   @click="handleConfirmClick(item.id)">确认订单</button>-->

@@ -9,10 +9,12 @@
       </button>
       <button class="btn-normal  item-btn"
               @click="handleFavoriteClick">
-        <span class="iconfont icon-shoucang"></span>
+        <span class="iconfont"
+              :class="[favorite]"></span>
         <span class="text">收藏</span>
       </button>
       <button class="btn-normal  item-btn"
+              open-type="contact"
               @click="handleServerClick">
         <span class="iconfont icon-kefu"></span>
         <span class="text">客服</span>
@@ -32,6 +34,17 @@
 
 <script type="text/ecmascript-6">
 export default {
+  props: {
+    isLike: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    favorite() {
+      return this.isLike ? 'icon-shoucang-xuanzhong' : 'icon-shoucang'
+    }
+  },
   methods: {
     // 点击跳转首页
     handleToHomeClick() {
@@ -72,6 +85,8 @@ export default {
         height 50rpx
         line-height 50rpx
         font-size 20px
+        &.icon-shoucang-xuanzhong
+          color #ffb266
       .text
         display block
         font-size 14px

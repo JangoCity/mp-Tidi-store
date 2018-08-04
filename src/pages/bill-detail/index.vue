@@ -92,8 +92,9 @@ export default {
     }
   },
   methods: {
-    async _fetchBillDetail() {
-      const params = { id: 1, uid: 1 }
+    async _fetchBillDetail($id) {
+        const { uid } = wx.getStorageSync('userinfo')
+      const params = { id, uid }
       const res = await fly.get('billDetail', params)
       try {
         const data = res.data
@@ -105,7 +106,7 @@ export default {
     }
   },
   mounted() {
-    this._fetchBillDetail()
+    this._fetchBillDetail(this.$root.$mp.query.id)
   }
 }
 </script>

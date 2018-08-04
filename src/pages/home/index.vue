@@ -3,7 +3,8 @@
     <section class="local-wraper"
              v-if="weather.wendu">
       <Local :address="address"
-             :weather="weather"></Local>
+             :weather="weather"
+             @change="handleChangeLocalClick"></Local>
     </section>
     <!-- 分类 -->
     <section class="tabs wrapper">
@@ -76,7 +77,13 @@ export default {
     ...mapGetters(['userinfo'])
   },
   methods: {
-    // 切换
+    // 切换位置
+    async handleChangeLocalClick() {
+      // const geo = await this._getGeo() // 参数需要返回的经纬度
+      // const url = `../map/main?geo=${geo}`
+      // wx.navigateTo({ url })
+    },
+    // 切换Tab
     handleTabClick(id) {
       this.currentId = id
     },
@@ -103,8 +110,9 @@ export default {
     },
     // 获取首页信息
     async _getInfo() {
-      const geo = await this._getGeo() // 参数需要返回的经纬度
-      const params = { uid: 1, ...geo }
+      // const geo = await this._getGeo() // 参数需要返回的经纬度
+      // const params = { uid: 1, ...geo }
+      const params = { uid: 1, lat: 30.499693, lng: 114.411457 }
       const res = await fly.get('index', params)
       try {
         const data = res.data
@@ -112,7 +120,8 @@ export default {
         this.weather = data.weather
         this.weather.aqi = data.aqi
         this.weather.wendu = data.wendu
-        this.shopId = data.shop_id
+        // this.shopId = data.shop_id
+        this.shopId = 8
         if (Array.isArray(data.column)) {
           data.column.forEach(item => {
             indexInfo[item.category - 1].list.push(item)
@@ -122,6 +131,9 @@ export default {
         console.log('获取首页信息报错', err)
       }
     }
+  },
+  onHide() {
+    this.currentId = indexInfo[0].id
   },
   mounted() {
     getOpenId()

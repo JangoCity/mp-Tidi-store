@@ -140,7 +140,9 @@ export default {
     },
     // 获取订单接口信息
     async _fetchOrderDetail(id) {
-      const params = { uid: 1, id: 1, pay_status: 1 }
+      const { uid } = wx.getStorageSync('userinfo')
+
+      const params = { uid, id/*, pay_status: 1*/ }
       const res = await fly.get('orderDetail', params)
       try {
         const { product, contact, order, phone, rebage } = res.data

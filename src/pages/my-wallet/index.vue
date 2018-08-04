@@ -109,7 +109,8 @@ export default {
     async _fetchWalletList(date) {
       date = date || this.currentDay
       this.currentMonth = date.substring(0, 8)
-      const params = { uid: 1, time: date }
+        const { uid } = wx.getStorageSync('userinfo')
+      const params = { uid, time: date }
       const res = await fly.get('walletList', params)
       try {
         const data = res.data

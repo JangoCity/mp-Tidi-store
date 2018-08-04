@@ -50,7 +50,8 @@
 
     <!-- 底部信息 -->
     <section class="bottom-wrapper">
-      <bottom-bar @addFavorite="handleAddFavoriteClick"
+      <bottom-bar :isLike="isLike"
+                  @addFavorite="handleAddFavoriteClick"
                   @server="handleServerClick"
                   @buy="handleToBuyClick"></bottom-bar>
     </section>
@@ -64,6 +65,7 @@ import deliveryTime from '@/components/deliveryTime'
 import bottomBar from '@/components/bottomBar'
 
 import fly from '@/utils/fly'
+import { showSuccess } from '@/utils'
 import { share, cancel, call, pay } from '@/common/js/mixins'
 export default {
   mixins: [share, cancel, call, pay],
@@ -86,12 +88,21 @@ export default {
   },
   methods: {
     // 点击收藏
-    handleAddFavoriteClick(goodsId) {
-      console.log('点击收藏')
+    async handleAddFavoriteClick(id) {
+      const { uid } = wx.getStorageSync('userinfo')
+      const params = { uid, id }
+      const res = await fly.get('favoriteGet', params)
+      try {
+        this.isLike = !this.isLike
+        showSuccess(res.message)
+      } catch (err) {
+        console.log('点击收藏报错', err)
+      }
     },
     // 获取详情信息
     async _fetchDetailInfo(id) {
-      const params = { uid: 1, id: id || 1 }
+      const { uid } = wx.getStorageSync('userinfo')
+      const params = { uid, id }
       const res = await fly.get('productDetail', params)
       try {
         const data = res.data
@@ -107,7 +118,6 @@ export default {
         this.activity.list = activity
         this.activity.current = this.goods.number
         this.activity.final = final
-        console.log('data====', data)
       } catch (err) {
         console.log('商品详情报错======', err)
       }

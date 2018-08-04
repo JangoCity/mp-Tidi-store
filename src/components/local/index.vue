@@ -1,7 +1,7 @@
 <template>
   <section class="container">
     <section class="local-box"
-             @click="handeleRestInfoClick">
+             @click="handeleChangeLocalClick">
       <span class="local iconfont icon-weizhi">{{address}}</span>
     </section>
     <section class="weather-box"
@@ -60,8 +60,8 @@ export default {
     }
   },
   methods: {
-    handeleRestInfoClick() {
-      this.$emit('rest', '123123')
+    handeleChangeLocalClick() {
+      this.$emit('change', '123123')
     }
   },
   mounted() {
