@@ -1,6 +1,6 @@
 export const userinfo = state => state.userinfo
 
-export const favoriteList = state => state.favoriteList
+export const contact = state => state.contact
 
 export const count = state => state.count
 

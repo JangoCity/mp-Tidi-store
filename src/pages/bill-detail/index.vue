@@ -92,14 +92,13 @@ export default {
     }
   },
   methods: {
-    async _fetchBillDetail($id) {
-        const { uid } = wx.getStorageSync('userinfo')
+    async _fetchBillDetail(id) {
+      const { uid } = wx.getStorageSync('userinfo')
       const params = { id, uid }
       const res = await fly.get('billDetail', params)
       try {
         const data = res.data
         this.billDetail = data.list[0]
-        console.log(this.billDetail)
       } catch (err) {
         console.log('账单详情报错', err)
       }

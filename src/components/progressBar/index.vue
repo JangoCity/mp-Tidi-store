@@ -2,15 +2,22 @@
   <section class="container">
     <!-- 节点 -->
     <section class="node-wrapper">
-      <section class="node" v-for="(item, index) in activity.list" :key="item.id">
+      <section class="node"
+               v-for="(item, index) in activity.list"
+               :key="item.id">
         <span class="dott"></span>
         <span class="text">满{{item.number}}人返{{item.money}}</span>
       </section>
     </section>
 
     <!-- 进度条 -->
-    <section class="progress-wrapper">
-      <progress :percent="percent" active="true" stroke-width="4" activeColor="#e60012" backgroundColor="#ccc">
+    <section class="progress-wrapper"
+             v-if="activity">
+      <progress :percent="(activity.current / activity.final) * 100"
+                active="true"
+                stroke-width="4"
+                activeColor="#e60012"
+                backgroundColor="#ccc">
       </progress>
     </section>
 
@@ -22,7 +29,14 @@ export default {
   props: {
     activity: {
       type: Object,
-      default: null
+      default: {
+        list: {
+          number: 0,
+          money: 0
+        },
+        current: 0,
+        final: 1
+      }
     }
   },
   data() {
@@ -31,7 +45,7 @@ export default {
   },
   computed: {
     percent() {
-      return (this.activity.current / this.activity.final) * 100
+      return (this.activity.current / this.activity.final).toFixed(2) * 100
     }
   }
 }

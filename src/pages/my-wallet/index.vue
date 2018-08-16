@@ -19,8 +19,7 @@
         <picker class="picker-date iconfont icon-rili"
                 mode="date"
                 :value="date"
-                start="2015-09-01"
-                end="2017-09-01"
+                :end="today"
                 @change="handleDateChange">
           <span class="placehodle">时间控件</span>
         </picker>
@@ -85,6 +84,11 @@ export default {
   },
   computed: {
     // // 获取今天的月份
+    today() {
+      let day = new Date()
+      day.setTime(day.getTime())
+      return day.getFullYear() + '-' + padTime((day.getMonth() + 1)) + '-' + padTime(day.getDate())
+    },
     // 获取今天的日期
     currentDay() {
       let day = new Date()
@@ -100,16 +104,16 @@ export default {
       date = date[0] + '年' + date[1] + '月' + date[2] + '日'
       this._fetchWalletList(date)
     },
-    _currentMonth() {
-      let day = new Date()
-      day.setTime(day.getTime())
-      return day.getFullYear() + '-' + padTime((day.getMonth() + 1))
-    },
+    // _currentMonth() {
+    //   let day = new Date()
+    //   day.setTime(day.getTime())
+    //   return day.getFullYear() + '-' + padTime((day.getMonth() + 1))
+    // },
     // 获取消费列表
     async _fetchWalletList(date) {
-      date = date || this.currentDay
+      date = date || ''
       this.currentMonth = date.substring(0, 8)
-        const { uid } = wx.getStorageSync('userinfo')
+      const { uid } = wx.getStorageSync('userinfo')
       const params = { uid, time: date }
       const res = await fly.get('walletList', params)
       try {
@@ -141,6 +145,8 @@ export default {
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
 .container
+  .empty-wrapper
+    top 65%
   .balance-warapper
     position relative
     padding 30rpx
@@ -211,7 +217,6 @@ export default {
           &::before
             prefix-icon(20rpx, 20rpx)
             border-radius 50%
-            // left -30rpx
           &.nopaid::before
             background-color $color-theme
           &.success

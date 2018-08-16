@@ -9,7 +9,7 @@
     >
       <section v-for="(item,index) in list" :key="item.id">
         <swiper-item>
-          <image :src="item.url" mode="aspectFit" class="slide-image" style="width:100%" />
+          <image :src="item.url" mode="aspectFill" class="slide-image" style="width:100%" />
         </swiper-item>
       </section>
     </swiper>
@@ -53,5 +53,3 @@ export default {
 }
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus" scoped>
-</style>

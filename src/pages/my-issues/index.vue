@@ -46,7 +46,7 @@ export default {
     },
     // 拉取信息
     async _getIssuesList() {
-        const { uid } = wx.getStorageSync('userinfo')
+      const { uid } = wx.getStorageSync('userinfo')
       const params = { uid }
       const res = await fly.get('question', params)
       try {
@@ -70,14 +70,15 @@ export default {
   .list-wrapper
     padding 0 30rpx
     .item, .item-issue
-      padding 10px 0px
+      box-sizing border-box
+      padding 10px 15px 10px 0
       &::before
         posY(10rpx, false)
         color #ccc
         font-size 24rpx
     .item.active
       .item-issue
-        padding 10px 0
+        width 350px
     .item-answer
       padding 20px 0 40px
       color #999

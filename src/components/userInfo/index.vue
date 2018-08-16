@@ -5,7 +5,7 @@
     </section>
     <p class="address">
       <span class="type company"
-            v-if="hasType">{{addressType}}</span>
+            v-if="addressType">{{addressType}}</span>
       {{shoppingAddress}}</p>
   </section>
 </template>
@@ -18,10 +18,7 @@ export default {
       type: Boolean,
       default: true
     },
-    addressType: {
-      type: String,
-      default: '公司'
-    }
+    addressType: ''
   },
   computed: {
     // 收货地址

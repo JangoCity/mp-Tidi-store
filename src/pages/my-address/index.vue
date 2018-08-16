@@ -7,17 +7,19 @@
       <section v-for="(item, index) in addressList"
                class="address-wrapper"
                :key="item.id">
-        <section class="header">
+        <section class="header"
+                 @click="handleAddressClick(item)">
           {{item.name}} {{item.phone}}
           <span class="remark">{{item.type}}</span>
         </section>
-        <section class="content border-bottom">
+        <section class="content border-bottom"
+                 @click="handleAddressClick(item)">
           {{item.address}}
         </section>
         <section class="bottom">
           <section class="left">
             <radio-group class="radio-group"
-                         @change="handleDefaultAddressClick">
+                         @change="handleDefaultAddressClick(item)">
               <label class="radio">
                 <radio :value="item.id"
                        :checked="item.id===defaultAddressId"
@@ -44,10 +46,10 @@
       <empty></empty>
     </section>
     <section class="btn-wrapper">
-      <button class="btn-confirm"
-              hover-class="btn-confirm-hover"
-              @click="handleAddClick">
-        <span class="iconfont icon--jiahao"></span>新增地址</button>
+      <a class="btn-confirm btn"
+         href="../add-address/main"
+         hover-class="btn-confirm-hover">
+        <span class="iconfont icon--jiahao"></span>新增地址</a>
     </section>
   </section>
 </template>
@@ -55,6 +57,7 @@
 <script type='text/ecmascript-6'>
 import fly from '@/utils/fly'
 import { showSuccess, showNormal } from '@/utils'
+import { mapMutations } from 'vuex'
 
 import Empty from '@/components/Empty'
 
@@ -64,16 +67,12 @@ export default {
   },
   data() {
     return {
+      goodsId: null,
       addressList: [], // 地址列表
       defaultAddressId: undefined // 默认地址
     }
   },
   methods: {
-    // 新增地址
-    handleAddClick() {
-      const url = '../add-address/main'
-      wx.navigateTo({ url })
-    },
     // 删除地址
     handleDeleteClick(id) {
       if (id === this.defaultAddressId) {
@@ -93,6 +92,7 @@ export default {
         const res = await fly.get('deleteContact', params)
         try {
           showSuccess(res.message)
+          this._fetchAddressList()
         } catch (err) {
           console.log('删除地址报错', err)
         }
@@ -112,16 +112,45 @@ export default {
       wx.navigateTo({ url })
     },
     // 更改默认地址
-    async handleDefaultAddressClick(e) {
+    async handleDefaultAddressClick(contact) {
       const { uid } = wx.getStorageSync('userinfo')
-      const targetId = parseInt(e.mp.detail.value, 10)
-      const params = { uid, id: targetId }
+      const params = { uid, id: contact.id }
       const res = await fly.get('setDefault', params)
+      this.setContact(contact)
       try {
         showSuccess(res.message)
-        this.defaultAddressId = targetId
+        this.defaultAddressId = contact.id
+        // 此处是“单独购买页面传过来的”
+        setTimeout(() => {
+          if (this.goodsId) {
+            const url = `../buy/main?id=${this.goodsId}`
+            wx.navigateBack({ url })
+          }
+        }, 600)
       } catch (err) {
         console.log('更改默认地址报错', err)
+      }
+    },
+    // 更换地址
+    async handleAddressClick(contact) {
+      if (this.goodsId) {
+        const { uid } = wx.getStorageSync('userinfo')
+        const params = { uid, id: contact.id }
+        const res = await fly.get('setDefault', params)
+        this.setContact(contact)
+        try {
+          showSuccess(res.message)
+          this.defaultAddressId = contact.id
+          // 此处是“单独购买页面传过来的”
+          setTimeout(() => {
+            if (this.goodsId) {
+              const url = `../buy/main?id=${this.goodsId}`
+              wx.navigateBack({ url })
+            }
+          }, 600)
+        } catch (err) {
+          console.log('更改默认地址报错', err)
+        }
       }
     },
     // 获取收货地址列表
@@ -129,8 +158,11 @@ export default {
       const { uid } = wx.getStorageSync('userinfo')
       const params = { uid }
       const res = await fly.get('contact', params)
+
       try {
         const data = res.data
+        if (!data.contact.length) return
+
         this.addressList = data.contact
         this.defaultAddressId = this.addressList.filter(item => item.default === 1)[0].id
         this.addressList.forEach(item => {
@@ -139,9 +171,16 @@ export default {
       } catch (err) {
         console.log('获取收货地址列表报错', err)
       }
-    }
+    },
+    ...mapMutations({
+      setContact: 'SET_CONTACT'
+    })
   },
   mounted() {
+    this.goodsId = this.$root.$mp.query.goodsId
+    this._fetchAddressList()
+  },
+  onShow() {
     this._fetchAddressList()
   }
 }
@@ -151,11 +190,11 @@ export default {
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
 .container
-  background #f6f6f6
-  height 1206rpx
-  box-sizing border-box
-  padding-bottom 150rpx
   position relative
+  background #f6f6f6
+  height 100vh
+  box-sizing border-box
+  padding-bottom 120rpx
   .radio-group
     display flex
   .address-wrapper
@@ -188,7 +227,11 @@ export default {
         justify-content space-between
   .btn-wrapper
     position absolute
+    height 120rpx
     right 30rpx
     left 30rpx
     bottom 20rpx
+    .btn
+      posY()
+      width 100%
 </style>

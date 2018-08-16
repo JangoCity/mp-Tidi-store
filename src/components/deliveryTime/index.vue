@@ -2,17 +2,21 @@
   <div class="container order-time-info">
     <section class="box border-right">
       <p class="header">下单时间</p>
-      <p class="time">09:00:00-11:00:00</p>
+      <p class="time">{{orderTime}}</p>
     </section>
     <section class="box">
       <p class="header">配送时间</p>
-      <p class="time">11:00:00-14:00:00</p>
+      <p class="time">{{distributionTime}}</p>
     </section>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 export default {
+  props: {
+    orderTime: String, // 下单时间
+    distributionTime: String // 配送时间
+  },
   data() {
     return {
 

@@ -25,8 +25,17 @@
           </section>
           <section class="btn-wrapper">
             <button class="btn btn-normal"
+                    v-if="!item.isEmpty"
                     @click="handleToBuyClick(item)">去购买</button>
-            <span class="count-down">剩余{{item.count_time}}</span>
+            <button class="btn-disabled btn-normal  btn"
+                    v-else
+                    @click="handleToBuyClick(item)">售罄</button>
+            <span class="count-down">
+              <count-down @endCallback="countDownEnd(item)"
+                          :startTime="currentTime"
+                          :endTime="item.end_buytime"
+                          :onlyTime="true"></count-down>
+            </span>
           </section>
         </section>
       </section>
@@ -42,26 +51,37 @@
 
 <script type='text/ecmascript-6'>
 import Empty from '@/components/Empty'
+import countDown from '@/components/countDown'
 
 import fly from '@/utils/fly'
 import { showSuccess } from '@/utils'
 import { share } from '@/common/js/mixins'
-import { mapMutations, mapGetters } from 'vuex'
 
 export default {
   components: {
-    Empty
+    Empty,
+    countDown
   },
   mixins: [share],
   data() {
     return {
-      favoriteList: []
+      favoriteList: [], // 收藏列表
+      currentTime: new Date().getTime() // 当前时间
     }
   },
-  computed: {
-    ...mapGetters(['userinfo'])
-  },
   methods: {
+    countDownEnd(item) {
+      item.isEmpty = true
+    },
+    // 转换优惠
+    _transRebate(list) {
+      console.log('list===', list)
+      list.forEach(goods => {
+        const { repertory } = goods
+        goods.end_buytime = new Date(goods.end_buytime).getTime()
+        goods.isEmpty = goods.end_buytime < this.currentTime && parseInt(repertory, 10) <= 0
+      })
+    },
     // 点击购买
     handleToBuyClick(item) {
       console.log(item)
@@ -71,10 +91,11 @@ export default {
     },
     // 取消收藏
     async handleRemoveClick(id, index) {
-      const res = await fly.get('favoriteDel', { uid: 1, id })
+      const { uid } = wx.getStorageSync('userinfo')
+      const res = await fly.get('favoriteDel', { uid, id })
       try {
         this.favoriteList.slice(index, 1)
-        showSuccess(res.data.message)
+        showSuccess(res.message)
         this._fetchFavoriteList()
       } catch (err) {
         console.log('删除收藏报错', err)
@@ -89,7 +110,7 @@ export default {
       try {
         const data = res.data
         this.favoriteList = data.list
-        console.log('收藏列表====', this.favoriteList)
+        this._transRebate(data.list)
         // 注销下拉刷新事件
         wx.stopPullDownRefresh()
         // 注销刷新icon状态
@@ -97,10 +118,7 @@ export default {
       } catch (err) {
         console.log('获取收藏列表报错====', err)
       }
-    },
-    ...mapMutations({
-      setFavorite: 'SET_FAVORITE'
-    })
+    }
   },
   mounted() {
     this._fetchFavoriteList()
@@ -154,6 +172,7 @@ export default {
     .btn-wrapper
       display flex
       justify-content space-between
+      height 52rpx
       line-height 52rpx
       .btn
         margin 0

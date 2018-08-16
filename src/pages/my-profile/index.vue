@@ -99,8 +99,7 @@ export default {
     },
     // 获取个人信息
     async _fetchUserInfo() {
-      let userinfo = wx.getStorageSync('userinfo')
-      this.userinfo = userinfo
+      this.userinfo = wx.getStorageSync('userinfo')
       const params = { uid: this.userinfo.uid }
       const res = await fly.get('customerInfo', params)
       try {
@@ -123,7 +122,7 @@ export default {
     // 保存资料
     async handleConfirmClick() {
       const params = { uid: this.userinfo.uid, username: this.userinfo.name }
-      const res = await fly.post('postuserinfoerInfo', params)
+      const res = await fly.post('postCustomerInfo', params)
       try {
         wx.setStorageSync('userinfo', this.userinfo)
         // this._fetchUserInfo()

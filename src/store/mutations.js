@@ -5,11 +5,8 @@ const mutations = {
     state.userinfo = userinfo
     wx.setStorageSync('userinfo', userinfo)
   },
-  [types.SET_FAVORITE](state, goods) {
-    state.favoriteList.push(goods)
-  },
-  [types.DEL_FAVORITE](state, goods) {
-    state.favoriteList.splice(goods, 1)
+  [types.SET_CONTACT](state, contact) {
+    state.contact = contact
   },
   [types.SET_PAYMENT](state, payment) {
     state.payment = payment

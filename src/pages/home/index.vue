@@ -3,8 +3,7 @@
     <section class="local-wraper"
              v-if="weather.wendu">
       <Local :address="address"
-             :weather="weather"
-             @change="handleChangeLocalClick"></Local>
+             :weather="weather"></Local>
     </section>
     <!-- 分类 -->
     <section class="tabs wrapper">
@@ -31,7 +30,7 @@
           <li v-for="(item, index) in list.list"
               :key="item.id"
               class="item"
-              @click="handleTypeClick(item.name)">
+              @click="handleTypeClick(item.name,item.id)">
             <section class="text-wrapper">
               <h4 class="title">{{item.name}}</h4>
               <p class="desc">{{item.desc}}</p>
@@ -45,51 +44,73 @@
         </ul>
       </section>
     </section>
+
+    <section class="empty-wrapper"
+             v-if="!column">
+      <empty></empty>
+    </section>
+
+    <!-- 进入遮罩 -->
+    <!-- <section class="overlay-wrapper"
+             v-show="!isLogin&&weather.wendu"> -->
+    <section class="guide-wrapper"
+             v-show="!isLogin">
+      <section class="guide-text">
+        <p class="text">上下滑动，可以找到不同的栏目哦！</p>
+        <img :src="guideImg.up"
+             class="up"
+             mode="aspectFit">
+        <img :src="guideImg.down"
+             class="down"
+             mode="aspectFit">
+      </section>
+      <button open-type="getUserInfo"
+              class="btn-normal guide-btn"
+              size="mini"
+              @getuserinfo="handleGetUserInfo"
+              @click="handleCheckVersion">知道了</button>
+    </section>
   </section>
 </template>
 
 <script type='text/ecmascript-6'>
 
 import fly from '@/utils/fly'
-import { getOpenId } from '@/utils'
 import { indexInfo } from '@/common/js/staticData'
-import { share } from '@/common/js/mixins'
+import { login, share } from '@/common/js/mixins'
 import Local from '@/components/local'
 
-import { mapGetters } from 'vuex'
+import { up, down } from './images'
+
+import Empty from '@/components/Empty'
 
 export default {
-  mixins: [share],
+  mixins: [login, share],
   components: {
-    Local
+    Local,
+    Empty
   },
   data() {
     return {
+      isLogin: wx.getStorageSync('userinfo') !== '', // 是否登陆
       address: '未知地点...', // 地址
       geo: { lat: '', lng: '' }, // 经纬度
       weather: { wendu: '' }, // 天气
       currentId: indexInfo[0].id,
       indexInfo,
-      shopId: undefined // 店铺ID
+      guideImg: { up, down }, // 图片
+      shopId: undefined, // 店铺ID
+      column: []
     }
   },
-  computed: {
-    ...mapGetters(['userinfo'])
-  },
   methods: {
-    // 切换位置
-    async handleChangeLocalClick() {
-      // const geo = await this._getGeo() // 参数需要返回的经纬度
-      // const url = `../map/main?geo=${geo}`
-      // wx.navigateTo({ url })
-    },
     // 切换Tab
     handleTabClick(id) {
       this.currentId = id
     },
     // 进入栏目分类
-    handleTypeClick(title) {
-      const url = `../column-list/main?title=${title}&id=${this.shopId}`
+    handleTypeClick(title, id) {
+      const url = `../column-list/main?title=${title}&id=${id}`
       wx.navigateTo({ url })
     },
     // 获取设备经纬度
@@ -110,9 +131,9 @@ export default {
     },
     // 获取首页信息
     async _getInfo() {
-      // const geo = await this._getGeo() // 参数需要返回的经纬度
-      // const params = { uid: 1, ...geo }
-      const params = { uid: 1, lat: 30.499693, lng: 114.411457 }
+      // const geo = await this._getGeo()
+      // const params = { ...geo }
+      const params = { lat: 30.499693, lng: 114.411457 }
       const res = await fly.get('index', params)
       try {
         const data = res.data
@@ -120,24 +141,31 @@ export default {
         this.weather = data.weather
         this.weather.aqi = data.aqi
         this.weather.wendu = data.wendu
+        this.indexInfo[0].list = []
+        this.indexInfo[1].list = []
         // this.shopId = data.shop_id
         this.shopId = 8
+        this.column = data.column
         if (Array.isArray(data.column)) {
           data.column.forEach(item => {
             indexInfo[item.category - 1].list.push(item)
           })
         }
+        console.log(indexInfo)
       } catch (err) {
         console.log('获取首页信息报错', err)
       }
     }
   },
   onHide() {
-    this.currentId = indexInfo[0].id
+    // this.currentId = indexInfo[0].id
   },
-  mounted() {
-    getOpenId()
+  // mounted() {
+  //   this._getInfo()
+  // },
+  onShow() {
     this._getInfo()
+    this.isLogin = wx.getStorageSync('userinfo') !== ''
   }
 }
 </script>
@@ -196,6 +224,7 @@ export default {
           font-size 18px
           padding-right 20px
           .title
+            mult_line_ellipsis()
             position relative
             color #333
             font-weight 700
@@ -207,6 +236,7 @@ export default {
               background-color $color-theme
               border-radius 50%
           .desc
+            mult_line_ellipsis(3)
             line-height 1.6
             font-size 16px
         .img-wrapper
@@ -217,4 +247,41 @@ export default {
           bottom 0
         .img
           fix-image-size()
+  .guide-wrapper
+    position fixed
+    left 0
+    right 0
+    top 0
+    bottom 0
+    background-color rgba(0, 0, 0, 0.35)
+    .guide-text
+      position relative
+      height 300rpx
+      color #fff
+      top 45%
+      left 50%
+      transform translate(-50%, -60%)
+      .text
+        posCenter()
+        text-align center
+        width 100%
+      .up, .down
+        position absolute
+        width 143rpx
+        height 105rpx
+      .up
+        top 0
+        left 80rpx
+      .down
+        bottom 0
+        right 80rpx
+    .guide-btn
+      position absolute
+      color #fff
+      border 1px solid #fff
+      border-radius 4px
+      padding 2px 15px
+      top 55%
+      left 50%
+      transform translate3d(-50%, 0, 0)
 </style>

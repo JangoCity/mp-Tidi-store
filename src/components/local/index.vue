@@ -84,19 +84,12 @@ export default {
     .local
       no-wrap()
       display inline-block
-      max-width 360rpx
+      max-width 450rpx
     &::before, &::after
       position absolute
       transform translateY(-50%)
       top 50%
       content ''
-    &::after
-      right 0
-      height 0
-      width 0
-      border-left 4px solid transparent
-      border-right 4px solid transparent
-      border-top 6px solid #999
   .weather-box
     display flex !important
     min-width 170rpx

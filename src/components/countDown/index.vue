@@ -1,16 +1,17 @@
 <template>
   <div class="container">
     <p v-if="msTime.show">
-      <span v-if="tipShow">{{tipText}}:</span>
-      <span v-if="!tipShow">{{tipTextEnd}}</span>
+      <span v-if="tipShow&&!onlyTime">{{tipText}}:</span>
+      <span v-if="!tipShow&&!onlyTime">{{tipTextEnd}}</span>
       <span v-if="msTime.day>0"
             class="time">
         {{msTime.day}}
-      </span>天
+      </span>
+      天
       <span class="time">{{msTime.hour}}</span>:
       <span class="time">{{msTime.minutes}}</span>:
       <span class="time">{{msTime.seconds}}</span>
-      <span v-if="!tipShow">后停止购买</span>
+      <span v-if="!tipShow&&!onlyTime">后停止购买</span>
     </p>
     <p v-if="!msTime.show">{{endText}}</p>
   </div>
@@ -34,6 +35,10 @@ export default {
     }
   },
   props: {
+    onlyTime: {
+      type: Boolean,
+      default: false
+    },
     // 距离开始提示文字
     tipText: {
       type: String,

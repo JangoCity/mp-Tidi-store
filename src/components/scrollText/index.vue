@@ -1,7 +1,12 @@
 <template>
-  <section class='container' ref="box" data-tag="box">
-    <section v-for="(item, index) in list" :key="item.id" class="item">
-      <span class="name" :style={color:item.color}>{{item.name}}</span>刚购买了该商品
+  <section class='container'
+           ref="box"
+           data-tag="box">
+    <section v-for="(item, index) in list"
+             :key="item.id"
+             class="item">
+      <span class="name"
+            :style={color:item.color}>{{item.name}}</span>刚购买了该商品
     </section>
   </section>
 </template>
@@ -41,7 +46,9 @@ export default {
     }
   },
   mounted() {
-    setInterval(this._scroll, 500)
+    if (this.list.length > 5) {
+      setInterval(this._scroll, 500)
+    }
     this._randomCorlor()
   }
 }

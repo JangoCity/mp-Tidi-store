@@ -4,8 +4,16 @@
     <section data-type="1"
              @click="handlepaymentClick"
              class="item iconfont icon-yuezhifu balance"
-             :class="{active:isBalance}">
+             :class="{active:isBalance}"
+             v-if="!groupShow">
       余额支付
+    </section>
+    <section data-type="3"
+             @click="handlepaymentClick"
+             class="item iconfont icon-yuezhifu balance"
+             :class="{active:isGroup}"
+             v-if="groupShow">
+      组合支付
     </section>
     <section data-type="2"
              @click="handlepaymentClick"
@@ -13,18 +21,28 @@
              :class="{active:isWechat}">
       微信支付
     </section>
+
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import { mapGetters, mapMutations } from 'vuex'
 export default {
+  props: {
+    groupShow: {
+      type: Boolean,
+      default: false
+    }
+  },
   computed: {
     isBalance() {
       return this.payment === 1
     },
     isWechat() {
       return this.payment === 2
+    },
+    isGroup() {
+      return this.payment === 3
     },
     ...mapGetters(['payment'])
   },

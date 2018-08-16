@@ -5,12 +5,14 @@
     <section class="user-info"
              v-if="contact"
              @click="handleChangeContactClick">
-      <user-info :contact="contact"></user-info>
+      <user-info :contact="contact"
+                 :addressType="addressType"></user-info>
     </section>
 
     <!-- 支付方式 -->
     <section class="pay-way-wrapper">
-      <payment-mode @changeType="handlePayModeClick"></payment-mode>
+      <payment-mode @changeType="handlePayModeClick"
+                    :groupShow="groupShow"></payment-mode>
     </section>
 
     <!-- 商品信息 -->
@@ -80,7 +82,7 @@ import tip from '@/components/tip'
 
 import fly from '@/utils/fly'
 import { share, pay } from '@/common/js/mixins'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   mixins: [share, pay],
   components: {
@@ -92,14 +94,17 @@ export default {
   data() {
     return {
       price: 0, // 商品价格
-      contact: undefined,
+      groupShow: false,
       tipInfo: undefined,
       message: '', // 用户留言
-      shop_name: null,
-      address: null,
-      product_name: null,
-      image: null,
-      type: 1
+      shop_name: null, // 商品名称
+      address: null, // 地址
+      product_name: null, // 商品名称
+      image: null, // 商品图片
+      type: null,
+      addressType: '', // 地址类型
+      id: null, // 商品ID
+      blance: null // 用户余额
     }
   },
   computed: {
@@ -107,52 +112,71 @@ export default {
     total() {
       return this.price * this.count + '.00'
     },
-    ...mapGetters(['count', 'payment'])
+    ...mapGetters(['count', 'payment', 'contact'])
   },
   methods: {
     // 切换收货地址
     handleChangeContactClick() {
-      const url = '../my-address/main'
+      const url = '../my-address/main?goodsId=' + this.id
       wx.navigateTo({ url })
     },
     // 拉取接口数据
     async _fetchData(id) {
       const { uid } = wx.getStorageSync('userinfo')
+      this.uid = uid
+      this.id = id
       const params = { id, uid }
       const res = await fly.get('buyProduct', params)
       try {
         const data = res.data
-        const { contact, product, shop } = data
+        const { contact, product, shop, user } = data
 
-        // 默认地址信息
-        const { name, phone, district, address } = contact
-        const province = contact.province_id
-        const city = contact.city_id
-        const area = contact.area_id
         // 商品信息
         this.product_name = product.product_name
         this.image = product.image
+
         // 店铺信息
         this.shop_name = shop.shop_name
         this.address = shop.address
         this.type = product.type === 1 ? '店铺配送' : '到店消费'
-        this.contact = { name, phone, province, city, area, district, address }
-
-        console.log('this.contact', this.contact)
         // 商品价格
         this.price = product.selling_price
+        // 用户余额
+        this.blance = user.price
+        console.log(this.price >= this.blance)
+        if (this.price >= this.blance) {
+          this.groupShow = true
+        }
         // 提示
         this.tipInfo = {
           rank: data.orderBy,
           sale: data.rebage
         }
+        // 默认地址信息
+        if (contact) {
+          const { name, phone, district, address } = contact
+          const province = contact.province_id
+          const city = contact.city_id
+          const area = contact.area_id
+          this.contact_id = contact.id
+          this.addressType = contact.remark === 1 ? '家' : '公司'
+          const fullContact = { name, phone, province, city, area, district, address }
+          this.setContact(fullContact)
+        }
       } catch (err) {
-        console.log('拉取接口信息报错', err)
+        console.log('拉取接口信息报错 ', err)
       }
-    }
+    },
+    ...mapMutations({
+      setContact: 'SET_CONTACT'
+    })
   },
   mounted() {
-    this._fetchData(this.$root.$mp.query.id)
+    this.id = this.$root.$mp.query.id
+    this._fetchData(this.id)
+  },
+  onShow() {
+    this.id && this._fetchData(this.id)
   }
 }
 </script>

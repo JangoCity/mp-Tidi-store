@@ -47,11 +47,10 @@
 
 <script type='text/ecmascript-6'>
 import { myList } from '@/common/js/staticData'
-import { share } from '@/common/js/mixins'
-import { getOpenId, showNormal } from '@/utils'
+import { login, share } from '@/common/js/mixins'
 
 export default {
-  mixins: [share],
+  mixins: [login, share],
   data() {
     return {
       userBgImg: 'http://image.zhangxinxu.com/image/blog/201208/2012-08-19_155221.jpg',
@@ -91,29 +90,6 @@ export default {
       }
       // 跳转
       wx.navigateTo({ url })
-    },
-    // 检测用户微信版本
-    handleCheckVersion() {
-      if (!wx.canIUse('button.open-type.getUserInfo')) {
-        showNormal('请升级微信版本')
-      }
-    },
-    // 获取用户信息
-    handleGetUserInfo(e) {
-      let userinfo = wx.getStorageSync('userinfo')
-      if (userinfo) return
-      // 首次登陆
-      const detail = e.mp.detail
-      if (detail.rawData) { // 用户按了允许授权按钮
-        getOpenId(detail.userInfo, (userinfo) => {
-          if (!userinfo) return
-          this.userinfo = Object.assign({}, this.userinfo, userinfo)
-          this.userBgImg = this.userinfo.avatarUrl
-          wx.setStorageSync('userinfo', userinfo)
-        })
-      } else {
-        console.log('用户按了拒绝按钮')
-      }
     }
   },
   onShow() {

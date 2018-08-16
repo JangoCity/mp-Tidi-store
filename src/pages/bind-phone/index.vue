@@ -43,7 +43,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import { showNormal, showSuccess } from '@/utils'
+import { showNormal } from '@/utils'
 import fly from '@/utils/fly'
 import { ERR_OK } from '@/utils/config'
 
@@ -65,17 +65,22 @@ export default {
     // 确定绑定
     async handleConfirmClick() {
       let userinfo = wx.getStorageSync('userinfo')
-        const { uid } = wx.getStorageSync('userinfo')
+      const { uid } = userinfo
       const params = {
         tel: this.phone,
         code: this.qrCode,
         uid
       }
       const res = await fly.post('postPhoneAuth', params)
-      res.code === ERR_OK && showSuccess(res.message)
-      userinfo.phone = this.phone
-      wx.setStorageSync('userinfo', userinfo)
-      wx.navigateBack()
+      console.log(res)
+      if (res.code === 1000) {
+        userinfo.phone = this.phone
+        wx.setStorageSync('userinfo', userinfo)
+        let url = '../my-profile/main'
+        wx.navigateTo({ url })
+      } else {
+        showNormal(res.message)
+      }
     },
     // 发送验证码
     async handleCountDownClick() {

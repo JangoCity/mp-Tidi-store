@@ -25,8 +25,8 @@
                  :list="list"
                  :status="tabList"
                  @cancle="handleCancelOrderClick"
-                 @pay="handlePayClick"
-                 @confirm="handleConfirmOrderClick"
+                 @pay="handlePayNowClick"
+                 @confirm="handleConfirmClick"
                  @view="handleViewDetailClick"></order>
         </scroll-view>
       </swiper-item>
@@ -37,12 +37,11 @@
 <script type='text/ecmascript-6'>
 import wxp from 'minapp-api-promise'
 import fly from '@/utils/fly'
-import { showSuccess } from '@/utils'
-import { share, cancel } from '@/common/js/mixins'
+import { share, cancel, pay } from '@/common/js/mixins'
 import slideNav from '@/components/slideNav'
 import order from '@/components/order'
 export default {
-  mixins: [share, cancel],
+  mixins: [share, cancel, pay],
   components: { slideNav, order },
   data() {
     return {
@@ -61,15 +60,6 @@ export default {
       let { current } = e.target
       this.currentTab = current
     },
-    // 支付
-    handlePayClick(id) {
-      let url = `../buy/main?id=${id}`
-      wx.navigateTo({ url })
-    },
-    // 确认订单
-    handleConfirmOrderClick(id) {
-      showSuccess('确认订单' + id)
-    },
     // 查看订单
     handleViewDetailClick(id) {
       // this.$emit('view', id)
@@ -85,6 +75,7 @@ export default {
     // 获取订单列表
     async _fetchOrderList() {
       const { uid } = wx.getStorageSync('userinfo')
+      this.uid = uid
       const params = { uid }
       wx.showNavigationBarLoading()
       const res = await fly.get('orderList', params)
@@ -93,6 +84,7 @@ export default {
         this.tabList = data.status
         this.orderList = data.list.data
         this._parseOrderList(this.orderList)
+        console.log(this.orderList)
         // 注销下拉刷新事件
         wx.stopPullDownRefresh()
         // 注销刷新icon状态
@@ -119,28 +111,30 @@ export default {
       let width = 0
       switch (this.tabList.length) {
         case 5:
-          width = 75
+          width = 65
           break
         case 6:
-          width = 68
+          width = 63
           break
       }
       return width
     },
     // 内容高度
     contentHeight() {
-      return `height:${this.winHeight - 47}px`
+      return `height:${this.winHeight * 2 - 85}rpx`
     }
   },
   mounted() {
     this._initSize()
-    this._fetchOrderList()
   },
   onPullDownRefresh() {
     this._fetchOrderList()
   },
   onHide() {
     this.currentTab = 0
+  },
+  onShow() {
+    this._fetchOrderList()
   }
 }
 </script>

@@ -58,15 +58,21 @@
         </li>
         <li class="item">
           <span class="label">支付方式:</span>
-          <span class="info">{{payment}}</span>
+          <span class="info">{{payaction}}</span>
         </li>
         <li class="item">
           <span class="label">支付时间:</span>
-          <span class="info">{{order.pay_time}}</span>
+          <span class="info"
+                v-if="order.pay_time">{{order.pay_time}}</span>
         </li>
         <li class="item">
           <span class="label">下单时间:</span>
           <span class="info">{{order.created_at}}</span>
+        </li>
+        <li class="item"
+            v-if="payment==='待兑换'">
+          <span class="label">兑换码:</span>
+          <span class="info">{{order.code}}</span>
         </li>
       </ul>
     </section>
@@ -78,7 +84,10 @@
               @click="handleCancelOrderClick">取消订单</button>
       <button class="btn btn-normal pay "
               v-if="payment==='待支付'"
-              @click="handlePayClick">去支付</button>
+              @click="handlePayNowClick(order.id)">去支付</button>
+      <button class="btn btn-normal pay "
+              v-if="payment==='待收货'"
+              @click="handleConfirmClick(order.id)">确认收货</button>
     </section>
   </section>
 </template>
@@ -86,10 +95,10 @@
 <script type='text/ecmascript-6'>
 import userInfo from '@/components/userInfo'
 import fly from '@/utils/fly'
-import { share, cancel, call } from '@/common/js/mixins'
+import { share, cancel, call, pay } from '@/common/js/mixins'
 
 export default {
-  mixins: [share, cancel, call],
+  mixins: [share, cancel, call, pay],
   components: {
     userInfo
   },
@@ -99,7 +108,7 @@ export default {
       order: null, // 订单信息
       contact: null, // 联系方式信息
       rebage: null, // 返利
-      phone: null // 电话
+      shop_phone: null // 电话
     }
   },
   computed: {
@@ -129,6 +138,23 @@ export default {
         }
         return str
       }
+    },
+    payaction() {
+      if (this.order) {
+        let skr = ''
+        switch (this.order.pay_method) {
+          case 1:
+            skr = '余额支付'
+            break
+          case 2:
+            skr = '微信支付'
+            break
+          case 3:
+            skr = '组合支付'
+            break
+        }
+        return skr
+      }
     }
   },
   methods: {
@@ -139,30 +165,32 @@ export default {
       })
     },
     // 获取订单接口信息
-    async _fetchOrderDetail(id) {
+    async _fetchOrderDetail(id, payStatus) {
       const { uid } = wx.getStorageSync('userinfo')
-
-      const params = { uid, id/*, pay_status: 1*/ }
+      this.uid = uid
+      const params = { uid, id, pay_status: payStatus }
       const res = await fly.get('orderDetail', params)
       try {
-        const { product, contact, order, phone, rebage } = res.data
+        const { product, contact, order, rebage, phone } = res.data
         this.product = product
         this.order = order
         this.rebage = rebage
-        this.phone = phone
+        this.shop_phone = phone
         // 默认地址信息
         const { name, district, address } = contact
         const province = contact.province_id
         const city = contact.city_id
         const area = contact.area_id
-        this.contact = { name, phone, province, city, area, district, address }
+        this.phone = contact.phone
+        this.contact = { name, phone: this.phone, province, city, area, district, address }
+        console.log('this.contact======', this.contact)
       } catch (err) {
         console.log('账单详情报错======', err)
       }
     }
   },
   mounted() {
-    this._fetchOrderDetail(this.$root.$mp.query.id)
+    this._fetchOrderDetail(this.$root.$mp.query.id, this.$root.$mp.query.pay_status)
   }
 }
 </script>

@@ -34,13 +34,15 @@ export const createAddressForm = {
     label: '姓名',
     placehodleText: '收货人姓名',
     value: '',
-    maxlength: 11
+    type: 'value',
+    maxlength: 4
   },
   phone: {
     id: 1002,
     label: '手机',
     placehodleText: '请输入手机号码',
     value: '',
+    type: 'number',
     maxlength: 11
   },
   address: {
@@ -48,21 +50,24 @@ export const createAddressForm = {
     label: '地区',
     placehodleText: '选择地区',
     value: '',
-    maxlength: 6
+    type: 'value',
+    maxlength: 20
   },
   area: {
     id: 1002,
     label: '小区',
     placehodleText: '所在小区名称',
     value: '',
-    maxlength: 6
+    type: 'value',
+    maxlength: 20
   },
   number: {
     id: 1002,
     label: '门牌号',
     placehodleText: '具体的楼栋单元门牌号',
     value: '',
-    maxlength: 6
+    type: 'value',
+    maxlength: 20
   }
 }
 

@@ -30,7 +30,8 @@
 
       <!-- 下单时间 -->
       <section class="delivery-wrapper">
-        <delivery-time></delivery-time>
+        <delivery-time :orderTime="orderTime"
+                       :distributionTime="distributionTime"></delivery-time>
       </section>
 
       <!-- 活动 组件-->
@@ -44,16 +45,17 @@
     <section class="goods-desc-wrapper"
              v-if="goods">
       <h4 class="title">商品描述</h4>
-      <section v-html="goods.desc">
+      <section v-html="goods.desc"
+               class="goods-desc">
       </section>
     </section>
 
     <!-- 底部信息 -->
     <section class="bottom-wrapper">
       <bottom-bar :isLike="isLike"
-                  @addFavorite="handleAddFavoriteClick"
+                  @addFavorite="handleAddFavoriteClick(goodsId)"
                   @server="handleServerClick"
-                  @buy="handleToBuyClick"></bottom-bar>
+                  @buy="handleToBuyClick(goodsId)"></bottom-bar>
     </section>
   </section>
 </template>
@@ -82,11 +84,18 @@ export default {
       imgUrls: [], // 轮播图
       isLike: false, // 收藏
       buyNum: null, // 购买人数
+      orderTime: '', // 下单时间
+      distributionTime: '', // 配送时间
       phoneNumber: null, // 客服电话
-      activity: {}
+      activity: {} // 活动
     }
   },
   methods: {
+    // 点击购买
+    handleToBuyClick(goodsId) {
+      const url = `../buy/main?id=${goodsId}`
+      wx.navigateTo({ url })
+    },
     // 点击收藏
     async handleAddFavoriteClick(id) {
       const { uid } = wx.getStorageSync('userinfo')
@@ -98,6 +107,10 @@ export default {
       } catch (err) {
         console.log('点击收藏报错', err)
       }
+    },
+    // 裁剪时间
+    _clipTime(time) {
+      return time // .substr(11)
     },
     // 获取详情信息
     async _fetchDetailInfo(id) {
@@ -111,19 +124,35 @@ export default {
         this.isLike = data.is_like
         this.phoneNumber = data.phone
         this.buyNum = data.buy_num
-        this.goodsId = data.id
+        this.goodsId = this.goods.id
+
+        // const { start_buytime, end_buytime, start_ordertime, end_ordertime } = this.goods
+        const s1 = this.goods.start_buytime
+        const e1 = this.goods.end_buytimes
+        const s2 = this.goods.start_ordertime
+        const e2 = this.goods.end_ordertime
+        this.orderTime = `${this._clipTime(s1)}-${this._clipTime(e1)}`
+        this.distributionTime = `${this._clipTime(s2)}-${this._clipTime(e2)}`
 
         const activity = data.rebage
+
         const final = activity[activity.length - 1].number
         this.activity.list = activity
         this.activity.current = this.goods.number
         this.activity.final = final
+        console.log('this.activity', this.activity)
       } catch (err) {
         console.log('商品详情报错======', err)
       }
     }
   },
-  mounted() {
+  watch: {
+    activity(n, o) {
+      console.log('nnn', n)
+    }
+  },
+  onLoad() {
+    console.log('this.$root.$mp.query.id=======', this.$root.$mp.query.id)
     this._fetchDetailInfo(this.$root.$mp.query.id)
   }
 }
@@ -135,6 +164,7 @@ export default {
 .container
   position relative
   background #fbfafa
+  padding-bottom 100rpx
   .summary-wrapper
     padding 30rpx
     margin-bottom 30rpx
@@ -183,6 +213,8 @@ export default {
     .title
       font-size 16px
       margin-bottom 30rpx
+    .goods-desc
+      white-space nowrap
   .progress-wraper
     margin-bottom 30rpx
   .bottom-wrapper
