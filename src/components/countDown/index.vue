@@ -47,7 +47,7 @@ export default {
     // 距离结束提示文字
     tipTextEnd: {
       type: String,
-      default: '本品将于'
+      default: '本品将于 '
     },
     // 时间控件ID
     id: {

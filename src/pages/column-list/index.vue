@@ -1,12 +1,15 @@
 <template>
   <section class="container">
-    <scroll-view scroll-x
-                 class="scroll-wrapper"
-                 v-if="columnList.length"
-                 @scrolltolower="handleScrollEnd">
-      <section class="swiper-item"
-               v-for="(item,index) in columnList"
-               :key="item.id">
+    <swiper style="height:100%"
+            @change="onTouchChange"
+            v-if="columnList.length">
+      <swiper-item class="swiper-item"
+                   v-for="(item,index) in columnList"
+                   @touchstart="onTouchStart"
+                   @touchmove="handleTouchMove"
+                   @touchend="onTouchEnd"
+                   :data-index="index+1"
+                   :key="item.id">
         <section class="product">
           <section class="wrapper"
                    @click.stop="handleToDetailClick(item.id)">
@@ -23,7 +26,7 @@
 
               <!-- 展示更多返利优惠 -->
               <section class="rebate-wrapper"
-                       v-if="item.rebage">
+                       v-if="item.rebage.length">
                 <rebate :activity="item.rebage"></rebate>
               </section>
 
@@ -39,11 +42,13 @@
                 <scroll-text :list='item.buy_log'></scroll-text>
               </section>
             </section>
+
             <!-- 图片 -->
-            <image :src="item.product_image"
-                   mode="scaleToFill"
-                   class="slide-image"
-                   style="width:100%;height:100%" />
+            <section class="img-wrapper">
+              <image :src="item.product_image"
+                     mode="scaleToFill"
+                     class="slide-image" />
+            </section>
 
           </section>
 
@@ -64,8 +69,8 @@
           </section>
         </section>
 
-      </section>
-    </scroll-view>
+      </swiper-item>
+    </swiper>
     <section class="empty-wrapper"
              v-else>
       <empty></empty>
@@ -79,16 +84,16 @@ import scrollText from '@/components/scrollText'
 import rebate from '@/components/rebate'
 import countDown from '@/components/countDown'
 
+import { showNormal } from '@/utils'
 import fly from '@/utils/fly'
 
 import Empty from '@/components/Empty'
 
 const OFFSET_LEFT_ACTIVE = 90
-const OFFSET_LEFT_NORMAL = 75
+const OFFSET_LEFT_NORMAL = 92
 
 export default {
   components: {
-    userinfo: wx.getStorageSync('userinfo'),
     swiperGroup,
     scrollText,
     rebate,
@@ -97,30 +102,49 @@ export default {
   },
   data() {
     return {
+      columnId: null,
       columnList: [], // 栏目列表,
-      id: '', // 栏目ID
-      nextPageUrl: undefined, // 下一页
+      nextPageUrl: '', // 下一页
+      isLastPage: false, // 是否是最后一页
       endTime: '',
-      isMore: true, // 更多
-      currentTime: new Date().getTime()
+      noMore: false,
+      currentTime: new Date().getTime(),
+      startX: 0,
+      endX: 0
+    }
+  },
+  computed: {
+    columnWidth() {
+      const PADDING = 30
+      const systemInfo = wx.getSystemInfoSync()
+      return systemInfo.windowWidth / 2 - PADDING
     }
   },
   methods: {
-    // 触底事件
-    handleScrollEnd() {
-      if (this.nextPageUrl !== null) {
-        console.log('到底了')
-        console.log(this.current_page)
-        this._fetchColumnList(this.id, this.current_page + 1)
-      } else {
-        console.log('已是最后一页')
+    onTouchStart(ev) {
+      this.startX = ev.mp.changedTouches[0].clientX
+    },
+    onTouchEnd(ev) {
+      this.endX = ev.mp.changedTouches[0].clientX
+      const isLeft = this.startX - this.endX > 0
+      if (isLeft && ev.mp.currentTarget.dataset.index === this.columnList.length) {
+        this.isLastPage = true
+        if (this.noMore && !this.nextPageUrl) {
+          showNormal('已经到底了')
+          return
+        }
+        this._fetchColumnList(this.columnId, this.nextPageUrl)
       }
+    },
+    _reset() {
+      this.startX = 0
+      this.endX = 0
     },
     // 倒计时结束回调
     countDownEnd(item) {
       item.isEmpty = true
     },
-    // 跳转详情
+    // 去商品详情
     handleToDetailClick(id) {
       const url = `../goods-detail/main?id=${id}`
       wx.navigateTo({ url })
@@ -131,22 +155,17 @@ export default {
       wx.navigateTo({ url })
     },
     // 获取列表数据
-    async _fetchColumnList(id, page) {
+    async _fetchColumnList(columnId, nextPageUrl) {
       const { uid } = wx.getStorageSync('userinfo')
-      const params = { shop_id: 8, category: id, uid, page }
-      let res = await fly.get('columnDetail', params)
+      const params = { shop_id: 8, category: columnId, uid }
+      const res = this.nextPageUrl
+        ? await fly.get(this.nextPageUrl, params)
+        : await fly.get('columnDetail', params)
       try {
         const data = res.data.product
-        console.log(data)
-        this.current_page = data.current_page // 当页
-        const nextPageUrl = data.next_page_url // 下一页的请求
-        this.isMore = this.nextPageUrl !== null // 是否有更多
-        if (page !== undefined) {
-          this.columnList = this.columnList.concat(data.data)
-        } else {
-          this.columnList = data.data
-        }
-
+        this.nextPageUrl = data.next_page_url // 下一页的请求
+        this.noMore = this.nextPageUrl === null // 是否还有更多
+        this.columnList = this.isLastPage ? this.columnList.concat(data.data) : data.data
         if (!this.columnList.length) return
         this._transRebate(this.columnList)
         const ACTIVE_LENGTH = this.columnList.length - this.columnList.filter(item => item.reached === 1).length - 1
@@ -159,9 +178,6 @@ export default {
               : OFFSET_LEFT_NORMAL * index + 'rpx'
           })
         })
-        if (nextPageUrl !== '') {
-          // this._fetchColumnList(this.id, nextPageUrl)
-        }
       } catch (err) {
         console.error('获取栏目列表报错', err)
       }
@@ -170,6 +186,7 @@ export default {
     _transRebate(list) {
       list.forEach(goods => {
         const { rebage, number, repertory } = goods
+
         goods.end_buytime = new Date(goods.end_buytime).getTime() // 转换停止时间
         goods.isEmpty = parseInt(repertory, 10) === 0 // 是否售罄
         rebage.forEach(item => {
@@ -180,17 +197,17 @@ export default {
     }
   },
   mounted() {
-    this.id = this.$root.$mp.query.id
-    this._fetchColumnList(this.id)
+    this.columnId = this.$root.$mp.query.id
+    this._fetchColumnList(this.columnId)
   },
-  // onShow() {
-  //   this._fetchColumnList()
-  // },
   beforeMount() {
     const title = this.$root.$mp.query.title
     if (title && title.length > 0) {
       wx.setNavigationBarTitle({ title })
     }
+  },
+  onShow() {
+    this.columnList = []
   }
 }
 </script>
@@ -199,23 +216,13 @@ export default {
 @import '~common/stylus/mixin'
 @import '~common/stylus/variable'
 .container
-  width 100%
   height 1216rpx
   box-sizing border-box
   background #f7f7f7
-  .scroll-wrapper
-    width 100%
-    height 100%
-    white-space nowrap
-    display flex
   .swiper-item
-    position relative
-    display inline-block
-    vertical-align top
-    margin-right 10px
-    width 100%
     height 100%
     .product
+      overflow hidden
       height inherit
       width 100%
     .wrapper
@@ -223,6 +230,7 @@ export default {
       box-sizing border-box
       height inherit
       width 100%
+      overflow hidden
       position relative
     .header, .content
       position absolute
@@ -242,7 +250,6 @@ export default {
             font-size 18px
         .old-price
           font-size 12px
-          text-decoration line-through
     .content
       bottom 130rpx
       .tip
@@ -273,9 +280,13 @@ export default {
         height 250rpx
         overflow hidden
     .slide-image
-      left 0
+      position fixed
+      width 92vw
+      height 90vh
+      left 30rpx
+      right 0
       top 0
-      height 100%
+      bottom 30rpx
       z-index 1
   .rebate-wrapper
     margin-bottom 30rpx
@@ -290,14 +301,13 @@ export default {
     height 100rpx
     line-height 100rpx
     .count-time
-      flex 0 0 400rpx
-      width 400rpx
+      width 460rpx
       line-height 100rpx
       font-size 12px
       text-align center
     .btn
       width 290rpx
-      flex 0 0 290rpx
       height 100rpx
       line-height 100rpx
+      flex 0 0 290rpx
 </style>

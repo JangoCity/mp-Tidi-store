@@ -4,9 +4,10 @@
     <section class="node-wrapper">
       <section class="node"
                v-for="(item, index) in activity.list"
+               :style="{left:(item.number/activity.final)*100+'%'}"
                :key="item.id">
         <span class="dott"></span>
-        <span class="text">满{{item.number}}人返{{item.money}}</span>
+        <span class="text">满{{item.number}}人<br>返{{item.money}}元</span>
       </section>
     </section>
 
@@ -39,14 +40,20 @@ export default {
       }
     }
   },
-  data() {
-    return {
+  methods: {
+    left(number, final) {
+      return `left:${number}/${final}%`
     }
   },
   computed: {
     percent() {
       return (this.activity.current / this.activity.final).toFixed(2) * 100
     }
+  },
+  mounted() {
+    // console.log('this.activity.current', this.activity.current)
+    // console.log('this.activity.final', this.activity.final)
+    // console.log('this.activity', this.activity)
   }
 }
 </script>
@@ -75,17 +82,19 @@ export default {
     justify-content space-around
     align-content space-around
     .node
+      position absolute
       text-align center
+      width 100px
     .dott
-      flex 1
       display block
-      margin auto
       background #e60012
+      margin-left -15rpx
       border-radius 50%
-      margin-bottom 20rpx
       border 5rpx #fff solid
       width 30rpx
       height 30rpx
     .text
       color #e60012
+      position absolute
+      left -38px
 </style>

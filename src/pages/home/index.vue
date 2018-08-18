@@ -131,9 +131,10 @@ export default {
     },
     // 获取首页信息
     async _getInfo() {
-      // const geo = await this._getGeo()
-      // const params = { ...geo }
-      const params = { lat: 30.499693, lng: 114.411457 }
+      const geo = await this._getGeo()
+      const params = { ...geo }
+
+      // const params = { lat: 30.499693, lng: 114.411457 }
       const res = await fly.get('index', params)
       try {
         const data = res.data
@@ -151,7 +152,6 @@ export default {
             indexInfo[item.category - 1].list.push(item)
           })
         }
-        console.log(indexInfo)
       } catch (err) {
         console.log('获取首页信息报错', err)
       }

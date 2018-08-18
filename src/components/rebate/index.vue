@@ -10,7 +10,7 @@
                style="left:45px">
         <section class="text">更多优惠</section>
       </section>
-    </section>-->
+    </section> -->
     <section>
       <section v-for="(item, index) in activity"
                :key="item.id"

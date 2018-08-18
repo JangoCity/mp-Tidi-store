@@ -81,7 +81,7 @@
     <section class="bottom">
       <button class="btn btn-normal cancel"
               v-if="payment==='待支付'"
-              @click="handleCancelOrderClick">取消订单</button>
+              @click="handleCancelOrderClick(order.id)">取消订单</button>
       <button class="btn btn-normal pay "
               v-if="payment==='待支付'"
               @click="handlePayNowClick(order.id)">去支付</button>
