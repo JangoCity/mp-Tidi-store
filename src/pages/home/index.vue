@@ -131,10 +131,10 @@ export default {
     },
     // 获取首页信息
     async _getInfo() {
-      const geo = await this._getGeo()
-      const params = { ...geo }
+      // const geo = await this._getGeo()
+      // const params = { ...geo }
 
-      // const params = { lat: 30.499693, lng: 114.411457 }
+      const params = { lat: 30.499693, lng: 114.411457 }
       const res = await fly.get('index', params)
       try {
         const data = res.data

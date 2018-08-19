@@ -2,7 +2,7 @@
   <section class="container">
     <swiper style="height:100%"
             @change="onTouchChange"
-            v-if="columnList.length">
+            v-if="columnList&&columnList.length">
       <swiper-item class="swiper-item"
                    v-for="(item,index) in columnList"
                    @touchstart="onTouchStart"
@@ -103,7 +103,7 @@ export default {
   data() {
     return {
       columnId: null,
-      columnList: [], // 栏目列表,
+      columnList: null, // 栏目列表,
       nextPageUrl: '', // 下一页
       isLastPage: false, // 是否是最后一页
       endTime: '',
@@ -198,6 +198,7 @@ export default {
   },
   mounted() {
     this.columnId = this.$root.$mp.query.id
+    this.columnList = []
     this._fetchColumnList(this.columnId)
   },
   beforeMount() {
@@ -205,9 +206,6 @@ export default {
     if (title && title.length > 0) {
       wx.setNavigationBarTitle({ title })
     }
-  },
-  onShow() {
-    this.columnList = []
   }
 }
 </script>
