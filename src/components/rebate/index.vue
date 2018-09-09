@@ -53,25 +53,37 @@ $theme-color = #fa0000
   width 100%
   height 130rpx
   background transparent
+  font-weight 900
   .item
     width 100rpx
     height 130rpx
     position absolute
     box-sizing border-box
     white-space normal
-    padding 10rpx
+    padding 13rpx
     top 0
     border-radius 10rpx
     overflow hidden
     border-width 1px
     border-style solid
-    box-shadow -1px 0 2rpx rgba(36, 36, 36, 0.35)
+    font-weight 900
+    font-size 24rpx
+    color #e60012
+    border 1rpx solid #e60012
+    background #fff
+    
     .text
       width 43px
       display block
       word-wrap break-word
-      word-break: normal;
+      word-break normal
       height inherit
+      font-size 30rpx
+      line-height 36rpx
+      font-weight bold
+			label
+				float left
+      	margin-left 4rpx
     &.active
       background #fff
       border-color $theme-color

@@ -91,9 +91,9 @@ export default {
     },
     // 取消收藏
     async handleRemoveClick(id, index) {
-      const { uid } = wx.getStorageSync('userinfo')
-      const res = await fly.get('favoriteDel', { uid, id })
       try {
+          const { uid } = wx.getStorageSync('userinfo')
+          const res = await fly.get('favoriteDel', { uid, id })
         this.favoriteList.slice(index, 1)
         showSuccess(res.message)
         this._fetchFavoriteList()
@@ -104,10 +104,11 @@ export default {
     //  获取收藏列表
     async _fetchFavoriteList() {
       wx.showNavigationBarLoading()
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid }
-      const res = await fly.get('favorite', params)
+
       try {
+          const { uid } = wx.getStorageSync('userinfo')
+          const params = { uid }
+          const res = await fly.get('favorite', params)
         const data = res.data
         this.favoriteList = data.list
         this._transRebate(data.list)

@@ -40,8 +40,11 @@ export default {
     },
     _randomCorlor() {
       this.list.forEach((item, index) => {
-        const color = Math.floor(Math.random() * this.nameColor.length)
-        item.color = this.nameColor[color]
+        // const color = Math.floor(Math.random() * this.nameColor.length)
+        // item.color = this.nameColor[color]
+          const arrlist =["#ffd0d0","#7cdefe","#ffd875","#d4eebb"]
+          const color = Math.floor(Math.random() * arrlist.length)
+          item.color = arrlist[color]
       })
     }
   },
@@ -61,8 +64,9 @@ export default {
     height 50rpx
     line-height 50rpx
     color #fff
+    font-weight 900
     .name
       display inline-block
       padding-right 15rpx
-      font-weight 600
+      font-weight 900
 </style>

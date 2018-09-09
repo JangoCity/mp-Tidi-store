@@ -99,10 +99,10 @@ export default {
     },
     // 获取个人信息
     async _fetchUserInfo() {
-      this.userinfo = wx.getStorageSync('userinfo')
-      const params = { uid: this.userinfo.uid }
-      const res = await fly.get('customerInfo', params)
       try {
+          this.userinfo = wx.getStorageSync('userinfo')
+          const params = { uid: this.userinfo.uid }
+          const res = await fly.get('customerInfo', params)
         const data = res.data
         const custom = {
           avatarUrl: data.image,
@@ -121,9 +121,9 @@ export default {
     },
     // 保存资料
     async handleConfirmClick() {
-      const params = { uid: this.userinfo.uid, username: this.userinfo.name }
-      const res = await fly.post('postCustomerInfo', params)
       try {
+          const params = { uid: this.userinfo.uid, username: this.userinfo.name }
+          const res = await fly.post('postCustomerInfo', params)
         wx.setStorageSync('userinfo', this.userinfo)
         // this._fetchUserInfo()
         res.code === ERR_OK && showSuccess(res.message)

@@ -14,7 +14,7 @@
           </section>
           <section class="item-answer"
                    v-show="showId===item.id">
-            {{item.answer}}{{item.id}}
+            {{item.answer}}
           </section>
         </li>
       </ul>
@@ -46,10 +46,11 @@ export default {
     },
     // 拉取信息
     async _getIssuesList() {
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid }
-      const res = await fly.get('question', params)
+
       try {
+          const { uid } = wx.getStorageSync('userinfo')
+          const params = { uid }
+          const res = await fly.get('question', params)
         const data = res.data
         this.issuesList = data
       } catch (err) {

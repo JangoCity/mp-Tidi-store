@@ -111,12 +111,12 @@ export default {
     // },
     // 获取消费列表
     async _fetchWalletList(date) {
-      date = date || ''
-      this.currentMonth = date.substring(0, 8)
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid, time: date }
-      const res = await fly.get('walletList', params)
       try {
+          date = date || ''
+          this.currentMonth = date.substring(0, 8)
+          const { uid } = wx.getStorageSync('userinfo')
+          const params = { uid, time: date }
+          const res = await fly.get('walletList', params)
         const data = res.data
         this.balance = data.balance
         this.walletList = data.list

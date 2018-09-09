@@ -135,10 +135,11 @@ export default {
         return
       }
 
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid, id: this.addressId }
-      const res = await fly.get('editContact', params)
       try {
+
+          const { uid } = wx.getStorageSync('userinfo')
+          const params = { uid, id: this.addressId }
+          const res = await fly.get('editContact', params)
         this.currentAddress = res.data.contact
         const { name, phone, province, city, area, district, address, remark } = this.currentAddress
         this.addressType = remark

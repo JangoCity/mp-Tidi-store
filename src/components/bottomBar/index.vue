@@ -28,7 +28,11 @@
     </section>
     <button class="btn-normal line-gradient-btn btn-buy"
             hover-class="line-gradient-btn-hover"
-            @click="handleToBuyClick">立即购买</button>
+            @click="handleToBuyClick" v-if="this.status===2 && this.is_status ===0">立即购买</button>
+    <button class="btn-normal line-gradient-btn btn-buy"
+            hover-class="line-gradient-btn-hover"
+             v-else disabled>立即购买</button>
+
   </div>
 </template>
 
@@ -87,6 +91,14 @@ export default {
         font-size 20px
         &.icon-shoucang-xuanzhong
           color #ffb266
+      .icon-shouye
+      	font-size 51rpx
+      .icon-kefu
+      	font-size 40rpx
+      .icon-fenxiang
+      	font-size 60rpx
+      .icon-shoucang
+      	font-size 58rpx
       .text
         display block
         font-size 14px

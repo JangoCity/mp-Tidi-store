@@ -55,8 +55,8 @@ export const createAddressForm = {
   },
   area: {
     id: 1002,
-    label: '小区',
-    placehodleText: '所在小区名称',
+    label: '街道',
+    placehodleText: '所在街道名称',
     value: '',
     type: 'value',
     maxlength: 20

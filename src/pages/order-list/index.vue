@@ -74,12 +74,14 @@ export default {
     },
     // 获取订单列表
     async _fetchOrderList() {
-      const { uid } = wx.getStorageSync('userinfo')
-      this.uid = uid
-      const params = { uid }
-      wx.showNavigationBarLoading()
-      const res = await fly.get('orderList', params)
+
       try {
+
+          const { uid } = wx.getStorageSync('userinfo')
+          this.uid = uid
+          const params = { uid }
+          wx.showNavigationBarLoading()
+          const res = await fly.get('orderList', params)
         const data = res.data
         this.tabList = data.status
         this.orderList = data.list.data
@@ -150,4 +152,5 @@ export default {
   width 0
   height 0
   color transparent
+  
 </style>

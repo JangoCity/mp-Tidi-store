@@ -186,7 +186,7 @@ export default {
       position relative
       height 60rpx
       line-height 60rpx
-      padding-left 60rpx
+      padding-left 80rpx
     .text::before
       position absolute
       font-size 30px

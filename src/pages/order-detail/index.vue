@@ -60,7 +60,7 @@
           <span class="label">支付方式:</span>
           <span class="info">{{payaction}}</span>
         </li>
-        <li class="item">
+        <li class="item" v-if="order.pay_time">
           <span class="label">支付时间:</span>
           <span class="info"
                 v-if="order.pay_time">{{order.pay_time}}</span>
@@ -166,11 +166,12 @@ export default {
     },
     // 获取订单接口信息
     async _fetchOrderDetail(id, payStatus) {
-      const { uid } = wx.getStorageSync('userinfo')
-      this.uid = uid
-      const params = { uid, id, pay_status: payStatus }
-      const res = await fly.get('orderDetail', params)
+
       try {
+          const { uid } = wx.getStorageSync('userinfo')
+          this.uid = uid
+          const params = { uid, id, pay_status: payStatus }
+          const res = await fly.get('orderDetail', params)
         const { product, contact, order, rebage, phone } = res.data
         this.product = product
         this.order = order

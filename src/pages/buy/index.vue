@@ -122,12 +122,12 @@ export default {
     },
     // 拉取接口数据
     async _fetchData(id) {
-      const { uid } = wx.getStorageSync('userinfo')
-      this.uid = uid
-      this.id = id
-      const params = { id, uid }
-      const res = await fly.get('buyProduct', params)
       try {
+          const { uid } = wx.getStorageSync('userinfo')
+          this.uid = uid
+          this.id = id
+          const params = { id, uid }
+          const res = await fly.get('buyProduct', params)
         const data = res.data
         const { contact, product, shop, user } = data
 
@@ -144,7 +144,7 @@ export default {
         // 用户余额
         this.blance = user.price
         console.log(this.price >= this.blance)
-        if (this.price >= this.blance) {
+        if (this.price >= this.blance && this.blance > 0) {
           this.groupShow = true
         }
         // 提示
@@ -224,6 +224,8 @@ export default {
         height 165rpx
         vertical-align top
         margin-right 20rpx
+        .max-img
+        	border-radius 10rpx 
     .text-wrapper
       display inline-block
       width 445rpx
@@ -259,7 +261,7 @@ export default {
       border-radius 10rpx
       width 100%
   .bottom
-    position absolute
+    position fixed
     display flex
     z-index 100
     left 0

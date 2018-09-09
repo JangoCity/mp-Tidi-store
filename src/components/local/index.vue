@@ -84,7 +84,7 @@ export default {
     .local
       no-wrap()
       display inline-block
-      max-width 450rpx
+      max-width 400rpx
     &::before, &::after
       position absolute
       transform translateY(-50%)
@@ -104,5 +104,5 @@ export default {
       margin-left 10rpx
       flex 0 0 50rpx
       height 48rpx
-      font-size 50rpx
+      font-size 60rpx
 </style>

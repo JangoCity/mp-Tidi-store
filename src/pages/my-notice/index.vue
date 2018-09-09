@@ -63,11 +63,11 @@ export default {
 
     // 获取通知列表
     async _fetchNoticeList() {
-      wx.showNavigationBarLoading()
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid, type: 3 }
-      const res = await fly.get('messageList', params)
       try {
+          wx.showNavigationBarLoading()
+          const { uid } = wx.getStorageSync('userinfo')
+          const params = { uid, type: 3 }
+          const res = await fly.get('messageList', params)
         this.noticeList = res.data
         // 注销下拉刷新事件
         wx.stopPullDownRefresh()

@@ -6,10 +6,12 @@ import fly from '@/utils/fly'
 export const share = {
   onShareAppMessage(res) {
     let target = res.from
-    console.log(target) // 触发对象 'menu'或者'button'
-    return {
+    let id = wx.getStorageSync('good_id')
+    console.log(target)// 触发对象 'menu'或者'button'
+      let url = `/pages/goods-detail/main?id=${id}`
+      return {
       title: '商品详情',
-      path: '/page/goods-detail/main'
+      path: url
     }
   }
 }

@@ -87,10 +87,10 @@ export default {
       this.addressList.slice(index, 1)
       // 确定删除回调
       const del = async () => {
-        const { uid } = wx.getStorageSync('userinfo')
-        const params = { uid, id }
-        const res = await fly.get('deleteContact', params)
         try {
+            const { uid } = wx.getStorageSync('userinfo')
+            const params = { uid, id }
+            const res = await fly.get('deleteContact', params)
           showSuccess(res.message)
           this._fetchAddressList()
         } catch (err) {
@@ -113,11 +113,11 @@ export default {
     },
     // 更改默认地址
     async handleDefaultAddressClick(contact) {
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid, id: contact.id }
-      const res = await fly.get('setDefault', params)
-      this.setContact(contact)
       try {
+          const { uid } = wx.getStorageSync('userinfo')
+          const params = { uid, id: contact.id }
+          const res = await fly.get('setDefault', params)
+          this.setContact(contact)
         showSuccess(res.message)
         this.defaultAddressId = contact.id
         // 此处是“单独购买页面传过来的”
@@ -134,11 +134,11 @@ export default {
     // 更换地址
     async handleAddressClick(contact) {
       if (this.goodsId) {
-        const { uid } = wx.getStorageSync('userinfo')
-        const params = { uid, id: contact.id }
-        const res = await fly.get('setDefault', params)
-        this.setContact(contact)
         try {
+            const { uid } = wx.getStorageSync('userinfo')
+            const params = { uid, id: contact.id }
+            const res = await fly.get('setDefault', params)
+            this.setContact(contact)
           showSuccess(res.message)
           this.defaultAddressId = contact.id
           // 此处是“单独购买页面传过来的”
@@ -155,11 +155,11 @@ export default {
     },
     // 获取收货地址列表
     async _fetchAddressList() {
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid }
-      const res = await fly.get('contact', params)
 
       try {
+          const { uid } = wx.getStorageSync('userinfo')
+          const params = { uid }
+          const res = await fly.get('contact', params)
         const data = res.data
         if (!data.contact.length) return
 

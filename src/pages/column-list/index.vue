@@ -45,6 +45,7 @@
 
             <!-- 图片 -->
             <section class="img-wrapper">
+              <div class="linear-bg"></div>
               <image :src="item.product_image"
                      mode="scaleToFill"
                      class="slide-image" />
@@ -52,6 +53,7 @@
 
           </section>
 
+          -/
           <!-- 底部信息 -->
           <section class="bottom">
             <section class="count-time">
@@ -60,9 +62,10 @@
                           :endTime="item.end_buytime"></count-down>
             </section>
 
+
             <button class="btn-disabled btn-normal  btn"
                     v-if="item.isEmpty"
-                    disabled>售罄</button>
+                    disabled>立即购买</button>
             <button class="line-gradient-btn btn-normal  btn"
                     v-else
                     @click="handleToBuyClick(item.id)">立即购买</button>
@@ -156,12 +159,12 @@ export default {
     },
     // 获取列表数据
     async _fetchColumnList(columnId, nextPageUrl) {
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { shop_id: 8, category: columnId, uid }
-      const res = this.nextPageUrl
-        ? await fly.get(this.nextPageUrl, params)
-        : await fly.get('columnDetail', params)
       try {
+          const { uid } = wx.getStorageSync('userinfo')
+          const params = { shop_id: 8, category: columnId, uid }
+          const res = this.nextPageUrl
+              ? await fly.get(this.nextPageUrl, params)
+              : await fly.get('columnDetail', params)
         const data = res.data.product
         this.nextPageUrl = data.next_page_url // 下一页的请求
         this.noMore = this.nextPageUrl === null // 是否还有更多
@@ -217,6 +220,7 @@ export default {
   height 1216rpx
   box-sizing border-box
   background #f7f7f7
+  padding-top:33rpx
   .swiper-item
     height 100%
     .product
@@ -237,6 +241,7 @@ export default {
       padding 30rpx
     .header
       color #fff
+      padding-top 0
       .title
         font-size 16px
         margin-bottom 20rpx
@@ -248,6 +253,7 @@ export default {
             font-size 18px
         .old-price
           font-size 12px
+          text-decoration line-through
     .content
       bottom 130rpx
       .tip
@@ -257,7 +263,7 @@ export default {
         font-size 12px
         border-radius 4px
         display inline-block
-        background hsla(0, 0%, 100%, 0.25) border-box
+        background hsla(0, 0%, 100%, 0.9) border-box
         overflow hidden
         border-radius 0.3em
         text-shadow 0 1px 1px hsla(0, 0%, 100%, 0.3)
@@ -277,6 +283,15 @@ export default {
       .scroll-buyer-wrapper
         height 250rpx
         overflow hidden
+    .linear-bg
+      background linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,0), rgba(0,0,0,0),rgba(0,0,0,.5))
+      position fixed
+      width 92vw
+      height 90%
+      z-index 2
+      top 0
+      left 30rpx
+      border-radius:10rpx
     .slide-image
       position fixed
       width 92vw
@@ -286,6 +301,7 @@ export default {
       top 0
       bottom 30rpx
       z-index 1
+      border-radius:10rpx
   .rebate-wrapper
     margin-bottom 30rpx
   .bottom
@@ -298,6 +314,7 @@ export default {
     background #fff
     height 100rpx
     line-height 100rpx
+    overflow:hidden
     .count-time
       width 460rpx
       line-height 100rpx
@@ -307,5 +324,5 @@ export default {
       width 290rpx
       height 100rpx
       line-height 100rpx
-      flex 0 0 290rpx
+      flex -1 0 290rpx
 </style>

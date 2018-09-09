@@ -98,10 +98,10 @@ export default {
     },
     // 点击收藏
     async handleAddFavoriteClick(id) {
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid, id }
-      const res = await fly.get('favoriteGet', params)
       try {
+        const { uid } = wx.getStorageSync('userinfo')
+        const params = { uid, id }
+        const res = await fly.get('favoriteGet', params)
         this.isLike = !this.isLike
         showSuccess(res.message)
       } catch (err) {
@@ -114,10 +114,12 @@ export default {
     },
     // 获取详情信息
     async _fetchDetailInfo(id) {
-      const { uid } = wx.getStorageSync('userinfo')
-      const params = { uid, id }
-      const res = await fly.get('productDetail', params)
       try {
+          wx.setStorageSync('good_id', id)
+          const { uid } = wx.getStorageSync('userinfo')
+          this.uid = uid
+          const params = { uid, id }
+          const res = await fly.get('productDetail', params)
         const data = res.data
         this.imgUrls = data.product_image
         this.goods = data.product
@@ -125,8 +127,9 @@ export default {
         this.phoneNumber = data.phone
         this.buyNum = data.buy_num
         this.goodsId = this.goods.id
-
-        // const { start_buytime, end_buytime, start_ordertime, end_ordertime } = this.goods
+        this.status = data.goods.status
+        this.is_status = data.goods.is_status
+          // const { start_buytime, end_buytime, start_ordertime, end_ordertime } = this.goods
         const s1 = this.goods.start_buytime
         const e1 = this.goods.end_buytimes
         const s2 = this.goods.start_ordertime
@@ -185,9 +188,9 @@ export default {
           color $color-theme
           vertical-align top
         .old-price
+          text-decoration line-through
           font-size 12px
           color #999
-          text-decoration line-through
         .addition
           font-size 12px
           background #fff0f1

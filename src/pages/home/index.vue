@@ -13,7 +13,7 @@
                :class="{active: item.id===currentId }"
                @click="handleTabClick(item.id)">
         <p class="text">
-          <span class="iconfont"
+          <span class="iconfont fonts"
                 :class="item.icon"></span>
           {{item.title}}
         </p>
@@ -131,12 +131,13 @@ export default {
     },
     // 获取首页信息
     async _getInfo() {
-      // const geo = await this._getGeo()
-      // const params = { ...geo }
 
-      const params = { lat: 30.499693, lng: 114.411457 }
-      const res = await fly.get('index', params)
       try {
+           const geo = await this._getGeo()
+           const params = { ...geo }
+
+          //const params = { lat: 30.499693, lng: 114.411457 }
+          const res = await fly.get('index', params)
         const data = res.data
         this.address = data.address
         this.weather = data.weather
@@ -202,7 +203,7 @@ export default {
           display inline-block
           &::before
             left -25rpx
-            font-size 24px
+            font-size 30px
       &.active
         color #fff
         background linear-gradient(to bottom, #e61b00, #ff5408)
@@ -219,6 +220,7 @@ export default {
         background #f4f4f4
         padding 40rpx 20rpx
         margin-bottom 40rpx
+        
         .text-wrapper
           width 350rpx
           font-size 18px
@@ -265,6 +267,7 @@ export default {
         posCenter()
         text-align center
         width 100%
+
       .up, .down
         position absolute
         width 143rpx

@@ -53,7 +53,8 @@ export default {
       if (this.winWidth) {
         let leftWidth = (this.winWidth - this.tabList.length * this.navWidth) / 2
         let width = this.navWidth + 'px'
-        let left = leftWidth + this.navWidth * this.currentTab + 'px'
+//      let left = leftWidth + this.navWidth * this.currentTab + 'px'
+        let left = this.navWidth * this.currentTab + 'px'
         let style = { left, width }
         return obj2style(style)
       }

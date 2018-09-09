@@ -1,7 +1,7 @@
 <template>
   <section class="container">
     <p class="text">您是第
-      <span class="rank">{{rank}}</span>位购买用户，支付后可返现
+      <span class="rank">{{rank}}</span>位购买用户，活动结束后可返现
       <span class="sale">￥{{sale}}</span>
     </p>
   </section>
