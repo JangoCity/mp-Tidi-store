@@ -3,7 +3,7 @@
     <section class="balance-warapper">
       <section class="balance-bar">
         <p class="label">可用余额</p>
-        <p class="balance-text">{{balance}}.00</p>
+        <p class="balance-text">{{balance}}</p>
       </section>
       <section class="balance-bg-wrapper">
         <img :src="balanceBg"
@@ -15,7 +15,7 @@
     <section class="total-info border-bottom">
       <p class="date">{{currentMonth}}</p>
       <p class="total">总计:
-        <span class="money">{{total}}.00</span>
+        <span class="money">{{total}}</span>
         <picker class="picker-date iconfont icon-rili"
                 mode="date"
                 :value="date"
@@ -127,7 +127,7 @@ export default {
         this.walletList.forEach((item, index) => {
           item.state = states[item.pay_status]
           item.style = stateStyles[item.pay_status]
-          price.push(parseInt(item.cash, 10))
+          price.push(item.cash)
         })
         this.total = price.reduce((prev, next) => prev + next)
       } catch (err) {

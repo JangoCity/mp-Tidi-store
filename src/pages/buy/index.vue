@@ -59,13 +59,13 @@
     </section>
 
     <!-- 底部支付 -->
-    <section class="bottom">
+    <section class="bottom" @click.prevent="handlePayClick">
       <p class="text  border-top">
         应付款
         <span class="money">{{total}}</span>（{{type}}）
       </p>
       <button class="line-gradient-btn btn-normal btn"
-              @click.prevent="handlePayClick">
+              >
         立即支付
       </button>
     </section>
@@ -110,7 +110,7 @@ export default {
   computed: {
     // 总价
     total() {
-      return this.price * this.count + '.00'
+      return this.price * this.count
     },
     ...mapGetters(['count', 'payment', 'contact'])
   },
@@ -143,8 +143,7 @@ export default {
         this.price = product.selling_price
         // 用户余额
         this.blance = user.price
-        console.log(this.price >= this.blance)
-        if (this.price >= this.blance && this.blance > 0) {
+        if (parseFloat(this.price) >= parseFloat(this.blance) && this.blance > 0) {
           this.groupShow = true
         }
         // 提示
@@ -263,7 +262,7 @@ export default {
   .bottom
     position fixed
     display flex
-    z-index 100
+    z-index 1000
     left 0
     right 0
     bottom 0

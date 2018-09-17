@@ -32,7 +32,7 @@ export default {
     border-radius 4px
     font-size 14px
     box-sizing border-box
-    padding 15rpx 20rpx
+    padding 15rpx 5rpx
     .rank, .sale
       color $color-theme
 </style>

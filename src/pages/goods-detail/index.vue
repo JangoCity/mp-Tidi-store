@@ -52,7 +52,9 @@
 
     <!-- 底部信息 -->
     <section class="bottom-wrapper">
-      <bottom-bar :isLike="isLike"
+      <bottom-bar :isLike="isLike" 
+	              :status="status"
+				  :is_status="is_status"
                   @addFavorite="handleAddFavoriteClick(goodsId)"
                   @server="handleServerClick"
                   @buy="handleToBuyClick(goodsId)"></bottom-bar>

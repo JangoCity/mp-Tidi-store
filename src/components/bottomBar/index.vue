@@ -28,7 +28,7 @@
     </section>
     <button class="btn-normal line-gradient-btn btn-buy"
             hover-class="line-gradient-btn-hover"
-            @click="handleToBuyClick" v-if="this.status===2 && this.is_status ===0">立即购买</button>
+            @click="handleToBuyClick" v-if="status===2 && is_status ===0">立即购买</button>
     <button class="btn-normal line-gradient-btn btn-buy"
             hover-class="line-gradient-btn-hover"
              v-else disabled>立即购买</button>
@@ -42,7 +42,9 @@ export default {
     isLike: {
       type: Boolean,
       default: false
-    }
+    },
+	status: null, 
+    is_status: null 
   },
   computed: {
     favorite() {
